@@ -1,3 +1,4 @@
+
 export enum Role {
   DRIVER = 'DRIVER',
   COMPANY = 'COMPANY'
@@ -10,10 +11,17 @@ export enum CompanyType {
 
 export enum OrderStatus {
   NEW = 'NEW',
-  WAITING_FOR_DRIVER = 'WAITING_FOR_DRIVER',
+  WAITING_FOR_DRIVER = 'WAITING_FOR_DRIVER', // Not strictly used if we jump to ASSIGNED, but kept for compatibility
   DRIVER_ASSIGNED = 'DRIVER_ASSIGNED',
   DELIVERING = 'DELIVERING',
-  FINISHED = 'FINISHED'
+  FINISHED = 'FINISHED',
+  CANCELLED = 'CANCELLED'
+}
+
+export enum OfferStatus {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED'
 }
 
 export interface User {
@@ -85,6 +93,15 @@ export interface WalletTransaction {
   timestamp: string;
 }
 
+export interface SmsCreditTransaction {
+  id: string;
+  userID: string;
+  amount: number; // Credits added (e.g. 50)
+  cost: number; // Cost in Tomans/Rials
+  description: string;
+  timestamp: string;
+}
+
 export interface Company {
   id: string;
   userID: string;
@@ -135,6 +152,7 @@ export interface CompanyDetail {
 export interface Order {
   id: string;
   companyID: string;
+  driverID?: string; // Assigned Driver
   loadType: string;
   originProvince: string;
   originCity: string;
@@ -151,6 +169,46 @@ export interface Order {
   distanceKm?: number;
   weightType: 'KG' | 'TON';
   requiredVehicleType?: string;
+  createdAt: string;
+}
+
+export interface OrderOffer {
+  id: string;
+  orderID: string;
+  driverID: string;
+  driverName?: string; // Helper to avoid extra lookups
+  state: OfferStatus;
+  price: number;
+  commentDriver?: string;
+  whyReject?: string;
+  deliveryEstimateTime?: string;
+  date: string;
+}
+
+export interface DriverReview {
+  id: string;
+  orderID: string;
+  driverID: string;
+  companyID: string;
+  stars: number; // 1-5
+  weaknesses: string[]; // e.g. ["Late", "Rude"]
+  strengths: string[]; // e.g. ["Fast", "Polite"]
+  commentText?: string;
+  createdAt: string;
+}
+
+export interface PaymentDriver {
+  id: string;
+  driverID: string;
+  orderID: string;
+  amount: number;
+  payType: 'BANK' | 'CASH' | 'POS' | 'CHARGE';
+  image?: string; // Receipt URL
+  transactionCode?: string;
+  year: number;
+  month: number;
+  day: number;
+  date: string; // ISO String for backup
   createdAt: string;
 }
 

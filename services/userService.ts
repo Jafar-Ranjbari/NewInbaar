@@ -1,6 +1,7 @@
+
 import axios from 'axios';
 import { API_URL } from '../constants';
-import { User, Driver, DriverCar, WalletTransaction, Company, CompanyDetail, Order, CompanyType } from '../types';
+import { User, Driver, DriverCar, WalletTransaction, Company, CompanyDetail, Order, CompanyType, OrderStatus, OrderOffer, OfferStatus, PaymentDriver, DriverReview, SmsCreditTransaction } from '../types';
 
 // --- USER ---
 export const getUserByMobile = async (mobile: string): Promise<User | null> => {
@@ -89,6 +90,30 @@ export const createWalletTransaction = async (
   return response.data;
 };
 
+// --- SMS CREDITS ---
+export const getSmsCreditTransactions = async (userID: string): Promise<SmsCreditTransaction[]> => {
+    const response = await axios.get(`${API_URL}/smsCreditTransactions?userID=${userID}`);
+    return response.data;
+};
+
+export const createSmsCreditTransaction = async (
+  userID: string, 
+  amount: number, 
+  cost: number,
+  desc: string
+): Promise<SmsCreditTransaction> => {
+  const transaction: SmsCreditTransaction = {
+    id: Math.random().toString(36).substr(2, 9),
+    userID,
+    amount,
+    cost,
+    description: desc,
+    timestamp: new Date().toISOString()
+  };
+  const response = await axios.post(`${API_URL}/smsCreditTransactions`, transaction);
+  return response.data;
+};
+
 // --- COMPANY ---
 export const getCompanyByUserId = async (userId: string): Promise<Company | null> => {
   const response = await axios.get(`${API_URL}/companies?userID=${userId}`);
@@ -121,7 +146,9 @@ export const createOrUpdateCompanyDetail = async (detailData: Partial<CompanyDet
   }
 };
 
-// --- ORDERS ---
+// --- ORDERS & OFFERS ---
+
+// For Companies
 export const getCompanyOrders = async (companyID: string): Promise<Order[]> => {
   const response = await axios.get(`${API_URL}/orders?companyID=${companyID}`);
   return response.data;
@@ -134,4 +161,74 @@ export const createOrder = async (orderData: Omit<Order, 'id' | 'createdAt'>): P
     createdAt: new Date().toISOString()
   });
   return response.data;
+};
+
+export const updateOrder = async (orderID: string, updates: Partial<Order>): Promise<Order> => {
+  const response = await axios.patch(`${API_URL}/orders/${orderID}`, updates);
+  return response.data;
+}
+
+// For Drivers (Find Load)
+export const getAllOpenOrders = async (): Promise<Order[]> => {
+  const response = await axios.get(`${API_URL}/orders?status=${OrderStatus.NEW}`);
+  return response.data;
+};
+
+// Offers
+export const getOffersByOrderId = async (orderID: string): Promise<OrderOffer[]> => {
+  const response = await axios.get(`${API_URL}/orderOffers?orderID=${orderID}`);
+  return response.data;
+};
+
+export const getOffersByDriverId = async (driverID: string): Promise<OrderOffer[]> => {
+  const response = await axios.get(`${API_URL}/orderOffers?driverID=${driverID}`);
+  return response.data;
+};
+
+export const createOrderOffer = async (offerData: Omit<OrderOffer, 'id' | 'date' | 'state'>): Promise<OrderOffer> => {
+  const response = await axios.post(`${API_URL}/orderOffers`, {
+    ...offerData,
+    state: OfferStatus.PENDING,
+    date: new Date().toISOString(),
+    id: Math.random().toString(36).substr(2, 9),
+  });
+  return response.data;
+};
+
+export const updateOfferStatus = async (offerID: string, state: OfferStatus, whyReject?: string): Promise<OrderOffer> => {
+  const payload: any = { state };
+  if (whyReject) payload.whyReject = whyReject;
+  
+  const response = await axios.patch(`${API_URL}/orderOffers/${offerID}`, payload);
+  return response.data;
+};
+
+// --- PAYMENTS & REVIEWS ---
+
+export const createPayment = async (paymentData: Omit<PaymentDriver, 'id' | 'createdAt'>): Promise<PaymentDriver> => {
+    const response = await axios.post(`${API_URL}/paymentDrivers`, {
+        ...paymentData,
+        id: Math.random().toString(36).substr(2, 9),
+        createdAt: new Date().toISOString()
+    });
+    return response.data;
+};
+
+export const getPaymentsByOrderId = async (orderID: string): Promise<PaymentDriver[]> => {
+    const response = await axios.get(`${API_URL}/paymentDrivers?orderID=${orderID}`);
+    return response.data;
+};
+
+export const createReview = async (reviewData: Omit<DriverReview, 'id' | 'createdAt'>): Promise<DriverReview> => {
+    const response = await axios.post(`${API_URL}/driverReviews`, {
+        ...reviewData,
+        id: Math.random().toString(36).substr(2, 9),
+        createdAt: new Date().toISOString()
+    });
+    return response.data;
+};
+
+export const getReviewByOrderId = async (orderID: string): Promise<DriverReview[]> => {
+    const response = await axios.get(`${API_URL}/driverReviews?orderID=${orderID}`);
+    return response.data;
 };

@@ -1,16 +1,19 @@
+
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
-import { LogOut, UserCircle, Truck, Wallet, User as UserIcon, Save, Loader2 } from 'lucide-react';
+import { LogOut, UserCircle, Truck, Wallet, User as UserIcon, Save, Loader2, MapPin, Search, Send, Clock, DollarSign, MessageSquare } from 'lucide-react';
 import { 
   getDriverByUserId, createOrUpdateDriver, 
   getCarByDriverId, createOrUpdateCar,
-  getWalletTransactions, createWalletTransaction 
+  getWalletTransactions, createWalletTransaction,
+  getAllOpenOrders, createOrderOffer, getOffersByDriverId,
+  getSmsCreditTransactions, createSmsCreditTransaction
 } from '../../services/userService';
-import { Driver, DriverCar, WalletTransaction } from '../../types';
+import { Driver, DriverCar, WalletTransaction, Order, OrderOffer, SmsCreditTransaction } from '../../types';
 
 export const DashboardDriver: React.FC = () => {
   const { currentUser, logout } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'PROFILE' | 'CAR' | 'WALLET'>('PROFILE');
+  const [activeTab, setActiveTab] = useState<'PROFILE' | 'CAR' | 'CARGO_HALL' | 'WALLET'>('PROFILE');
   const [loading, setLoading] = useState(false);
   const [initLoading, setInitLoading] = useState(true);
 
@@ -18,6 +21,14 @@ export const DashboardDriver: React.FC = () => {
   const [driver, setDriver] = useState<Partial<Driver>>({});
   const [car, setCar] = useState<Partial<DriverCar>>({});
   const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
+  const [smsTransactions, setSmsTransactions] = useState<SmsCreditTransaction[]>([]);
+  const [openOrders, setOpenOrders] = useState<Order[]>([]);
+  const [myOffers, setMyOffers] = useState<OrderOffer[]>([]);
+
+  // Cargo Hall State
+  const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
+  const [offerModalOpen, setOfferModalOpen] = useState<string | null>(null); // orderID
+  const [offerForm, setOfferForm] = useState({ price: '', comment: '', time: '' });
 
   // Initialize Data
   useEffect(() => {
@@ -28,24 +39,32 @@ export const DashboardDriver: React.FC = () => {
         // 1. Fetch Driver Profile
         let drv = await getDriverByUserId(currentUser.id);
         if (!drv) {
-            // Initialize local state if not exists on server
             setDriver({ userID: currentUser.id, mobile1: currentUser.mobile, firstName: '', lastName: '' });
         } else {
             setDriver(drv);
-            // 2. Fetch Car if driver exists
             const c = await getCarByDriverId(drv.id);
             if (c) setCar(c);
 
-            // 3. Fetch Wallet
             const txs = await getWalletTransactions(drv.id, 'DRIVER');
             setTransactions(txs);
 
-            // 4. Check First Login Gift (50k)
+            const smsTxs = await getSmsCreditTransactions(currentUser.id);
+            setSmsTransactions(smsTxs);
+
             if (txs.length === 0) {
                 const gift = await createWalletTransaction(drv.id, 50000, 'هدیه اولین ورود', 'DRIVER');
                 setTransactions([gift]);
             }
+
+            // Load Offers
+            const offers = await getOffersByDriverId(drv.id);
+            setMyOffers(offers);
         }
+        
+        // Load Open Orders
+        const orders = await getAllOpenOrders();
+        setOpenOrders(orders);
+
       } catch (err) {
         console.error(err);
       } finally {
@@ -60,12 +79,10 @@ export const DashboardDriver: React.FC = () => {
     if (!currentUser) return;
     setLoading(true);
     try {
-      // Must save driver first to get ID for other relations
       const savedDriver = await createOrUpdateDriver({ ...driver, userID: currentUser.id });
       setDriver(savedDriver);
       alert('اطلاعات راننده ذخیره شد');
       
-      // Refresh wallet check if it was a new driver creation
       const txs = await getWalletTransactions(savedDriver.id, 'DRIVER');
       if (txs.length === 0) {
           const gift = await createWalletTransaction(savedDriver.id, 50000, 'هدیه اولین ورود', 'DRIVER');
@@ -110,7 +127,62 @@ export const DashboardDriver: React.FC = () => {
     }
   };
 
+  const handleBuySmsPackage = async () => {
+    if (!driver.id || !currentUser) return;
+    if (walletBalance < 50000) {
+        alert('موجودی کیف پول کافی نیست');
+        return;
+    }
+    setLoading(true);
+    try {
+        // Deduct from wallet
+        const wTx = await createWalletTransaction(driver.id, -50000, 'خرید بسته ۵۰ تایی پیامک', 'DRIVER');
+        setTransactions(prev => [...prev, wTx]);
+
+        // Add SMS Credit
+        const sTx = await createSmsCreditTransaction(currentUser.id, 50, 50000, 'خرید بسته افزایشی');
+        setSmsTransactions(prev => [...prev, sTx]);
+
+        alert('بسته پیامک با موفقیت خریداری شد');
+    } catch (err) {
+        alert('خطا در خرید بسته');
+    } finally {
+        setLoading(false);
+    }
+  };
+
+  const handleSubmitOffer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!driver.id || !offerModalOpen) return;
+    setLoading(true);
+    try {
+        const offer = await createOrderOffer({
+            driverID: driver.id,
+            orderID: offerModalOpen,
+            price: Number(offerForm.price),
+            commentDriver: offerForm.comment,
+            deliveryEstimateTime: offerForm.time,
+            driverName: `${driver.firstName} ${driver.lastName}`
+        });
+        setMyOffers([...myOffers, offer]);
+        setOfferModalOpen(null);
+        setOfferForm({ price: '', comment: '', time: '' });
+        alert('پیشنهاد شما ثبت شد و در انتظار تایید شرکت است.');
+    } catch (err) {
+        alert('خطا در ثبت پیشنهاد');
+    } finally {
+        setLoading(false);
+    }
+  };
+
+  // Group orders by province
+  const provinceCounts = openOrders.reduce((acc, order) => {
+      acc[order.originProvince] = (acc[order.originProvince] || 0) + 1;
+      return acc;
+  }, {} as Record<string, number>);
+
   const walletBalance = transactions.reduce((acc, curr) => acc + curr.balance_change, 0);
+  const smsBalance = smsTransactions.reduce((acc, curr) => acc + curr.amount, 0);
 
   if (!currentUser) return null;
   if (initLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-green-600" size={48}/></div>;
@@ -145,13 +217,19 @@ export const DashboardDriver: React.FC = () => {
                 onClick={() => setActiveTab('PROFILE')}
                 className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'PROFILE' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
             >
-                <UserIcon size={18} /> مشخصات راننده
+                <UserIcon size={18} /> مشخصات
             </button>
             <button 
                 onClick={() => setActiveTab('CAR')}
                 className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'CAR' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
             >
-                <Truck size={18} /> مشخصات خودرو
+                <Truck size={18} /> خودرو
+            </button>
+            <button 
+                onClick={() => setActiveTab('CARGO_HALL')}
+                className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'CARGO_HALL' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+            >
+                <Search size={18} /> سالن اعلام بار
             </button>
             <button 
                 onClick={() => setActiveTab('WALLET')}
@@ -284,25 +362,185 @@ export const DashboardDriver: React.FC = () => {
              </div>
         )}
 
+        {/* CARGO HALL TAB */}
+        {activeTab === 'CARGO_HALL' && (
+            <div className="space-y-6">
+                {!driver.id ? (
+                     <div className="bg-yellow-50 p-4 rounded-xl text-yellow-800 border border-yellow-200 text-center">
+                         برای مشاهده بارها ابتدا پروفایل خود را تکمیل کنید.
+                     </div>
+                ) : !selectedProvince ? (
+                    <>
+                        <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <MapPin className="text-green-500"/> انتخاب استان مبدا
+                        </h2>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {Object.entries(provinceCounts).map(([province, count]) => (
+                                <button 
+                                    key={province}
+                                    onClick={() => setSelectedProvince(province)}
+                                    className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md border border-gray-200 hover:border-green-500 transition-all text-center group"
+                                >
+                                    <h3 className="font-bold text-gray-800 text-lg group-hover:text-green-600 mb-2">{province}</h3>
+                                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">
+                                        {count} سفارش
+                                    </span>
+                                </button>
+                            ))}
+                            {Object.keys(provinceCounts).length === 0 && (
+                                <div className="col-span-full text-center py-12 text-gray-500 bg-white rounded-xl border border-dashed border-gray-300">
+                                    هیچ سفارش فعالی در سیستم موجود نیست.
+                                </div>
+                            )}
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="flex items-center gap-4 mb-4">
+                            <button 
+                                onClick={() => setSelectedProvince(null)}
+                                className="text-gray-500 hover:text-gray-800 font-bold"
+                            >
+                                بازگشت
+                            </button>
+                            <h2 className="text-xl font-bold text-gray-800">
+                                سفارش‌های استان {selectedProvince}
+                            </h2>
+                        </div>
+                        <div className="space-y-4">
+                            {openOrders.filter(o => o.originProvince === selectedProvince).map(order => {
+                                const hasOffered = myOffers.some(off => off.orderID === order.id);
+                                return (
+                                    <div key={order.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-green-300 transition-all">
+                                        <div className="flex flex-col md:flex-row justify-between md:items-start gap-4">
+                                            <div>
+                                                <h3 className="font-bold text-lg text-gray-800 flex items-center gap-2">
+                                                    {order.goodType} <span className="text-sm text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{order.weight} {order.weightType}</span>
+                                                </h3>
+                                                <div className="mt-2 space-y-1 text-sm text-gray-600">
+                                                    <p className="flex items-center gap-2"><MapPin size={14}/> مبدا: {order.originProvince}، {order.originCity}</p>
+                                                    <p className="flex items-center gap-2"><MapPin size={14} className="text-red-500"/> مقصد: {order.destinationProvince}، {order.destinationCity}</p>
+                                                    <p className="flex items-center gap-2"><Clock size={14}/> تاریخ حمل: {order.deliveryDate}</p>
+                                                </div>
+                                                {order.expectedPriceRange && (
+                                                     <p className="mt-3 text-sm font-bold text-green-700">مبلغ پیشنهادی شرکت: {order.expectedPriceRange} ریال</p>
+                                                )}
+                                            </div>
+                                            <div>
+                                                {hasOffered ? (
+                                                    <span className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-lg font-bold text-sm">
+                                                        پیشنهاد ثبت شده
+                                                    </span>
+                                                ) : (
+                                                    <button 
+                                                        onClick={() => setOfferModalOpen(order.id)}
+                                                        className="bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700 transition-colors flex items-center gap-2"
+                                                    >
+                                                        <DollarSign size={18}/>
+                                                        ارسال قیمت
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </>
+                )}
+
+                {/* Offer Modal */}
+                {offerModalOpen && (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+                            <div className="bg-green-600 p-4 text-white font-bold text-lg flex justify-between items-center">
+                                <span>ثبت پیشنهاد قیمت</span>
+                                <button onClick={() => setOfferModalOpen(null)} className="hover:bg-green-700 p-1 rounded">✕</button>
+                            </div>
+                            <form onSubmit={handleSubmitOffer} className="p-6 space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">قیمت پیشنهادی (ریال)</label>
+                                    <input 
+                                        type="number" 
+                                        className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500"
+                                        placeholder="مثلا: 25000000"
+                                        value={offerForm.price}
+                                        onChange={e => setOfferForm({...offerForm, price: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">زمان تقریبی تحویل</label>
+                                    <input 
+                                        type="text" 
+                                        className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500"
+                                        placeholder="مثلا: 2 روز کاری"
+                                        value={offerForm.time}
+                                        onChange={e => setOfferForm({...offerForm, time: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">توضیحات برای شرکت</label>
+                                    <textarea 
+                                        className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500 h-24"
+                                        placeholder="توضیحات تکمیلی..."
+                                        value={offerForm.comment}
+                                        onChange={e => setOfferForm({...offerForm, comment: e.target.value})}
+                                    />
+                                </div>
+                                <button 
+                                    type="submit"
+                                    disabled={loading} 
+                                    className="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition-all flex justify-center items-center gap-2"
+                                >
+                                    {loading ? <Loader2 className="animate-spin"/> : <><Send size={18}/> ارسال پیشنهاد</>}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                )}
+            </div>
+        )}
+
         {/* WALLET TAB */}
         {activeTab === 'WALLET' && (
             <div className="space-y-6">
-                <div className="bg-gradient-to-r from-green-600 to-green-400 rounded-2xl p-8 text-white shadow-lg">
-                    <div className="flex justify-between items-start mb-8">
-                        <div>
-                            <p className="text-green-100 mb-1">موجودی کیف پول</p>
-                            <h3 className="text-4xl font-bold">{walletBalance.toLocaleString()} <span className="text-lg font-normal">ریال</span></h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Main Wallet */}
+                    <div className="bg-gradient-to-r from-green-600 to-green-400 rounded-2xl p-8 text-white shadow-lg">
+                        <div className="flex justify-between items-start mb-8">
+                            <div>
+                                <p className="text-green-100 mb-1">موجودی کیف پول</p>
+                                <h3 className="text-4xl font-bold">{walletBalance.toLocaleString()} <span className="text-lg font-normal">ریال</span></h3>
+                            </div>
+                            <div className="bg-white/20 p-3 rounded-full">
+                                <Wallet size={32} />
+                            </div>
                         </div>
-                        <div className="bg-white/20 p-3 rounded-full">
-                            <Wallet size={32} />
+                        <div className="grid grid-cols-2 gap-4">
+                            <button onClick={() => handleTopUp(100000)} className="bg-white text-green-700 py-3 rounded-xl font-bold hover:bg-green-50 transition-colors">
+                                شارژ ۱۰۰,۰۰۰
+                            </button>
+                            <button onClick={() => handleTopUp(200000)} className="bg-white text-green-700 py-3 rounded-xl font-bold hover:bg-green-50 transition-colors">
+                                شارژ ۲۰۰,۰۰۰
+                            </button>
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <button onClick={() => handleTopUp(100000)} className="bg-white text-green-700 py-3 rounded-xl font-bold hover:bg-green-50 transition-colors">
-                            شارژ ۱۰۰,۰۰۰ ریال
-                        </button>
-                        <button onClick={() => handleTopUp(200000)} className="bg-white text-green-700 py-3 rounded-xl font-bold hover:bg-green-50 transition-colors">
-                            شارژ ۲۰۰,۰۰۰ ریال
+
+                    {/* SMS Panel */}
+                    <div className="bg-gradient-to-r from-purple-600 to-purple-400 rounded-2xl p-8 text-white shadow-lg">
+                        <div className="flex justify-between items-start mb-8">
+                            <div>
+                                <p className="text-purple-100 mb-1">اعتبار پیامک</p>
+                                <h3 className="text-4xl font-bold">{smsBalance} <span className="text-lg font-normal">عدد</span></h3>
+                            </div>
+                            <div className="bg-white/20 p-3 rounded-full">
+                                <MessageSquare size={32} />
+                            </div>
+                        </div>
+                        <button onClick={handleBuySmsPackage} disabled={loading} className="w-full bg-white text-purple-700 py-3 rounded-xl font-bold hover:bg-purple-50 transition-colors disabled:opacity-50">
+                            خرید بسته ۵۰ تایی (۵۰,۰۰۰ تومان)
                         </button>
                     </div>
                 </div>
