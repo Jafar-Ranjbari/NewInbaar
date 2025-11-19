@@ -1,0 +1,32 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "fullName": "علی رضایی",
+      "password": "123",
+      "rolename": "DRIVER",
+      "mobile": "09121111111"
+    },
+    {
+      "id": "2",
+      "fullName": "شرکت حمل و نقل سریع",
+      "password": "1234",
+      "rolename": "COMPANY",
+      "mobile": "09122222222"
+    },
+    {
+      "id": "5601",
+      "fullName": "تایماز رنجبری",
+      "password": "123",
+      "rolename": "COMPANY",
+      "mobile": "09011614416"
+    },
+    {
+      "id": "bf31",
+      "fullName": "سیمین زندی",
+      "password": "123",
+      "rolename": "DRIVER",
+      "mobile": "09395440477"
+    }
+  ]
+}

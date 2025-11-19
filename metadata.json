@@ -1,0 +1,5 @@
+{
+  "name": "Driver & Company Portal",
+  "description": "A role-based authentication system for Drivers and Companies with registration, login, and password recovery flows, utilizing a simulated JSON Server backend.",
+  "requestFramePermissions": []
+}
