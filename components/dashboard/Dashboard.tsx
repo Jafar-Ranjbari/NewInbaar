@@ -2,9 +2,9 @@
 import React from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Role } from '../../types';
-import { DashboardDriver } from './DashboardDriver';
-import { DashboardCompany } from './DashboardCompany';
-import { DashboardAdmin } from './DashboardAdmin';
+import { DashboardDriver } from './driver/DashboardDriver';
+import { DashboardCompany } from './company/DashboardCompany';
+import { DashboardAdmin } from './admin/DashboardAdmin';
 
 export const Dashboard: React.FC = () => {
   const { currentUser, logout } = useAuthStore();

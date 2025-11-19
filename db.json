@@ -145,6 +145,30 @@
       "orders_change": 0,
       "description": "افزایش اعتبار",
       "timestamp": "2025-11-19T18:18:34.643Z"
+    },
+    {
+      "id": "fmtvd9d42",
+      "ownerID": "1763561536267",
+      "balance_change": 100000,
+      "orders_change": 0,
+      "description": "افزایش اعتبار",
+      "timestamp": "2025-11-19T19:32:27.312Z"
+    },
+    {
+      "id": "igha9onj5",
+      "ownerID": "1763575714329",
+      "balance_change": -50000,
+      "orders_change": 0,
+      "description": "خرید بسته پیامک",
+      "timestamp": "2025-11-19T19:36:58.330Z"
+    },
+    {
+      "id": "0btcv2pp0",
+      "ownerID": "1763575714329",
+      "balance_change": -50000,
+      "orders_change": 0,
+      "description": "خرید بسته پیامک",
+      "timestamp": "2025-11-19T19:37:09.274Z"
     }
   ],
   "companies": [
@@ -234,6 +258,14 @@
       "orders_change": 0,
       "description": "کارمزد تخصیص سفارش jj",
       "timestamp": "2025-11-19T18:16:44.366Z"
+    },
+    {
+      "id": "h8y7uprd0",
+      "ownerID": "1763561663382",
+      "balance_change": 100000,
+      "orders_change": 0,
+      "description": "شارژ",
+      "timestamp": "2025-11-19T19:31:02.787Z"
     }
   ],
   "orders": [
@@ -299,7 +331,7 @@
       "weight": 2,
       "deliveryDate": "2025-10-29",
       "companyID": "1763561663382",
-      "status": "DRIVER_ASSIGNED",
+      "status": "FINISHED",
       "createdAt": "2025-11-19T17:11:47.580Z",
       "driverID": "1763575714329"
     }
@@ -398,6 +430,17 @@
         ""
       ],
       "createdAt": "2025-11-19T15:24:21.767Z"
+    },
+    {
+      "id": "skfd2jicg",
+      "orderID": "bicfe83h3",
+      "driverID": "1763575714329",
+      "companyID": "1763561663382",
+      "stars": 5,
+      "commentText": "خوب بود",
+      "strengths": [],
+      "weaknesses": [],
+      "createdAt": "2025-11-19T19:30:23.192Z"
     }
   ],
   "paymentDrivers": [
@@ -413,6 +456,32 @@
       "day": 1,
       "date": "2025-11-19T17:53:44.596Z",
       "createdAt": "2025-11-19T17:53:44.596Z"
+    },
+    {
+      "id": "yhequmk9k",
+      "orderID": "bicfe83h3",
+      "driverID": "1763575714329",
+      "amount": 2000000,
+      "payType": "BANK",
+      "transactionCode": "",
+      "year": 1403,
+      "month": 1,
+      "day": 1,
+      "date": "2025-11-19T19:30:16.039Z",
+      "createdAt": "2025-11-19T19:30:16.039Z"
+    },
+    {
+      "id": "sumdeec50",
+      "orderID": "bicfe83h3",
+      "driverID": "1763575714329",
+      "amount": 2000000,
+      "payType": "BANK",
+      "transactionCode": "",
+      "year": 1403,
+      "month": 1,
+      "day": 1,
+      "date": "2025-11-19T19:30:20.396Z",
+      "createdAt": "2025-11-19T19:30:20.396Z"
     }
   ],
   "smsCreditTransactions": [
@@ -431,6 +500,22 @@
       "cost": 50000,
       "description": "خرید بسته افزایشی",
       "timestamp": "2025-11-19T15:25:03.026Z"
+    },
+    {
+      "id": "gfvdrmd74",
+      "userID": "0725",
+      "amount": 50,
+      "cost": 50000,
+      "description": "خرید بسته افزایشی",
+      "timestamp": "2025-11-19T19:36:58.372Z"
+    },
+    {
+      "id": "djpkin5e1",
+      "userID": "0725",
+      "amount": 50,
+      "cost": 50000,
+      "description": "خرید بسته افزایشی",
+      "timestamp": "2025-11-19T19:37:09.353Z"
     }
   ]
 }

@@ -11,14 +11,13 @@ export const PhoneInputStep: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // if (mobile.length < 10) return;
     if (mobile.length < 2) return;
-    
+
     setLoading(true);
     try {
       const user = await getUserByMobile(mobile);
       setTempMobile(mobile);
-
+      
       if (user) {
         setTempUser(user);
         setStep(AuthStep.LOGIN_PASSWORD);
