@@ -1,7 +1,8 @@
 
 export enum Role {
   DRIVER = 'DRIVER',
-  COMPANY = 'COMPANY'
+  COMPANY = 'COMPANY',
+  ADMIN = 'ADMIN'
 }
 
 export enum CompanyType {

@@ -1,19 +1,20 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
-import { LogOut, UserCircle, Truck, Wallet, User as UserIcon, Save, Loader2, MapPin, Search, Send, Clock, DollarSign, MessageSquare } from 'lucide-react';
+import { LogOut, UserCircle, Truck, Wallet, User as UserIcon, Save, Loader2, MapPin, Search, Send, Clock, DollarSign, MessageSquare, FileBarChart, ClipboardList, CreditCard } from 'lucide-react';
 import { 
   getDriverByUserId, createOrUpdateDriver, 
   getCarByDriverId, createOrUpdateCar,
   getWalletTransactions, createWalletTransaction,
   getAllOpenOrders, createOrderOffer, getOffersByDriverId,
-  getSmsCreditTransactions, createSmsCreditTransaction
+  getSmsCreditTransactions, createSmsCreditTransaction,
+  getPaymentsByDriverId
 } from '../../services/userService';
-import { Driver, DriverCar, WalletTransaction, Order, OrderOffer, SmsCreditTransaction } from '../../types';
+import { Driver, DriverCar, WalletTransaction, Order, OrderOffer, SmsCreditTransaction, PaymentDriver, OfferStatus, OrderStatus } from '../../types';
 
 export const DashboardDriver: React.FC = () => {
   const { currentUser, logout } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'PROFILE' | 'CAR' | 'CARGO_HALL' | 'WALLET'>('PROFILE');
+  const [activeTab, setActiveTab] = useState<'PROFILE' | 'CAR' | 'CARGO_HALL' | 'WALLET' | 'REPORTS'>('PROFILE');
   const [loading, setLoading] = useState(false);
   const [initLoading, setInitLoading] = useState(true);
 
@@ -24,6 +25,7 @@ export const DashboardDriver: React.FC = () => {
   const [smsTransactions, setSmsTransactions] = useState<SmsCreditTransaction[]>([]);
   const [openOrders, setOpenOrders] = useState<Order[]>([]);
   const [myOffers, setMyOffers] = useState<OrderOffer[]>([]);
+  const [myPayments, setMyPayments] = useState<PaymentDriver[]>([]);
 
   // Cargo Hall State
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
@@ -59,6 +61,10 @@ export const DashboardDriver: React.FC = () => {
             // Load Offers
             const offers = await getOffersByDriverId(drv.id);
             setMyOffers(offers);
+
+            // Load Payments
+            const pays = await getPaymentsByDriverId(drv.id);
+            setMyPayments(pays);
         }
         
         // Load Open Orders
@@ -183,6 +189,7 @@ export const DashboardDriver: React.FC = () => {
 
   const walletBalance = transactions.reduce((acc, curr) => acc + curr.balance_change, 0);
   const smsBalance = smsTransactions.reduce((acc, curr) => acc + curr.amount, 0);
+  const totalIncome = myPayments.reduce((acc, curr) => acc + curr.amount, 0);
 
   if (!currentUser) return null;
   if (initLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-green-600" size={48}/></div>;
@@ -236,6 +243,12 @@ export const DashboardDriver: React.FC = () => {
                 className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'WALLET' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
             >
                 <Wallet size={18} /> کیف پول
+            </button>
+             <button 
+                onClick={() => setActiveTab('REPORTS')}
+                className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'REPORTS' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+            >
+                <FileBarChart size={18} /> گزارشات
             </button>
         </div>
       </div>
@@ -560,6 +573,93 @@ export const DashboardDriver: React.FC = () => {
                             </div>
                         ))}
                         {transactions.length === 0 && <p className="text-center text-gray-500">تراکنشی یافت نشد.</p>}
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* REPORTS TAB */}
+        {activeTab === 'REPORTS' && (
+            <div className="space-y-8">
+                {/* Income Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-green-500">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <p className="text-gray-500 mb-2 font-bold">کل درآمد کسب شده</p>
+                                <h3 className="text-3xl font-bold text-green-600 dir-ltr">{totalIncome.toLocaleString()} <span className="text-sm text-gray-500">ریال</span></h3>
+                            </div>
+                            <div className="bg-green-50 p-3 rounded-lg text-green-600"><CreditCard size={24}/></div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-blue-500">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <p className="text-gray-500 mb-2 font-bold">تعداد کل سفارشات</p>
+                                <h3 className="text-3xl font-bold text-blue-600">{myOffers.length}</h3>
+                            </div>
+                            <div className="bg-blue-50 p-3 rounded-lg text-blue-600"><ClipboardList size={24}/></div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Payments List */}
+                <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div className="p-4 border-b font-bold text-gray-800 flex items-center gap-2">
+                        <CreditCard size={18} className="text-green-500"/> دریافتی‌های شرکت
+                    </div>
+                    <div className="p-4 overflow-x-auto">
+                         <table className="w-full text-right min-w-[600px]">
+                            <thead className="bg-gray-50 text-gray-600 text-sm">
+                                <tr>
+                                    <th className="p-3">مبلغ</th>
+                                    <th className="p-3">روش پرداخت</th>
+                                    <th className="p-3">کد پیگیری</th>
+                                    <th className="p-3">تاریخ</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y">
+                                {myPayments.map(p => (
+                                    <tr key={p.id}>
+                                        <td className="p-3 font-bold text-green-700">{p.amount.toLocaleString()}</td>
+                                        <td className="p-3">{p.payType === 'BANK' ? 'کارت به کارت' : p.payType}</td>
+                                        <td className="p-3 text-sm text-gray-500">{p.transactionCode}</td>
+                                        <td className="p-3 text-sm">{p.year}/{p.month}/{p.day}</td>
+                                    </tr>
+                                ))}
+                                {myPayments.length === 0 && <tr><td colSpan={4} className="p-4 text-center text-gray-500">موردی یافت نشد</td></tr>}
+                            </tbody>
+                         </table>
+                    </div>
+                </div>
+
+                {/* Order History */}
+                <div className="bg-white rounded-xl shadow-sm">
+                    <div className="p-4 border-b font-bold text-gray-800 flex items-center gap-2">
+                        <ClipboardList size={18} className="text-blue-500"/> تاریخچه سفارشات
+                    </div>
+                    <div className="divide-y">
+                        {myOffers.map(offer => {
+                            const statusColor = 
+                                offer.state === OfferStatus.ACCEPTED ? 'bg-green-100 text-green-700' :
+                                offer.state === OfferStatus.REJECTED ? 'bg-red-100 text-red-700' : 
+                                'bg-yellow-100 text-yellow-700';
+                            
+                            return (
+                                <div key={offer.id} className="p-4 flex justify-between items-center">
+                                    <div>
+                                        <p className="font-bold text-gray-800">پیشنهاد قیمت: {offer.price.toLocaleString()} ریال</p>
+                                        <p className="text-sm text-gray-500">{offer.deliveryEstimateTime}</p>
+                                        <p className="text-xs text-gray-400 mt-1">{new Date(offer.date).toLocaleDateString('fa-IR')}</p>
+                                    </div>
+                                    <span className={`px-3 py-1 rounded-full text-sm font-bold ${statusColor}`}>
+                                        {offer.state === OfferStatus.ACCEPTED ? 'تایید شده' : 
+                                         offer.state === OfferStatus.REJECTED ? 'رد شده' : 'در انتظار'}
+                                    </span>
+                                </div>
+                            )
+                        })}
+                        {myOffers.length === 0 && <div className="p-8 text-center text-gray-500">سفارشی وجود ندارد</div>}
                     </div>
                 </div>
             </div>

@@ -1,8 +1,10 @@
+
 import React from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Role } from '../../types';
 import { DashboardDriver } from './DashboardDriver';
 import { DashboardCompany } from './DashboardCompany';
+import { DashboardAdmin } from './DashboardAdmin';
 
 export const Dashboard: React.FC = () => {
   const { currentUser, logout } = useAuthStore();
@@ -21,6 +23,10 @@ export const Dashboard: React.FC = () => {
 
   if (currentUser.rolename === Role.COMPANY) {
     return <DashboardCompany />;
+  }
+
+  if (currentUser.rolename === Role.ADMIN) {
+    return <DashboardAdmin />;
   }
 
   return (

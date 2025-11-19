@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
-import { LogOut, UserCircle, Building2, Wallet, PackagePlus, Save, Loader2, FileText, Users, CheckCircle, XCircle, CreditCard, Star, MessageSquare } from 'lucide-react';
+import { LogOut, UserCircle, Building2, Wallet, PackagePlus, Save, Loader2, FileText, Users, CheckCircle, XCircle, CreditCard, Star, MessageSquare, FileBarChart, Coins } from 'lucide-react';
 import { 
   getCompanyByUserId, createCompany, 
   getCompanyDetail, createOrUpdateCompanyDetail,
@@ -11,11 +11,11 @@ import {
   createPayment, createReview, getReviewByOrderId, getPaymentsByOrderId,
   getSmsCreditTransactions, createSmsCreditTransaction
 } from '../../services/userService';
-import { Company, CompanyDetail, CompanyType, WalletTransaction, Order, OrderStatus, OrderOffer, OfferStatus, SmsCreditTransaction } from '../../types';
+import { Company, CompanyDetail, CompanyType, WalletTransaction, Order, OrderStatus, OrderOffer, OfferStatus, SmsCreditTransaction, PaymentDriver, DriverReview } from '../../types';
 
 export const DashboardCompany: React.FC = () => {
   const { currentUser, logout } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'PROFILE' | 'ORDERS' | 'WALLET'>('PROFILE');
+  const [activeTab, setActiveTab] = useState<'PROFILE' | 'ORDERS' | 'WALLET' | 'REPORTS'>('PROFILE');
   const [loading, setLoading] = useState(false);
   const [initLoading, setInitLoading] = useState(true);
 
@@ -26,6 +26,10 @@ export const DashboardCompany: React.FC = () => {
   const [smsTransactions, setSmsTransactions] = useState<SmsCreditTransaction[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   
+  // Reporting Data Helpers
+  const [allPayments, setAllPayments] = useState<PaymentDriver[]>([]);
+  const [orderReviews, setOrderReviews] = useState<Record<string, DriverReview>>({});
+
   // Interactions State
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [orderOffers, setOrderOffers] = useState<OrderOffer[]>([]);
@@ -69,6 +73,19 @@ export const DashboardCompany: React.FC = () => {
 
                 const ords = await getCompanyOrders(comp.id);
                 setOrders(ords);
+
+                // Load report data on init for simplicity (could be lazy loaded)
+                const allPays: PaymentDriver[] = [];
+                const reviewsMap: Record<string, DriverReview> = {};
+                
+                for (const o of ords) {
+                    const pays = await getPaymentsByOrderId(o.id);
+                    allPays.push(...pays);
+                    const revs = await getReviewByOrderId(o.id);
+                    if (revs.length > 0) reviewsMap[o.id] = revs[0];
+                }
+                setAllPayments(allPays);
+                setOrderReviews(reviewsMap);
             }
         } catch (e) {
             console.error(e);
@@ -192,7 +209,7 @@ export const DashboardCompany: React.FC = () => {
       if (!order.driverID) return;
       setLoading(true);
       try {
-          await createPayment({
+          const newPay = await createPayment({
               orderID: order.id,
               driverID: order.driverID,
               amount: Number(paymentForm.amount),
@@ -203,6 +220,7 @@ export const DashboardCompany: React.FC = () => {
               day: Number(paymentForm.day),
               date: new Date().toISOString()
           });
+          setAllPayments(prev => [...prev, newPay]);
           alert('پرداخت ثبت شد');
           setPaymentForm({ amount: '', type: 'BANK', code: '', year: '1403', month: '01', day: '01' });
       } catch (e) { alert('خطا در ثبت پرداخت'); } 
@@ -213,7 +231,7 @@ export const DashboardCompany: React.FC = () => {
       if (!company.id || !order.driverID) return;
       setLoading(true);
       try {
-          await createReview({
+          const rev = await createReview({
               orderID: order.id,
               driverID: order.driverID,
               companyID: company.id,
@@ -222,6 +240,7 @@ export const DashboardCompany: React.FC = () => {
               strengths: reviewForm.strengths.split(',').map(s => s.trim()),
               weaknesses: reviewForm.weaknesses.split(',').map(s => s.trim())
           });
+          setOrderReviews(prev => ({ ...prev, [order.id]: rev }));
           
           if (order.status !== OrderStatus.FINISHED) {
               const updated = await updateOrder(order.id, { status: OrderStatus.FINISHED });
@@ -274,6 +293,7 @@ export const DashboardCompany: React.FC = () => {
 
   const walletBalance = transactions.reduce((acc, curr) => acc + curr.balance_change, 0);
   const smsBalance = smsTransactions.reduce((acc, curr) => acc + curr.amount, 0);
+  const totalExpenses = allPayments.reduce((acc, curr) => acc + curr.amount, 0);
 
   if (!currentUser) return null;
   if (initLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-blue-600" size={48}/></div>;
@@ -321,6 +341,12 @@ export const DashboardCompany: React.FC = () => {
                 className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'WALLET' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
             >
                 <Wallet size={18} /> کیف پول
+            </button>
+            <button 
+                onClick={() => setActiveTab('REPORTS')}
+                className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'REPORTS' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+            >
+                <FileBarChart size={18} /> گزارشات
             </button>
         </div>
       </div>
@@ -583,6 +609,60 @@ export const DashboardCompany: React.FC = () => {
                             </div>
                         ))}
                          {transactions.length === 0 && <p className="text-center text-gray-500">تراکنشی یافت نشد.</p>}
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* REPORTS TAB */}
+        {activeTab === 'REPORTS' && (
+            <div className="space-y-8">
+                {/* Stats */}
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-red-500">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <p className="text-gray-500 mb-2 font-bold">کل پرداختی به رانندگان</p>
+                                <h3 className="text-3xl font-bold text-red-600 dir-ltr">{totalExpenses.toLocaleString()} <span className="text-sm text-gray-500">ریال</span></h3>
+                            </div>
+                            <div className="bg-red-50 p-3 rounded-lg text-red-600"><Coins size={24}/></div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Orders Report */}
+                <div className="bg-white rounded-xl shadow-sm">
+                    <div className="p-4 border-b font-bold text-gray-800 flex items-center gap-2">
+                        <FileBarChart size={18} className="text-blue-500"/> وضعیت و نظرات سفارشات
+                    </div>
+                    <div className="divide-y">
+                        {orders.slice().reverse().map(order => {
+                            const rev = orderReviews[order.id];
+                            return (
+                                <div key={order.id} className="p-4">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <div>
+                                            <h4 className="font-bold text-gray-800">{order.goodType}</h4>
+                                            <p className="text-sm text-gray-500">{order.originCity} به {order.destinationCity}</p>
+                                        </div>
+                                        <span className={`px-2 py-1 rounded text-xs font-bold ${order.status === OrderStatus.FINISHED ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                                            {order.status}
+                                        </span>
+                                    </div>
+                                    {rev ? (
+                                        <div className="bg-gray-50 p-3 rounded-lg text-sm mt-2">
+                                            <div className="flex text-yellow-500 mb-1">{'★'.repeat(rev.stars)}<span className="text-gray-300">{'★'.repeat(5 - rev.stars)}</span></div>
+                                            <p className="text-gray-700">{rev.commentText}</p>
+                                            {rev.strengths.length > 0 && <p className="text-xs text-green-600 mt-1">قوت: {rev.strengths.join('، ')}</p>}
+                                            {rev.weaknesses.length > 0 && <p className="text-xs text-red-500 mt-1">ضعف: {rev.weaknesses.join('، ')}</p>}
+                                        </div>
+                                    ) : (
+                                        <p className="text-xs text-gray-400 mt-2">نظری ثبت نشده است</p>
+                                    )}
+                                </div>
+                            );
+                        })}
+                        {orders.length === 0 && <div className="p-8 text-center text-gray-500">داده‌ای موجود نیست</div>}
                     </div>
                 </div>
             </div>

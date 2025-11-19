@@ -219,6 +219,11 @@ export const getPaymentsByOrderId = async (orderID: string): Promise<PaymentDriv
     return response.data;
 };
 
+export const getPaymentsByDriverId = async (driverID: string): Promise<PaymentDriver[]> => {
+  const response = await axios.get(`${API_URL}/paymentDrivers?driverID=${driverID}`);
+  return response.data;
+}
+
 export const createReview = async (reviewData: Omit<DriverReview, 'id' | 'createdAt'>): Promise<DriverReview> => {
     const response = await axios.post(`${API_URL}/driverReviews`, {
         ...reviewData,
@@ -231,4 +236,36 @@ export const createReview = async (reviewData: Omit<DriverReview, 'id' | 'create
 export const getReviewByOrderId = async (orderID: string): Promise<DriverReview[]> => {
     const response = await axios.get(`${API_URL}/driverReviews?orderID=${orderID}`);
     return response.data;
+};
+
+
+// --- ADMIN & REPORTING API ---
+export const getAllUsers = async (): Promise<User[]> => {
+  const response = await axios.get(`${API_URL}/users`);
+  return response.data;
+};
+
+export const getAllDrivers = async (): Promise<Driver[]> => {
+  const response = await axios.get(`${API_URL}/drivers`);
+  return response.data;
+};
+
+export const getAllDriverCars = async (): Promise<DriverCar[]> => {
+  const response = await axios.get(`${API_URL}/driverCars`);
+  return response.data;
+};
+
+export const getAllCompanies = async (): Promise<Company[]> => {
+  const response = await axios.get(`${API_URL}/companies`);
+  return response.data;
+};
+
+export const getAllOrders = async (): Promise<Order[]> => {
+  const response = await axios.get(`${API_URL}/orders`);
+  return response.data;
+};
+
+export const getAllPayments = async (): Promise<PaymentDriver[]> => {
+  const response = await axios.get(`${API_URL}/paymentDrivers`);
+  return response.data;
 };
