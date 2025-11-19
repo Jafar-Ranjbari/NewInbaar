@@ -20,6 +20,13 @@
       "password": "123",
       "rolename": "ADMIN",
       "mobile": "111"
+    },
+    {
+      "id": "0725",
+      "fullName": "راننده چهارم",
+      "password": "123",
+      "rolename": "DRIVER",
+      "mobile": "444"
     }
   ],
   "drivers": [
@@ -32,6 +39,16 @@
       "province": "تهران",
       "city": "سشطس",
       "shebaNumber": "88ع88998898"
+    },
+    {
+      "id": "1763575714329",
+      "userID": "0725",
+      "mobile1": "444",
+      "firstName": "راننده  چهارم",
+      "lastName": "چهارم",
+      "province": "تبریز",
+      "city": "هطننطزئ",
+      "shebaNumber": "444444444444444444"
     }
   ],
   "driverCars": [
@@ -44,6 +61,16 @@
       "driverID": "1763561536267",
       "createdAt": "2025-11-19T14:12:33.300Z",
       "updatedAt": "2025-11-19T14:12:33.300Z"
+    },
+    {
+      "id": "c18suai69",
+      "vehicleType": "TRAILER",
+      "carModel": "سشطس",
+      "licensePlate": "4444444-ییی-222",
+      "loadCapacity": "50",
+      "driverID": "1763575714329",
+      "createdAt": "2025-11-19T18:08:55.472Z",
+      "updatedAt": "2025-11-19T18:08:55.472Z"
     }
   ],
   "walletDrivers": [
@@ -78,6 +105,46 @@
       "orders_change": 0,
       "description": "خرید بسته ۵۰ تایی پیامک",
       "timestamp": "2025-11-19T15:25:02.975Z"
+    },
+    {
+      "id": "12379jpc7",
+      "ownerID": "1763575714329",
+      "balance_change": 50000,
+      "orders_change": 0,
+      "description": "هدیه اولین ورود",
+      "timestamp": "2025-11-19T18:08:35.749Z"
+    },
+    {
+      "id": "cld9rkqmm",
+      "ownerID": "1763575714329",
+      "balance_change": -50000,
+      "orders_change": 0,
+      "description": "کارمزد دریافت بار lll",
+      "timestamp": "2025-11-19T18:16:10.211Z"
+    },
+    {
+      "id": "jsms1lshm",
+      "ownerID": "1763575714329",
+      "balance_change": -50000,
+      "orders_change": 0,
+      "description": "کارمزد دریافت بار jj",
+      "timestamp": "2025-11-19T18:16:44.437Z"
+    },
+    {
+      "id": "bjz3fg15s",
+      "ownerID": "1763575714329",
+      "balance_change": 200000,
+      "orders_change": 0,
+      "description": "افزایش اعتبار",
+      "timestamp": "2025-11-19T18:18:26.743Z"
+    },
+    {
+      "id": "ql2pd0q29",
+      "ownerID": "1763575714329",
+      "balance_change": 100000,
+      "orders_change": 0,
+      "description": "افزایش اعتبار",
+      "timestamp": "2025-11-19T18:18:34.643Z"
     }
   ],
   "companies": [
@@ -151,6 +218,22 @@
       "orders_change": 0,
       "description": "کارمزد تخصیص سفارش lkkl",
       "timestamp": "2025-11-19T15:22:31.442Z"
+    },
+    {
+      "id": "0c9upri31",
+      "ownerID": "1763561663382",
+      "balance_change": -50000,
+      "orders_change": 0,
+      "description": "کارمزد تخصیص سفارش lll",
+      "timestamp": "2025-11-19T18:16:10.142Z"
+    },
+    {
+      "id": "7paizcoeg",
+      "ownerID": "1763561663382",
+      "balance_change": -50000,
+      "orders_change": 0,
+      "description": "کارمزد تخصیص سفارش jj",
+      "timestamp": "2025-11-19T18:16:44.366Z"
     }
   ],
   "orders": [
@@ -200,8 +283,9 @@
       "deliveryDate": "2025-11-25",
       "weight": 2,
       "companyID": "1763561663382",
-      "status": "NEW",
-      "createdAt": "2025-11-19T17:11:22.625Z"
+      "status": "DRIVER_ASSIGNED",
+      "createdAt": "2025-11-19T17:11:22.625Z",
+      "driverID": "1763575714329"
     },
     {
       "id": "bicfe83h3",
@@ -215,8 +299,9 @@
       "weight": 2,
       "deliveryDate": "2025-10-29",
       "companyID": "1763561663382",
-      "status": "NEW",
-      "createdAt": "2025-11-19T17:11:47.580Z"
+      "status": "DRIVER_ASSIGNED",
+      "createdAt": "2025-11-19T17:11:47.580Z",
+      "driverID": "1763575714329"
     }
   ],
   "orderOffers": [
@@ -241,6 +326,61 @@
       "driverName": "جعفر رنجیری",
       "state": "ACCEPTED",
       "date": "2025-11-19T15:22:16.218Z"
+    },
+    {
+      "id": "xk7zshhn0",
+      "driverID": "1763561536267",
+      "orderID": "s1nes1r0i",
+      "price": 4444444,
+      "commentDriver": "",
+      "deliveryEstimateTime": "4",
+      "driverName": "جعفر رنجیری",
+      "state": "REJECTED",
+      "date": "2025-11-19T17:56:34.721Z"
+    },
+    {
+      "id": "46m4qe58s",
+      "driverID": "1763561536267",
+      "orderID": "bicfe83h3",
+      "price": 33333333,
+      "commentDriver": "",
+      "deliveryEstimateTime": "4",
+      "driverName": "جعفر رنجیری",
+      "state": "REJECTED",
+      "date": "2025-11-19T17:57:18.535Z"
+    },
+    {
+      "id": "xexx8lp5k",
+      "driverID": "1763575714329",
+      "orderID": "t5v1swp2v",
+      "price": 2132222,
+      "commentDriver": "",
+      "deliveryEstimateTime": "3",
+      "driverName": "راننده  چهارم چهارم",
+      "state": "PENDING",
+      "date": "2025-11-19T18:09:12.926Z"
+    },
+    {
+      "id": "p5msr1geb",
+      "driverID": "1763575714329",
+      "orderID": "s1nes1r0i",
+      "price": 10000000,
+      "commentDriver": "",
+      "deliveryEstimateTime": "4",
+      "driverName": "راننده  چهارم چهارم",
+      "state": "ACCEPTED",
+      "date": "2025-11-19T18:10:13.165Z"
+    },
+    {
+      "id": "25pseshbb",
+      "driverID": "1763575714329",
+      "orderID": "bicfe83h3",
+      "price": 500000,
+      "commentDriver": "",
+      "deliveryEstimateTime": "3",
+      "driverName": "راننده  چهارم چهارم",
+      "state": "ACCEPTED",
+      "date": "2025-11-19T18:11:41.717Z"
     }
   ],
   "driverReviews": [
@@ -260,7 +400,21 @@
       "createdAt": "2025-11-19T15:24:21.767Z"
     }
   ],
-  "paymentDrivers": [],
+  "paymentDrivers": [
+    {
+      "id": "chw8sjkb8",
+      "orderID": "cgvvv73id",
+      "driverID": "1763561536267",
+      "amount": 1000000,
+      "payType": "CASH",
+      "transactionCode": "123213",
+      "year": 1403,
+      "month": 1,
+      "day": 1,
+      "date": "2025-11-19T17:53:44.596Z",
+      "createdAt": "2025-11-19T17:53:44.596Z"
+    }
+  ],
   "smsCreditTransactions": [
     {
       "id": "xn70zi1t8",
