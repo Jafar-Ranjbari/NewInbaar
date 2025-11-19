@@ -10,23 +10,102 @@
     {
       "id": "2",
       "fullName": "شرکت حمل و نقل سریع",
-      "password": "1234",
+      "password": "123",
       "rolename": "COMPANY",
       "mobile": "09122222222"
+    }
+  ],
+  "drivers": [
+    {
+      "id": "1763561536267",
+      "userID": "1",
+      "mobile1": "09121111111",
+      "firstName": "جعفر",
+      "lastName": "رنجیری",
+      "province": "تهران",
+      "city": "سشطس",
+      "shebaNumber": "88ع88998898"
+    }
+  ],
+  "driverCars": [
+    {
+      "id": "21vzbrlod",
+      "vehicleType": "PICKUP",
+      "carModel": "اریسان",
+      "licensePlate": "9ع909099",
+      "loadCapacity": "200",
+      "driverID": "1763561536267",
+      "createdAt": "2025-11-19T14:12:33.300Z",
+      "updatedAt": "2025-11-19T14:12:33.300Z"
+    }
+  ],
+  "walletDrivers": [
+    {
+      "id": "q4a35fxej",
+      "ownerID": "1763561536267",
+      "balance_change": 50000,
+      "orders_change": 0,
+      "description": "هدیه اولین ورود",
+      "timestamp": "2025-11-19T14:12:17.988Z"
     },
     {
-      "id": "5601",
-      "fullName": "تایماز رنجبری",
-      "password": "123",
-      "rolename": "COMPANY",
-      "mobile": "09011614416"
-    },
+      "id": "dvh7ggjmp",
+      "ownerID": "1763561536267",
+      "balance_change": 100000,
+      "orders_change": 0,
+      "description": "افزایش اعتبار",
+      "timestamp": "2025-11-19T14:12:42.221Z"
+    }
+  ],
+  "companies": [
     {
-      "id": "bf31",
-      "fullName": "سیمین زندی",
-      "password": "123",
-      "rolename": "DRIVER",
-      "mobile": "09395440477"
+      "id": "1763561663382",
+      "userID": "2",
+      "type": "REAL"
+    }
+  ],
+  "companyDetails": [
+    {
+      "id": "76kydx8lk",
+      "brandName": "شرکت  تهران  گشتر",
+      "repFirstName": "ناینده",
+      "repLastName": "نام شرکت",
+      "repMobile1": "09877333",
+      "province": "تهران",
+      "city": "کرج",
+      "real_nationalId": "908098090",
+      "real_socialSecurityCode": "9890",
+      "companyID": "1763561663382",
+      "createdAt": "2025-11-19T14:14:23.480Z",
+      "updatedAt": "2025-11-19T14:14:23.480Z"
+    }
+  ],
+  "walletCompanies": [
+    {
+      "id": "ny8o4cofs",
+      "ownerID": "1763561663382",
+      "balance_change": 100000,
+      "orders_change": 0,
+      "description": "هدیه اولین ورود",
+      "timestamp": "2025-11-19T14:14:23.432Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "cgvvv73id",
+      "weightType": "TON",
+      "goodType": "صابون",
+      "originProvince": "تهران",
+      "originCity": "تبریز",
+      "destinationProvince": "تبریز",
+      "destinationCity": "هشترود",
+      "receiverName": "حسن  روحانی",
+      "expectedPriceRange": "",
+      "deliveryDate": "2025-11-20",
+      "weight": 5,
+      "companyID": "1763561663382",
+      "status": "NEW",
+      "createdAt": "2025-11-19T14:16:39.582Z"
     }
   ]
 }
