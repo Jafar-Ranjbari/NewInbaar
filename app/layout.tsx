@@ -38,9 +38,7 @@ export default function RootLayout({
 
       <body className="font-[var(--font-iransans)] bg-[#000516] text-white overflow-x-hidden">
         <QueryClientProvider client={queryClient}>
-          <Header />
           {children}
-          <Footer />
           <InstallPrompt /> {/* 👈 Suggests install on mobile */}
         </QueryClientProvider>
       </body>
