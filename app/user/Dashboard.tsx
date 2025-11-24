@@ -2,7 +2,8 @@
 import React from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Role } from '../types';
-import { DashboardDriver } from './DashboardDriver';
+import { DashboardDriver } from './../driver/DashboardDriver';
+// import { DashboardDriver } from './DashboardDriver';
 import { DashboardCompany } from './DashboardCompany';
 import { DashboardAdmin } from './DashboardAdmin';
 

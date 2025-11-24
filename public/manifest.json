@@ -1,7 +1,7 @@
 {
-  "name": "آپشن",
-  "short_name": "آپشن",
-  "description": "میتونی  پول دربیاری  ",
+  "name": "inbaar",
+  "short_name": "inbaar",
+  "description": "مدیریت  حمل  ونقل",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0b1d48",
