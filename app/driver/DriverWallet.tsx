@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { WalletTransaction, SmsCreditTransaction } from '../../../types';
+import { WalletTransaction, SmsCreditTransaction } from '../types';
 import { getDriverWalletTransactions, createDriverWalletTransaction, getSmsCreditTransactions, createSmsCreditTransaction } from './driverService';
 import { Wallet, MessageSquare } from 'lucide-react';
 

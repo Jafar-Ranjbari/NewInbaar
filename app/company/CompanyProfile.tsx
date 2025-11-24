@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Company, CompanyDetail, CompanyType } from '../../../types';
+import { Company, CompanyDetail, CompanyType } from '../types';
 import { getCompanyDetail, createOrUpdateCompanyDetail } from './companyService';
 import { Building2, Loader2 } from 'lucide-react';
 

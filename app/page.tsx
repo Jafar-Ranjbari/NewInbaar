@@ -254,8 +254,8 @@ const App: React.FC = () => {
               ))}
             </nav>
             <div className="hidden md:block">
-              <Link href="/loginUser/admin" className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-base font-medium rounded-full text-white bg-black hover:bg-gray-800">
-                Admin &rarr;
+              <Link href="#" className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-base font-medium rounded-full text-white bg-black hover:bg-gray-800">
+                شماره  تماس .... &rarr;
               </Link>
             </div>
             <div className="md:hidden">

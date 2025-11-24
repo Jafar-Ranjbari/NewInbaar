@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useAuthStore } from '../../../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { getAllUsers, getAllDrivers, getAllOrders, getAllPayments, getAllDriverCars } from './adminService';
 import { BarChart3, LogOut, Search, Users as UsersIcon } from 'lucide-react';
 

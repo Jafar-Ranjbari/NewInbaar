@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { PaymentDriver, OrderOffer, OfferStatus } from '../../../types';
+import { PaymentDriver, OrderOffer, OfferStatus } from '../types';
 import { getPaymentsByDriverId, getOffersByDriverId } from './driverService';
 import { CreditCard, ClipboardList, FileBarChart, TrendingUp } from 'lucide-react';
 

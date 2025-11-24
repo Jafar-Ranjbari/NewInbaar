@@ -1,9 +1,9 @@
 
 import React, { useEffect, useState } from 'react';
-import { useAuthStore } from '../../../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { LogOut, Truck, User as UserIcon, Wallet, Search, FileBarChart } from 'lucide-react';
 import { getDriverByUserId } from './driverService';
-import { Driver } from '../../../types';
+import { Driver } from '../types';
 import { DriverProfile } from './DriverProfile';
 import { DriverCarTab } from './DriverCar';
 import { CargoHall } from './CargoHall';

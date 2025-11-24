@@ -1,7 +1,7 @@
 
 import axios from 'axios';
-import { API_URL } from '../../../constants';
-import { Company, CompanyDetail, CompanyType, Order, OrderOffer, PaymentDriver, DriverReview, SmsCreditTransaction, WalletTransaction, OrderStatus, OfferStatus } from '../../../types';
+import { API_URL } from '../constants';
+import { Company, CompanyDetail, CompanyType, Order, OrderOffer, PaymentDriver, DriverReview, SmsCreditTransaction, WalletTransaction, OrderStatus, OfferStatus } from '../types';
 
 // Profile
 export const getCompanyByUserId = async (userId: string): Promise<Company | null> => {

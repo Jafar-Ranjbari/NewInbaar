@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Order, OrderOffer } from '../../../types';
+import { Order, OrderOffer } from '../types';
 import { getAllOpenOrders, createOrderOffer, getOffersByDriverId } from './driverService';
 import { MapPin, Clock, DollarSign, Send, Loader2, Search, X, Filter } from 'lucide-react';
 

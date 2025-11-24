@@ -18,7 +18,7 @@ const HeroSectionLanding: React.FC = () => {
           <div className="lg:w-1/2 flex justify-center lg:justify-start mb-8 lg:mb-0">
             <img
               src={heroImageUrl}
-              alt="Crypto trading app on mobile phones"
+              alt="inbaar trading app on mobile phones"
               className="w-56 h-56 sm:w-72 sm:h-72 lg:w-full lg:h-auto lg:max-w-3xl 
                          rounded-full lg:rounded-none object-cover shadow-lg transition-all duration-300"
             />
@@ -27,15 +27,14 @@ const HeroSectionLanding: React.FC = () => {
           {/* Text Content */}
           <div className="lg:w-[45%] text-center lg:text-right">
             <span className="text-blue-400 text-sm font-semibold mb-4 block">
-              اپلیکیشن موبایل جدید آپشن
+              اپلیکیشن موبایل جدید  inbaar
             </span>
             <h1 className="text-2xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 text-white">
-              در حال حرکت تجارت کریپتو
+              در حال حرکت    
             </h1>
             <p className="text-gray-300 text-base md:text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
-              از قدرت صرافی ارز دیجیتال آپشن در نوک انگشتان خود لذت ببرید. 
-              آپشن‌ها، معاملات آتی و قراردادهای دائمی را در هر کجا که هستید معامله کنید. 
-              همین حالا برنامه آپشن را دانلود کنید!
+               inbaar
+              همین حالا برنامه این  بار  را دانلود کنید!
             </p>
 
             <div className="flex justify-center lg:justify-start items-center space-x-4 space-x-reverse">

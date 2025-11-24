@@ -1,7 +1,7 @@
 
 import axios from 'axios';
-import { API_URL } from '../../../constants';
-import { Driver, DriverCar, WalletTransaction, SmsCreditTransaction, Order, OrderOffer, PaymentDriver, OfferStatus, OrderStatus } from '../../../types';
+import { API_URL } from '../constants';
+import { Driver, DriverCar, WalletTransaction, SmsCreditTransaction, Order, OrderOffer, PaymentDriver, OfferStatus, OrderStatus } from '../types';
 
 // Driver Profile
 export const getDriverByUserId = async (userId: string): Promise<Driver | null> => {

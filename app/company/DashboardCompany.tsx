@@ -1,9 +1,9 @@
 
 import React, { useEffect, useState } from 'react';
-import { useAuthStore } from '../../../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { LogOut, Building2, UserCircle, PackagePlus, Wallet, FileBarChart } from 'lucide-react';
 import { getCompanyByUserId, createCompany, createCompanyWalletTransaction } from './companyService';
-import { Company, CompanyType } from '../../../types';
+import { Company, CompanyType } from '../types';
 import { CompanyProfile } from './CompanyProfile';
 import { OrderManagement } from './OrderManagement';
 import { CompanyWallet } from './CompanyWallet';

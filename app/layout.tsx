@@ -2,8 +2,6 @@
 
 import "./globals.css";
 import localFont from "next/font/local";
-import Header from "./landing/Header";
-import Footer from "./landing/Footer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import InstallPrompt from "./components/tools/pwa/InstallPrompt";

@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { DriverCar } from '../../../types';
+import { DriverCar } from '../types';
 import { getCarByDriverId, createOrUpdateCar } from './driverService';
 import { Truck, Save, Loader2 } from 'lucide-react';
 

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getCompanyWalletTransactions, createCompanyWalletTransaction, getSmsCreditTransactions, createSmsCreditTransaction } from './companyService';
-import { WalletTransaction, SmsCreditTransaction } from '../../../types';
+import { WalletTransaction, SmsCreditTransaction } from '../types';
 import { Wallet, MessageSquare } from 'lucide-react';
 
 interface Props { companyID?: string; userID?: string; }

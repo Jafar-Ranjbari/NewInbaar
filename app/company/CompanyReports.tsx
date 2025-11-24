@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getCompanyOrders, getPaymentsByOrderId } from './companyService';
-import { Order, PaymentDriver } from '../../../types';
+import { Order, PaymentDriver } from '../types';
 
 interface Props { companyID?: string; }
 

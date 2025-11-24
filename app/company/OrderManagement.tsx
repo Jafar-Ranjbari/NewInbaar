@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Order, OrderOffer, OrderStatus, OfferStatus } from '../../../types';
+import { Order, OrderOffer, OrderStatus, OfferStatus } from '../types';
 import { getCompanyOrders, createOrder, getOffersByOrderId, updateOfferStatus, updateOrder, createCompanyWalletTransaction, createDriverWalletTransaction, createPayment, createReview } from './companyService';
 import { PackagePlus, FileText, Users, CheckCircle, XCircle, CreditCard, Star, Loader2 } from 'lucide-react';
 

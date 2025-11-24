@@ -1,7 +1,7 @@
 
 import axios from 'axios';
-import { API_URL } from '../../../constants';
-import { User, Driver, DriverCar, Company, Order, PaymentDriver } from '../../../types';
+import { API_URL } from '../constants';
+import { User, Driver, DriverCar, Company, Order, PaymentDriver } from '../types';
 
 export const getAllUsers = async (): Promise<User[]> => {
   const response = await axios.get(`${API_URL}/users`);
