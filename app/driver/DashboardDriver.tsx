@@ -38,7 +38,7 @@ export const DashboardDriver: React.FC = () => {
 
   if (!currentUser) return null;
   
-  const { walletBalance, totalIncome, myOffers } = useDriverDashboardData();
+  const { walletBalance, totalIncome, myOffers, car } = useDriverDashboardData();
   const myoffereLength = myOffers.filter(c => c.state != "REJECTED").length;
 
   // -------------------- Top Header --------------------
@@ -59,7 +59,7 @@ export const DashboardDriver: React.FC = () => {
           <FaUserCircle className="text-5xl text-gray-400" />
           <div>
             <p className="font-bold text-gray-800">    خوش آمدی  {currentUser.fullName}    </p>
-            {/* <p className="text-sm text-gray-500">پیکان وانت</p> */}
+            <p className="text-sm text-gray-500"> {car.carModel} </p>
           </div>
         </div>
         <button className="text-gray-600">

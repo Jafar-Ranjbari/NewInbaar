@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState, useCallback } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import {
@@ -5,11 +6,7 @@ import {
   getAllOpenOrders, getOffersByDriverId, getSmsCreditTransactions, getPaymentsByDriverId
 } from '../services/userService';
 import { Driver, DriverCar, WalletTransaction, Order, OrderOffer, SmsCreditTransaction, PaymentDriver } from '../types';
-
-/**
- * Custom hook to initialize all essential data for the Driver Dashboard.
- * It automatically uses the current user from useAuthStore.
- */
+ 
 export const useDriverDashboardData = () => {
   const { currentUser } = useAuthStore();
   const [initLoading, setInitLoading] = useState(true);
