@@ -223,6 +223,38 @@
       "orders_change": 0,
       "description": "افزایش اعتبار",
       "timestamp": "2025-11-27T15:04:01.180Z"
+    },
+    {
+      "id": "y29ykwrbq",
+      "ownerID": "1763561536267",
+      "balance_change": 4500000,
+      "orders_change": 0,
+      "description": "افزایش اعتبار",
+      "timestamp": "2025-11-27T15:10:11.573Z"
+    },
+    {
+      "id": "2gor4de7h",
+      "ownerID": "1763561536267",
+      "balance_change": -50000,
+      "orders_change": 0,
+      "description": "خرید بسته پیامک",
+      "timestamp": "2025-11-27T15:31:26.093Z"
+    },
+    {
+      "id": "va2a5jd63",
+      "ownerID": "1763561536267",
+      "balance_change": -300000,
+      "orders_change": 0,
+      "description": "خرید بسته پیامک",
+      "timestamp": "2025-11-27T16:22:14.085Z"
+    },
+    {
+      "id": "v28dws3xn",
+      "ownerID": "1763561536267",
+      "balance_change": -300000,
+      "orders_change": 0,
+      "description": "خرید بسته پیامک",
+      "timestamp": "2025-11-27T16:26:53.542Z"
     }
   ],
   "companies": [
@@ -657,6 +689,30 @@
       "cost": 50000,
       "description": "خرید بسته افزایشی",
       "timestamp": "2025-11-27T14:37:11.295Z"
+    },
+    {
+      "id": "fup2h59y3",
+      "userID": "1",
+      "amount": 50,
+      "cost": 50000,
+      "description": "خرید بسته افزایشی",
+      "timestamp": "2025-11-27T15:31:26.234Z"
+    },
+    {
+      "id": "6h7vuikv4",
+      "userID": "1",
+      "amount": 50,
+      "cost": 300000,
+      "description": "خرید بسته افزایشی",
+      "timestamp": "2025-11-27T16:22:14.115Z"
+    },
+    {
+      "id": "n5481qim4",
+      "userID": "1",
+      "amount": 50,
+      "cost": 300000,
+      "description": "خرید بسته افزایشی",
+      "timestamp": "2025-11-27T16:26:53.586Z"
     }
   ]
 }
