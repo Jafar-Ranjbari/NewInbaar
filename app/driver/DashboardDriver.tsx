@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link'; // ایمپورت لینک برای Next.js
+import Link from 'next/link';
 import { useAuthStore } from '../store/useAuthStore';
-import {  UserCircle, PackagePlus, Wallet, FileBarChart, ArrowLeft } from 'lucide-react';
+import { UserCircle, PackagePlus, Wallet, FileBarChart, ArrowLeft } from 'lucide-react';
 import { Company, CompanyType } from '../types';
 import { getCompanyByUserId, createCompany, createCompanyWalletTransaction } from '../company/companyService';
 import { IoNotificationsOutline } from "react-icons/io5";
@@ -37,9 +37,9 @@ export const DashboardDriver: React.FC = () => {
   }, [currentUser]);
 
   if (!currentUser) return null;
-
-  const { walletBalance ,totalIncome } = useDriverDashboardData();
- 
+  
+  const { walletBalance, totalIncome, myOffers } = useDriverDashboardData();
+  const myoffereLength = myOffers.filter(c => c.state != "REJECTED").length;
 
   // -------------------- Top Header --------------------
   const TopHeader = () => (
@@ -59,7 +59,7 @@ export const DashboardDriver: React.FC = () => {
           <FaUserCircle className="text-5xl text-gray-400" />
           <div>
             <p className="font-bold text-gray-800">    خوش آمدی  {currentUser.fullName}    </p>
-            <p className="text-sm text-gray-500">پیکان وانت</p>
+            {/* <p className="text-sm text-gray-500">پیکان وانت</p> */}
           </div>
         </div>
         <button className="text-gray-600">
@@ -76,7 +76,7 @@ export const DashboardDriver: React.FC = () => {
       <div className="absolute left-4 -bottom-16 w-36 h-36 bg-white/10 rounded-full"></div>
       <div className="z-10 flex flex-col items-center justify-center gap-2">
         <Link
-          href="/driver/wallet"
+          href="/driver/driverWallet"
           className="bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg"
         >
           <FaPlus className="text-blue-500 text-xl" />
@@ -103,7 +103,7 @@ export const DashboardDriver: React.FC = () => {
             <FaTruck className="text-blue-500" />
           </div>
         </div>
-        <p className="text-2xl font-bold text-right mt-4">۰</p>
+        <p className="text-2xl font-bold text-right mt-4">{myoffereLength.toLocaleString()}</p>
       </div>
       <div className="bg-white rounded-xl shadow-sm p-4">
         <div className="flex justify-between items-start">
@@ -249,44 +249,6 @@ export const DashboardDriver: React.FC = () => {
   ];
 
   return (
-    //  <div className="min-h-screen bg-gray-50">
-    //    {/* Header */}
-    //    <header className="bg-white shadow-sm border-b border-blue-500 sticky top-0 z-10">
-    //      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-    //        <div className="flex items-center gap-3">
-    //          <div className="p-2 rounded-lg bg-blue-100 text-blue-600"><Building2 size={24} /></div>
-    //          <h1 className="text-lg font-bold text-gray-800 hidden sm:block">پنل شرکت‌ها</h1>
-    //        </div>
-    //        <button onClick={logout} className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors">
-    //          <LogOut size={20} />
-    //        </button>
-    //      </div>
-    //    </header>
-
-    //    <main className="max-w-5xl mx-auto px-4 py-10">
-    //      {loading ? (
-    //        <div className="text-center py-20 text-gray-500">در حال بارگذاری اطلاعات...</div>
-    //      ) : (
-    //        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    //          {menuItems.map((item, index) => (
-    //            <Link key={index} href={item.href} className="group">
-    //              <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md border border-gray-100 transition-all duration-200 h-full flex flex-col items-center justify-center gap-4 cursor-pointer group-hover:-translate-y-1">
-    //                <div className={`p-4 rounded-full ${item.color} transition-transform group-hover:scale-110`}>
-    //                  {item.icon}
-    //                </div>
-    //                <span className="font-bold text-gray-700 text-lg group-hover:text-blue-600">
-    //                  {item.title}
-    //                </span>
-    //                <div className="text-xs text-gray-400 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-    //                  ورود به بخش <ArrowLeft size={12} />
-    //                </div>
-    //              </div>
-    //            </Link>
-    //          ))}
-    //        </div>
-    //      )}
-    //    </main>
-    //  </div>
     <>
       <Homedriverpanel />
 

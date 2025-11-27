@@ -11,11 +11,11 @@ export const Dashboard: React.FC = () => {
   const { currentUser, logout } = useAuthStore();
 
   if (!currentUser) {
-      return (
-          <div className="min-h-screen flex items-center justify-center">
-              <button onClick={logout} className="text-red-500">نشست کاربری نامعتبر است. لطفا خارج شوید و دوباره وارد شوید.</button>
-          </div>
-      )
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <button onClick={logout} className="text-red-500">نشست کاربری نامعتبر است. لطفا خارج شوید و دوباره وارد شوید.</button>
+      </div>
+    )
   }
 
   if (currentUser.rolename === Role.DRIVER) {
@@ -32,8 +32,8 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-        <p>نقش کاربری ناشناخته است.</p>
-        <button onClick={logout} className="text-red-500 ml-4">خروج</button>
+      <p>نقش کاربری ناشناخته است.</p>
+      <button onClick={logout} className="text-red-500 ml-4">خروج</button>
     </div>
   );
 };
