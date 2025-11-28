@@ -34,6 +34,13 @@
       "password": "123",
       "rolename": "DRIVER",
       "mobile": "666"
+    },
+    {
+      "id": "5d21",
+      "fullName": "شرکت مهندس  فراهانی",
+      "password": "123",
+      "rolename": "COMPANY",
+      "mobile": "2222"
     }
   ],
   "drivers": [
@@ -310,12 +317,22 @@
       "id": "1764018333417",
       "userID": "0725",
       "type": "REAL"
+    },
+    {
+      "id": "1764354104836",
+      "userID": "5d21",
+      "type": "REAL"
+    },
+    {
+      "id": "1764354104843",
+      "userID": "5d21",
+      "type": "REAL"
     }
   ],
   "companyDetails": [
     {
       "id": "76kydx8lk",
-      "brandName": "شرکت  تهران  گشتر",
+      "brandName": "شرکت  تهران  جفعر",
       "repFirstName": "ناینده",
       "repLastName": "نام شرکت",
       "repMobile1": "09877333",
@@ -325,7 +342,7 @@
       "real_socialSecurityCode": "9890",
       "companyID": "1763561663382",
       "createdAt": "2025-11-19T14:14:23.480Z",
-      "updatedAt": "2025-11-19T14:14:23.480Z"
+      "updatedAt": "2025-11-28T19:39:47.272Z"
     }
   ],
   "walletCompanies": [
@@ -448,6 +465,38 @@
       "orders_change": 0,
       "description": "هدیه ورود",
       "timestamp": "2025-11-24T21:05:33.510Z"
+    },
+    {
+      "id": "zxgqcfqu2",
+      "ownerID": "1764354104843",
+      "balance_change": 100000,
+      "orders_change": 0,
+      "description": "هدیه اولین ورود",
+      "timestamp": "2025-11-28T18:21:44.879Z"
+    },
+    {
+      "id": "3divxu545",
+      "ownerID": "1764354104836",
+      "balance_change": 100000,
+      "orders_change": 0,
+      "description": "هدیه اولین ورود",
+      "timestamp": "2025-11-28T18:21:44.889Z"
+    },
+    {
+      "id": "b6ehpcygu",
+      "ownerID": "1763561663382",
+      "balance_change": -50000,
+      "orders_change": 0,
+      "description": "خرید بسته پیامک 50 تایی",
+      "timestamp": "2025-11-28T20:09:21.702Z"
+    },
+    {
+      "id": "yqngj1v91",
+      "ownerID": "1763561663382",
+      "balance_change": 100000,
+      "orders_change": 0,
+      "description": "شارژ آزمایشی",
+      "timestamp": "2025-11-28T20:09:37.621Z"
     }
   ],
   "orders": [

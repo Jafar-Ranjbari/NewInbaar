@@ -4,8 +4,10 @@ import { useAuthStore } from '../store/useAuthStore';
 import { Role } from '../types';
 import { DashboardDriver } from './../driver/DashboardDriver';
 // import { DashboardDriver } from './DashboardDriver';
-import { DashboardCompany } from './DashboardCompany';
+// import { DashboardCompany } from './DashboardCompany';
 import { DashboardAdmin } from './DashboardAdmin';
+import DashboardCompany from '../company/DashboardCompany';
+// import { DashboardCompany } from '../company/DashboardCompany';
 
 export const Dashboard: React.FC = () => {
   const { currentUser, logout } = useAuthStore();
