@@ -6,8 +6,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { useAuthStore } from '@/app/store/useAuthStore'; // مسیر استور خود را چک کنید
-// import { DriverProfile } from '@/DriverProfile'; // مسیر کامپوننت خود را چک کنید
-// import { getDriverByUserId } from '@/services/driverService'; // سرویس دریافت اطلاعات
 import { Driver } from '@/app/types';
 import { getDriverByUserId } from '../driverService';
 import { DriverProfile } from './DriverProfile';
@@ -55,7 +53,7 @@ export default function ProfilePage() {
         {/* دکمه بازگشت به داشبورد */}
         <div className="mb-6">
           <Link 
-            href="/auth" 
+            href="/driver/panelDriver" 
             className="inline-flex items-center text-gray-600 hover:text-blue-600 transition-colors"
           >
             <ArrowRight className="ml-2" size={20} />

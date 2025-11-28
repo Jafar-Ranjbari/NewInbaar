@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Driver } from '../../types';
-import { createOrUpdateDriver } from './../driverService';
+import { createOrUpdateDriver } from '../driverService';
 import { UserCircle, Save, Loader2 } from 'lucide-react';
 
 interface Props {

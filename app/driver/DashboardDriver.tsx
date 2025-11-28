@@ -166,7 +166,7 @@ export const DashboardDriver: React.FC = () => {
         <div className="flex justify-around items-center h-20 relative">
           {/* پروفایل */}
           <Link
-            href="/driver/profile"
+            href="/driver/panelDriver"
             className="flex flex-col items-center gap-1 text-gray-500 z-20 relative"
           >
             <FiUser size={24} />
