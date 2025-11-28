@@ -1,4 +1,4 @@
- 
+
 export enum Role {
   DRIVER = 'DRIVER',
   COMPANY = 'COMPANY',
@@ -16,7 +16,12 @@ export enum OrderStatus {
   DRIVER_ASSIGNED = 'DRIVER_ASSIGNED',
   DELIVERING = 'DELIVERING',
   FINISHED = 'FINISHED',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
+  ON_ROAD = 'ON_ROAD',
+  DRIVER_EN_ROUTE = 'DRIVER_EN_ROUTE',
+  DELIVERED = 'DELIVERED',
+  CANCELED = 'CANCELED'
+
 }
 
 export enum OfferStatus {
@@ -112,7 +117,7 @@ export interface Company {
 export interface CompanyDetail {
   id: string;
   companyID: string;
-  
+
   // Common
   brandName: string;
   province: string;
@@ -121,7 +126,7 @@ export interface CompanyDetail {
   postalCode: string;
   workHoursFrom: string;
   workHoursTo: string;
-  
+
   // Rep Info
   repFirstName: string;
   repLastName: string;
@@ -137,7 +142,7 @@ export interface CompanyDetail {
   real_lastName?: string;
   real_nationalId?: string;
   real_socialSecurityCode?: string;
-  
+
   // Legal
   legal_companyName?: string;
   legal_registrationNumber?: string;
@@ -215,7 +220,7 @@ export interface PaymentDriver {
 
 export enum AuthStep {
   PHONE_INPUT = 'PHONE_INPUT',
-  SMS_VERIFICATION ='SMS_VERIFICATION' ,
+  SMS_VERIFICATION = 'SMS_VERIFICATION',
   LOGIN_PASSWORD = 'LOGIN_PASSWORD',
   REGISTER = 'REGISTER',
   FORGOT_PASSWORD_SMS = 'FORGOT_PASSWORD_SMS',
@@ -229,7 +234,7 @@ export interface AuthState {
   currentStep: AuthStep;
   tempMobile: string;
   tempUser: User | null;
-  
+
   setStep: (step: AuthStep) => void;
   setTempMobile: (mobile: string) => void;
   setTempUser: (user: User | null) => void;
