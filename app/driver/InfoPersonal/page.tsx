@@ -19,7 +19,7 @@ export default function ProfilePage() {
   useEffect(() => {
     // اگر کاربر لاگین نبود، ریدارکت شود
     if (!currentUser) {
-      router.push('/login');
+      router.push('/auth');
       return;
     }
 
