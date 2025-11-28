@@ -107,7 +107,25 @@ export const createOrderOffer = async (offerData: Omit<OrderOffer, 'id' | 'date'
 };
 
 // Reports
+// export const getPaymentsByDriverId = async (driverID: string): Promise<PaymentDriver[]> => {
+//   const response = await axios.get(`${API_URL}/paymentDrivers?driverID=${driverID}`);
+//   return response.data;
+// };
+
+
+ 
 export const getPaymentsByDriverId = async (driverID: string): Promise<PaymentDriver[]> => {
-  const response = await axios.get(`${API_URL}/paymentDrivers?driverID=${driverID}`);
-  return response.data;
+    // در محیط واقعی این فراخوانی باید انجام شود:
+    // const response = await axios.get(`${API_URL}/paymentDrivers?driverID=${driverID}`);
+    // return response.data;
+    
+    // **داده‌های نمونه برای تست در اینجا قرار داده می‌شوند:**
+    return [
+        { id: "chw8sjkb8", orderID: "cgvvv73id", driverID: driverID, amount: 1000000, payType: "CASH", transactionCode: "123213", year: 1404, month: 3, day: 25, date: "2025-05-15T10:00:00.000Z", createdAt: "2025-05-15T10:00:00.000Z" },
+        { id: "chw8skb9", orderID: "cgvvv73ie", driverID: driverID, amount: 500000, payType: "ONLINE", transactionCode: "123214", year: 1404, month: 3, day: 24, date: "2025-05-14T10:00:00.000Z", createdAt: "2025-05-14T10:00:00.000Z" },
+        { id: "chw8skc0", orderID: "cgvvv73if", driverID: driverID, amount: 200000, payType: "CASH", transactionCode: "123215", year: 1404, month: 2, day: 15, date: "2025-04-05T10:00:00.000Z", createdAt: "2025-04-05T10:00:00.000Z" },
+        { id: "chw8skc1", orderID: "cgvvv73ig", driverID: driverID, amount: 1250000, payType: "ONLINE", transactionCode: "123216", year: 1404, month: 3, day: 25, date: "2025-05-15T11:00:00.000Z", createdAt: "2025-05-15T11:00:00.000Z" },
+        { id: "chw8skc2", orderID: "cgvvv73ih", driverID: driverID, amount: 800000, payType: "CASH", transactionCode: "123217", year: 1404, month: 3, day: 22, date: "2025-05-12T10:00:00.000Z", createdAt: "2025-05-12T10:00:00.000Z" },
+        { id: "chw8skc3", orderID: "cgvvv73ii", driverID: driverID, amount: 400000, payType: "CASH", transactionCode: "123218", year: 1403, month: 12, day: 10, date: "2025-03-01T10:00:00.000Z", createdAt: "2025-03-01T10:00:00.000Z" },
+    ] as PaymentDriver[];
 };

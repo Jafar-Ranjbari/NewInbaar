@@ -255,6 +255,14 @@
       "orders_change": 0,
       "description": "خرید بسته پیامک",
       "timestamp": "2025-11-27T16:26:53.542Z"
+    },
+    {
+      "id": "bu969j753",
+      "ownerID": "1763561536267",
+      "balance_change": 2500000,
+      "orders_change": 0,
+      "description": "افزایش اعتبار",
+      "timestamp": "2025-11-28T11:13:33.112Z"
     }
   ],
   "companies": [
@@ -631,7 +639,7 @@
       "transactionCode": "",
       "year": 1403,
       "month": 1,
-      "day": 1,
+      "day": 10,
       "date": "2025-11-19T19:30:16.039Z",
       "createdAt": "2025-11-19T19:30:16.039Z"
     },
@@ -656,11 +664,12 @@
       "payType": "BANK",
       "transactionCode": "",
       "year": 1403,
-      "month": 21,
+      "month": 12,
       "day": 1,
       "date": "2025-11-28T07:13:15.302Z",
       "createdAt": "2025-11-28T07:13:15.302Z"
     },
+    
     {
       "id": "jrttmb29k",
       "orderID": "cgvvv73id",
