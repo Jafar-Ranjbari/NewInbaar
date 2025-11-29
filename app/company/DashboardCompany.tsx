@@ -259,8 +259,8 @@ const DashboardCompany: React.FC = () => {
   // لینک‌های درخواستی
   const LINK_WALLET = "/company/CompanyWallet";
   const LINK_PROFILE = "/company/CompanyProfile";
-  const LINK_ORDERS = "/company/OrderManagement";
-  const LINK_CREATE_ORDER = "/company/OrderManagement"; // بار جدید هم به مدیریت سفارشات می‌رود
+  const LINK_ORDERS = "/company/order";
+  const LINK_ORDER_Managment = "/company/OrderManagement";
 
   return (
     <div dir="rtl" className="bg-gray-200 min-h-screen flex justify-center">
@@ -388,7 +388,7 @@ const DashboardCompany: React.FC = () => {
 
             {/* Add Order Button (Central Button) */}
             <CustomLink
-              href={LINK_CREATE_ORDER}
+              href={LINK_ORDERS}
               className="flex flex-col items-center -mt-8 transition duration-150 hover:scale-[1.05] active:scale-[0.95]"
             >
               <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-xl hover:bg-blue-700">
@@ -401,7 +401,7 @@ const DashboardCompany: React.FC = () => {
             <BottomNavItem icon={FiUser} label="پروفایل" href={LINK_PROFILE} />
             
             {/* Orders */}
-            <BottomNavItem icon={FiPackage} label="سفارشات" href={LINK_ORDERS} />
+            <BottomNavItem icon={FiPackage} label="سفارشات" href={LINK_ORDER_Managment} />
             
           </div>
         </footer>

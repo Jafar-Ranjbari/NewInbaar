@@ -207,11 +207,11 @@ export const DashboardDriver: React.FC = () => {
 
           {/* خانه */}
           <Link
-            href="/driver/Homedriverpanel"
+            href="/driver/orderReport"
             className="flex flex-col items-center gap-1 text-gray-900 font-bold z-20 relative"
           >
             <FiHome size={24} className="fill-current" />
-            <span className="text-xs">خانه</span>
+            <span className="text-xs">گزاش سفارش'</span>
           </Link>
         </div>
       </footer>

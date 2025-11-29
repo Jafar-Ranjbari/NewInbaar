@@ -497,6 +497,14 @@
       "orders_change": 0,
       "description": "شارژ آزمایشی",
       "timestamp": "2025-11-28T20:09:37.621Z"
+    },
+    {
+      "id": "j41o8knd6",
+      "ownerID": "1763561663382",
+      "balance_change": -50000,
+      "orders_change": 0,
+      "description": "کارمزد تخصیص راننده",
+      "timestamp": "2025-11-29T21:06:25.810Z"
     }
   ],
   "orders": [
@@ -546,7 +554,7 @@
       "deliveryDate": "2025-11-25",
       "weight": 2,
       "companyID": "1763561663382",
-      "status": "DRIVER_ASSIGNED",
+      "status": "FINISHED",
       "createdAt": "2025-11-19T17:11:22.625Z",
       "driverID": "1763575714329"
     },
@@ -597,6 +605,23 @@
       "originProvince": "نامشخص",
       "destinationProvince": "نامشخص",
       "createdAt": "2025-11-28T21:02:20.203Z"
+    },
+    {
+      "id": "o7xs9f750",
+      "weightType": "TON",
+      "loadType": "عمومی",
+      "receiverName": "حسین زکی زاده",
+      "originCity": "تبریز",
+      "destinationCity": "تهران",
+      "goodType": "شراب",
+      "weight": 15,
+      "deliveryDate": "2025-10-29",
+      "companyID": "1763561663382",
+      "status": "DRIVER_ASSIGNED",
+      "originProvince": "نامشخص",
+      "destinationProvince": "نامشخص",
+      "createdAt": "2025-11-29T19:41:11.272Z",
+      "driverID": "1763575714329"
     }
   ],
   "orderOffers": [
@@ -687,6 +712,28 @@
       "driverName": "امیر امیری",
       "state": "REJECTED",
       "date": "2025-11-24T10:48:43.441Z"
+    },
+    {
+      "id": "834toni9i",
+      "driverID": "1763561536267",
+      "orderID": "o7xs9f750",
+      "price": 50000,
+      "commentDriver": "خیالت  راحت  ",
+      "deliveryEstimateTime": "3 ",
+      "driverName": "علی",
+      "state": "PENDING",
+      "date": "2025-11-29T21:03:49.395Z"
+    },
+    {
+      "id": "sygor3rsf",
+      "driverID": "1763575714329",
+      "orderID": "o7xs9f750",
+      "price": 49000,
+      "commentDriver": "",
+      "deliveryEstimateTime": "3 روز",
+      "driverName": "راننده  چهارم",
+      "state": "ACCEPTED",
+      "date": "2025-11-29T21:06:09.515Z"
     }
   ],
   "driverReviews": [
@@ -715,6 +762,17 @@
       "strengths": [],
       "weaknesses": [],
       "createdAt": "2025-11-19T19:30:23.192Z"
+    },
+    {
+      "id": "717vtkcwe",
+      "orderID": "s1nes1r0i",
+      "driverID": "1763575714329",
+      "companyID": "1763561663382",
+      "stars": 5,
+      "commentText": "خوب بود  و....",
+      "strengths": [],
+      "weaknesses": [],
+      "createdAt": "2025-11-29T20:48:14.921Z"
     }
   ],
   "paymentDrivers": [
@@ -795,6 +853,19 @@
       "day": 1,
       "date": "2025-11-28T07:14:08.469Z",
       "createdAt": "2025-11-28T07:14:08.470Z"
+    },
+    {
+      "id": "65ji4qxfm",
+      "orderID": "s1nes1r0i",
+      "driverID": "1763575714329",
+      "amount": 30000,
+      "payType": "CASH",
+      "transactionCode": "",
+      "year": 1403,
+      "month": 1,
+      "day": 1,
+      "date": "2025-11-29T20:47:50.495Z",
+      "createdAt": "2025-11-29T20:47:50.495Z"
     }
   ],
   "smsCreditTransactions": [
