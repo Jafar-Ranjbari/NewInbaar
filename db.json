@@ -505,6 +505,14 @@
       "orders_change": 0,
       "description": "کارمزد تخصیص راننده",
       "timestamp": "2025-11-29T21:06:25.810Z"
+    },
+    {
+      "id": "irife6hiy",
+      "ownerID": "1763561663382",
+      "balance_change": -50000,
+      "orders_change": 0,
+      "description": "خرید بسته پیامک 50 تایی",
+      "timestamp": "2025-12-05T18:12:03.663Z"
     }
   ],
   "orders": [
@@ -932,6 +940,14 @@
       "cost": 300000,
       "description": "خرید بسته افزایشی",
       "timestamp": "2025-11-27T16:26:53.586Z"
+    },
+    {
+      "id": "vacmiz1rz",
+      "userID": "2",
+      "amount": 50,
+      "cost": 5000,
+      "description": "خرید بسته",
+      "timestamp": "2025-12-05T18:12:03.739Z"
     }
   ]
 }

@@ -1,4 +1,3 @@
-
 export enum Role {
   DRIVER = 'DRIVER',
   COMPANY = 'COMPANY',
@@ -235,6 +234,32 @@ export interface AuthState {
   tempMobile: string;
   tempUser: User | null;
 
+  setStep: (step: AuthStep) => void;
+  setTempMobile: (mobile: string) => void;
+  setTempUser: (user: User | null) => void;
+  login: (user: User, token: string) => void;
+  logout: () => void;
+}
+
+// types.ts
+
+export interface User {
+  id: string;
+  fullName: string;
+  password?: string;
+  rolename: Role;
+  mobile: string;
+}
+
+export interface AuthState {
+  isAuthenticated: boolean;
+  currentUser: User | null;
+  token: string | null;
+  currentStep: AuthStep;
+  tempMobile: string;
+  tempUser: User | null;
+  isHydrated: boolean; // ⬅️ حفظ شد برای مدیریت SSR/CSR
+  setHydrated: (state: boolean) => void;
   setStep: (step: AuthStep) => void;
   setTempMobile: (mobile: string) => void;
   setTempUser: (user: User | null) => void;
