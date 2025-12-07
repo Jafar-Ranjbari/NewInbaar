@@ -35,8 +35,8 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ tx, isWallet }) => {
     return (
         <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
             <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-full ${isPositive ? 'bg-green-100' : 'bg-red-100'}`}>
-                    {isPositive ? <ArrowUpCircle className="w-5 h-5 text-green-600" /> : <ArrowDownCircle className="w-5 h-5 text-red-600" />}
+                <div className={`p-2 rounded-full ${isPositive ? 'bg-gray-100' : 'bg-red-100'}`}>
+                    {isPositive ? <ArrowUpCircle className="w-5 h-5 text-gray-600" /> : <ArrowDownCircle className="w-5 h-5 text-red-600" />}
                 </div>
                 <div>
                     <p className="font-medium text-gray-800">{desc}</p>
@@ -45,7 +45,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ tx, isWallet }) => {
                     </p>
                 </div>
             </div>
-            <span className={`font-bold dir-ltr ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+            <span className={`font-bold dir-ltr ${isPositive ? 'text-gray-600' : 'text-red-600'}`}>
                 {isPositive ? '+' : ''}{amountDisplay}
             </span>
         </div>

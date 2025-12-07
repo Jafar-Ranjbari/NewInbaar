@@ -42,10 +42,10 @@
 // const getStatusLabel = (status: OrderStatus): { label: string, color: string } => {
 //     switch (status) {
 //         case OrderStatus.NEW: return { label: "در انتظار پیشنهاد", color: "bg-blue-100 text-blue-800" };
-//         case OrderStatus.DRIVER_ASSIGNED: return { label: "راننده انتخاب شد", color: "bg-yellow-100 text-yellow-800" };
+//         case OrderStatus.DRIVER_ASSIGNED: return { label: "راننده انتخاب شد", color: "bg-gray-100 text-gray-800" };
 //         case OrderStatus.DRIVER_EN_ROUTE: return { label: "در مسیر مبدا", color: "bg-orange-100 text-orange-800" };
-//         case OrderStatus.ON_ROAD: return { label: "در حال حمل", color: "bg-indigo-100 text-indigo-800" };
-//         case OrderStatus.DELIVERED: return { label: "تحویل شد (در انتظار تسویه)", color: "bg-green-100 text-green-800" };
+//         case OrderStatus.ON_ROAD: return { label: "در حال حمل", color: "bg-gray-100 text-gray-800" };
+//         case OrderStatus.DELIVERED: return { label: "تحویل شد (در انتظار تسویه)", color: "bg-gray-100 text-gray-800" };
 //         case OrderStatus.FINISHED: return { label: "پایان یافته", color: "bg-gray-100 text-gray-800" };
 //         case OrderStatus.CANCELED: return { label: "لغو شده", color: "bg-red-100 text-red-800" };
 //         default: return { label: "نامشخص", color: "bg-gray-200 text-gray-700" };
@@ -428,7 +428,7 @@
 //                                     )}
 
 //                                     {o.status === OrderStatus.FINISHED && (
-//                                         <div className="bg-green-50 text-green-700 p-3 rounded-lg text-center font-bold">
+//                                         <div className="bg-gray-50 text-gray-700 p-3 rounded-lg text-center font-bold">
 //                                             ✅ این سفارش با موفقیت پایان یافته است.
 //                                         </div>
 //                                     )}
@@ -497,7 +497,7 @@
 //                         <button
 //                             onClick={() => handleAccept(of)}
 //                             disabled={isLoading}
-//                             className="bg-green-600 text-white px-4 py-2 rounded-xl font-bold mt-2 sm:mt-0 hover:bg-green-700 transition disabled:opacity-50 flex items-center gap-1"
+//                             className="bg-gray-600 text-white px-4 py-2 rounded-xl font-bold mt-2 sm:mt-0 hover:bg-gray-700 transition disabled:opacity-50 flex items-center gap-1"
 //                         >
 //                             {isLoading ? <Loader2 className="animate-spin w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
 //                             قبول
@@ -506,7 +506,7 @@
 //                 </div>
 //             ))
 //         ) : (
-//             <div className="bg-yellow-50 text-yellow-700 p-3 rounded-lg">
+//             <div className="bg-gray-50 text-gray-700 p-3 rounded-lg">
 //                 <p>در حال حاضر پیشنهادی برای این بار ثبت نشده است.</p>
 //             </div>
 //         )}
@@ -579,9 +579,9 @@
 //             </div>
 
 //             {/* Review Section */}
-//             <div className={`p-4 rounded-xl shadow-inner ${isReadyForFinish ? 'bg-green-50 border border-green-200' : 'bg-gray-50'}`}>
+//             <div className={`p-4 rounded-xl shadow-inner ${isReadyForFinish ? 'bg-gray-50 border border-gray-200' : 'bg-gray-50'}`}>
 //                 <h5 className="font-bold mb-3 text-gray-700 flex items-center gap-2 border-b pb-2">
-//                     <Star className="w-4 h-4 text-green-600" /> نظردهی و اتمام سفارش
+//                     <Star className="w-4 h-4 text-gray-600" /> نظردهی و اتمام سفارش
 //                 </h5>
 //                  <div className="flex items-center gap-2 mb-3">
 //                     <span className="text-sm font-medium">امتیاز:</span>
@@ -603,7 +603,7 @@
 //                 <button 
 //                     onClick={() => handleReview(order)} 
 //                     disabled={isSaving || !isReadyForFinish} 
-//                     className="bg-green-600 text-white w-full py-2 rounded-xl font-bold hover:bg-green-700 transition disabled:opacity-50 flex justify-center items-center gap-2"
+//                     className="bg-gray-600 text-white w-full py-2 rounded-xl font-bold hover:bg-gray-700 transition disabled:opacity-50 flex justify-center items-center gap-2"
 //                 >
 //                     {isSaving ? <Loader2 className="animate-spin w-5 h-5" /> : null}
 //                     ثبت نهایی و اتمام سفارش

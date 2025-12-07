@@ -1,5 +1,5 @@
  // SmsVerification.tsx
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { ArrowRight, MessageSquare } from "lucide-react";
 import { SMS_MOCK_CODE } from "@/app/constants";
 
@@ -14,15 +14,30 @@ export const SmsVerification: React.FC<SmsVerificationProps> = ({
   onBack,
   onSuccess,
 }) => {
-  const [smsCode, setSmsCode] = useState("");
+  const [code, setCode] = useState(Array(5).fill("")); // 5 رقم
+  const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
-  const handleSmsSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleChange = (value: string, index: number) => {
+    if (!/^[0-9]?$/.test(value)) return;
 
-    if (smsCode === SMS_MOCK_CODE) {
-      onSuccess();
-    } else {
-      alert("کد وارد شده صحیح نمی‌باشد (کد آزمایشی: 1234)");
+    const updated = [...code];
+    updated[index] = value;
+    setCode(updated);
+
+    if (value && index < 4) {
+      inputsRef.current[index + 1]?.focus();
+    }
+
+    // اگر ۵ رقم کامل شد
+    if (updated.join("").length === 5) {
+      if (updated.join("") === SMS_MOCK_CODE) onSuccess();
+      else alert("کد اشتباه است (کد تستی: 12345)");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (e.key === "Backspace" && !code[index] && index > 0) {
+      inputsRef.current[index - 1]?.focus();
     }
   };
 
@@ -37,34 +52,46 @@ export const SmsVerification: React.FC<SmsVerificationProps> = ({
       </button>
 
       <div className="text-center mb-6">
-        <div className="bg-yellow-100 text-yellow-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="bg-gray-100 text-gray-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
           <MessageSquare size={32} />
         </div>
-        <h2 className="text-xl font-bold text-gray-800">بازیابی رمز عبور</h2>
         <p className="text-gray-500 mt-2 text-sm">
           کد ارسال شده به شماره {mobile} را وارد کنید
           <br />
-          <span className="text-xs text-gray-400">(کد تستی: 1234)</span>
+          <span className="text-xs text-gray-400">(کد تستی: 12345)</span>
         </p>
       </div>
 
-      <form onSubmit={handleSmsSubmit}>
-        <input
-          type="text"
-          dir="ltr"
-          placeholder="1234"
-          className="w-full text-center text-black text-2xl tracking-widest px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 mb-6"
-          value={smsCode}
-          onChange={(e) => setSmsCode(e.target.value)}
-          required
-        />
-        <button
-          type="submit"
-          className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 rounded-xl transition-all"
-        >
-          تایید کد
-        </button>
-      </form>
+      {/* --- 5 DIGIT CODE INPUTS --- */}
+      <div className="flex justify-between  mb-6" dir="ltr"> {/* gap-1 فاصله کم */}
+        {code.map((digit, index) => (
+          <input
+            key={index}
+            type="text"
+            inputMode="numeric"
+            maxLength={1}
+            value={digit}
+            onChange={(e) => handleChange(e.target.value, index)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
+            ref={(el) => {
+              inputsRef.current[index] = el; // بدون return
+            }}
+            className="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg 
+                       focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+          />
+        ))}
+      </div>
+
+      <button
+        onClick={() => {
+          const full = code.join("");
+          if (full === SMS_MOCK_CODE) onSuccess();
+          else alert("کد اشتباه است (کد تستی: 12345)");
+        }}
+        className="w-full bg-black hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all"
+      >
+        تایید کد
+      </button>
     </div>
   );
 };

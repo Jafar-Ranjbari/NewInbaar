@@ -35,10 +35,10 @@ export const PhoneInputStep: React.FC = () => {
   return (
     <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
       <div className="text-center mb-8">
-        <div className="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="bg-gray-100 text-gray-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
           <Smartphone size={32} />
         </div>
-        <h2 className="text-2xl font-bold text-gray-800">ورود یا ثبت نام</h2>
+        <h2 className="text-2xl font-bold text-gray-800">ورود | ثبت نام</h2>
         <p className="text-gray-500 mt-2">
           برای شروع شماره موبایل خود را وارد کنید
         </p>
@@ -63,7 +63,7 @@ export const PhoneInputStep: React.FC = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+          className="w-full bg-black hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-70"
         >
           {loading ? (
             <Loader2 className="animate-spin" />

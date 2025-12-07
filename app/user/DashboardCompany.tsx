@@ -464,7 +464,7 @@ export const DashboardCompany: React.FC = () => {
                         </div>
                       </div>
                       <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                        <span className={`px-3 py-1 text-xs font-bold rounded-full ${order.status === OrderStatus.NEW ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
+                        <span className={`px-3 py-1 text-xs font-bold rounded-full ${order.status === OrderStatus.NEW ? 'bg-gray-100 text-gray-700' : 'bg-gray-100 text-gray-700'}`}>
                           {order.status === OrderStatus.NEW ? 'منتظر راننده' : order.status}
                         </span>
                         <button onClick={() => handleExpandOrder(order)} className="text-blue-600 text-sm font-bold hover:bg-blue-50 px-3 py-1 rounded-lg">
@@ -493,10 +493,10 @@ export const DashboardCompany: React.FC = () => {
                                   {offer.state === OfferStatus.PENDING && (
                                     <div className="flex gap-2">
                                       <button onClick={() => handleRejectOffer(offer.id)} className="p-2 text-red-500 hover:bg-red-50 rounded"><XCircle /></button>
-                                      <button onClick={() => handleAcceptOffer(offer)} className="px-4 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 flex items-center gap-2"><CheckCircle size={18} /> قبول</button>
+                                      <button onClick={() => handleAcceptOffer(offer)} className="px-4 py-2 bg-gray-600 text-white rounded-lg font-bold hover:bg-gray-700 flex items-center gap-2"><CheckCircle size={18} /> قبول</button>
                                     </div>
                                   )}
-                                  {offer.state === OfferStatus.ACCEPTED && <span className="text-green-600 font-bold flex items-center gap-1"><CheckCircle size={16} /> تایید شده</span>}
+                                  {offer.state === OfferStatus.ACCEPTED && <span className="text-gray-600 font-bold flex items-center gap-1"><CheckCircle size={16} /> تایید شده</span>}
                                   {offer.state === OfferStatus.REJECTED && <span className="text-red-500 font-bold text-sm">رد شده</span>}
                                 </div>
                               ))}
@@ -531,13 +531,13 @@ export const DashboardCompany: React.FC = () => {
                               <div className="space-y-3">
                                 <div className="flex gap-2 justify-center mb-2">
                                   {[1, 2, 3, 4, 5].map(s => (
-                                    <button key={s} onClick={() => setReviewForm({ ...reviewForm, stars: s })} className={`text-2xl ${s <= reviewForm.stars ? 'text-yellow-400' : 'text-gray-300'}`}>★</button>
+                                    <button key={s} onClick={() => setReviewForm({ ...reviewForm, stars: s })} className={`text-2xl ${s <= reviewForm.stars ? 'text-gray-400' : 'text-gray-300'}`}>★</button>
                                   ))}
                                 </div>
                                 <input placeholder="نقاط قوت (با کاما جدا کنید)" className="input-base" value={reviewForm.strengths} onChange={e => setReviewForm({ ...reviewForm, strengths: e.target.value })} />
                                 <input placeholder="نقاط ضعف (با کاما جدا کنید)" className="input-base" value={reviewForm.weaknesses} onChange={e => setReviewForm({ ...reviewForm, weaknesses: e.target.value })} />
                                 <textarea placeholder="توضیحات..." className="input-base h-20" value={reviewForm.comment} onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })} />
-                                <button onClick={() => handleRegisterReview(order)} disabled={loading} className="w-full bg-green-600 text-white py-2 rounded-lg font-bold">ثبت و اتمام سفارش</button>
+                                <button onClick={() => handleRegisterReview(order)} disabled={loading} className="w-full bg-gray-600 text-white py-2 rounded-lg font-bold">ثبت و اتمام سفارش</button>
                               </div>
                             </div>
                           </div>
@@ -603,7 +603,7 @@ export const DashboardCompany: React.FC = () => {
                       <p className="font-medium text-gray-800">{tx.description}</p>
                       <p className="text-xs text-gray-500 mt-1">{new Date(tx.timestamp).toLocaleDateString('fa-IR')}</p>
                     </div>
-                    <div className={`font-bold ${tx.balance_change > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <div className={`font-bold ${tx.balance_change > 0 ? 'text-gray-600' : 'text-red-600'}`}>
                       {tx.balance_change > 0 ? '+' : ''}{tx.balance_change.toLocaleString()}
                     </div>
                   </div>
@@ -645,15 +645,15 @@ export const DashboardCompany: React.FC = () => {
                           <h4 className="font-bold text-gray-800">{order.goodType}</h4>
                           <p className="text-sm text-gray-500">{order.originCity} به {order.destinationCity}</p>
                         </div>
-                        <span className={`px-2 py-1 rounded text-xs font-bold ${order.status === OrderStatus.FINISHED ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                        <span className={`px-2 py-1 rounded text-xs font-bold ${order.status === OrderStatus.FINISHED ? 'bg-gray-100 text-gray-700' : 'bg-gray-100 text-gray-600'}`}>
                           {order.status}
                         </span>
                       </div>
                       {rev ? (
                         <div className="bg-gray-50 p-3 rounded-lg text-sm mt-2">
-                          <div className="flex text-yellow-500 mb-1">{'★'.repeat(rev.stars)}<span className="text-gray-300">{'★'.repeat(5 - rev.stars)}</span></div>
+                          <div className="flex text-gray-500 mb-1">{'★'.repeat(rev.stars)}<span className="text-gray-300">{'★'.repeat(5 - rev.stars)}</span></div>
                           <p className="text-gray-700">{rev.commentText}</p>
-                          {rev.strengths.length > 0 && <p className="text-xs text-green-600 mt-1">قوت: {rev.strengths.join('، ')}</p>}
+                          {rev.strengths.length > 0 && <p className="text-xs text-gray-600 mt-1">قوت: {rev.strengths.join('، ')}</p>}
                           {rev.weaknesses.length > 0 && <p className="text-xs text-red-500 mt-1">ضعف: {rev.weaknesses.join('، ')}</p>}
                         </div>
                       ) : (

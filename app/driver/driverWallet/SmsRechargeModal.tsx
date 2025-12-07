@@ -78,7 +78,7 @@ const SmsRechargeModal: React.FC<SmsRechargeModalProps> = ({ isVisible, onClose,
 
                 {isSuccess ? (
                     <div className="text-center py-8">
-                        <FiCheckCircle size={64} className="text-green-500 mx-auto mb-4 animate-bounce" />
+                        <FiCheckCircle size={64} className="text-gray-500 mx-auto mb-4 animate-bounce" />
                         <h2 className="text-2xl font-bold text-gray-800 mb-2">عملیات موفقیت‌آمیز!</h2>
                         <p className="text-lg text-gray-700 font-semibold">
                             موجودی پیامک با موفقیت شارژ شد.
@@ -88,7 +88,7 @@ const SmsRechargeModal: React.FC<SmsRechargeModalProps> = ({ isVisible, onClose,
                         </p>
                         <button
                             onClick={handleClose}
-                            className="mt-6 w-full py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors"
+                            className="mt-6 w-full py-3 bg-gray-600 text-white rounded-xl font-bold hover:bg-gray-700 transition-colors"
                         >
                             بستن
                         </button>
@@ -100,7 +100,7 @@ const SmsRechargeModal: React.FC<SmsRechargeModalProps> = ({ isVisible, onClose,
                         <div className="space-y-4 mb-6 text-center bg-blue-50 p-4 rounded-xl border border-blue-200">
                             <FiMail size={40} className="text-blue-600 mx-auto mb-3" />
                             <p className="text-lg font-semibold text-gray-700">بسته <span className="text-blue-600">{smsCount}</span> عددی</p>
-                            <p className="text-3xl font-extrabold text-green-600 tracking-wider">
+                            <p className="text-3xl font-extrabold text-gray-600 tracking-wider">
                                 {priceTomans.toLocaleString('fa-IR')} <span className="text-xl">تومان</span>
                             </p>
                         </div>

@@ -35,7 +35,7 @@ export const DriverCarTab: React.FC<Props> = ({ driverID }) => {
 
   if (!driverID) {
     return (
-      <div className="bg-white rounded-xl shadow-sm p-6 text-center text-yellow-700 bg-yellow-50 border border-yellow-200">
+      <div className="bg-white rounded-xl shadow-sm p-6 text-center text-gray-700 bg-gray-50 border border-gray-200">
          ابتدا پروفایل خود را تکمیل کنید.
       </div>
     );
@@ -44,14 +44,14 @@ export const DriverCarTab: React.FC<Props> = ({ driverID }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm p-6">
         <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <Truck className="text-green-500" /> اطلاعات ناوگان
+            <Truck className="text-gray-500" /> اطلاعات ناوگان
         </h2>
         <form onSubmit={handleSave} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">نوع ماشین</label>
                     <select 
-                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                         value={car.vehicleType || ''} onChange={e => setCar({...car, vehicleType: e.target.value})}
                     >
                         <option value="">انتخاب کنید</option>
@@ -63,27 +63,27 @@ export const DriverCarTab: React.FC<Props> = ({ driverID }) => {
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">مدل ماشین</label>
                     <input 
-                        type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                        type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                         value={car.carModel || ''} onChange={e => setCar({...car, carModel: e.target.value})} placeholder="مثال: آریسان"
                     />
                 </div>
                     <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">پلاک</label>
                     <input 
-                        type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                        type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                         value={car.licensePlate || ''} onChange={e => setCar({...car, licensePlate: e.target.value})}
                     />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">ظرفیت بار (تن)</label>
                     <input 
-                        type="number" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                        type="number" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                         value={car.loadCapacity || ''} onChange={e => setCar({...car, loadCapacity: e.target.value})}
                     />
                 </div>
             </div>
                 <div className="pt-4 border-t">
-                <button type="submit" disabled={loading} className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 flex items-center gap-2 disabled:opacity-70">
+                <button type="submit" disabled={loading} className="bg-gray-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-700 flex items-center gap-2 disabled:opacity-70">
                     {loading ? <Loader2 className="animate-spin" size={20}/> : <Save size={20}/>}
                     ذخیره خودرو
                 </button>

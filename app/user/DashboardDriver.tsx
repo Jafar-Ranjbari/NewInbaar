@@ -192,22 +192,22 @@ export const DashboardDriver: React.FC = () => {
   const totalIncome = myPayments.reduce((acc, curr) => acc + curr.amount, 0);
 
   if (!currentUser) return null;
-  if (initLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-green-600" size={48} /></div>;
+  if (initLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-gray-600" size={48} /></div>;
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-green-500 sticky top-0 z-10">
+      <header className="bg-white shadow-sm border-b border-gray-500 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-green-100 text-green-600">
+            <div className="p-2 rounded-lg bg-gray-100 text-gray-600">
               <Truck size={24} />
             </div>
             <h1 className="text-lg font-bold text-gray-800 hidden sm:block">پنل رانندگان</h1>
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="bg-green-50 px-3 py-1 rounded-full text-green-700 text-sm font-bold border border-green-200">
+            <div className="bg-gray-50 px-3 py-1 rounded-full text-gray-700 text-sm font-bold border border-gray-200">
               اعتبار: {walletBalance.toLocaleString()} ریال
             </div>
             <button onClick={logout} className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors">
@@ -222,31 +222,31 @@ export const DashboardDriver: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 flex gap-6 overflow-x-auto">
           <button
             onClick={() => setActiveTab('PROFILE')}
-            className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'PROFILE' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+            className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'PROFILE' ? 'border-gray-500 text-gray-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
           >
             <UserIcon size={18} /> مشخصات
           </button>
           <button
             onClick={() => setActiveTab('CAR')}
-            className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'CAR' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+            className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'CAR' ? 'border-gray-500 text-gray-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
           >
             <Truck size={18} /> خودرو
           </button>
           <button
             onClick={() => setActiveTab('CARGO_HALL')}
-            className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'CARGO_HALL' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+            className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'CARGO_HALL' ? 'border-gray-500 text-gray-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
           >
             <Search size={18} /> سالن اعلام بار
           </button>
           <button
             onClick={() => setActiveTab('WALLET')}
-            className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'WALLET' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+            className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'WALLET' ? 'border-gray-500 text-gray-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
           >
             <Wallet size={18} /> کیف پول
           </button>
           <button
             onClick={() => setActiveTab('REPORTS')}
-            className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'REPORTS' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+            className={`py-4 px-2 border-b-2 font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'REPORTS' ? 'border-gray-500 text-gray-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
           >
             <FileBarChart size={18} /> گزارشات
           </button>
@@ -260,21 +260,21 @@ export const DashboardDriver: React.FC = () => {
         {activeTab === 'PROFILE' && (
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-              <UserCircle className="text-green-500" /> اطلاعات هویتی
+              <UserCircle className="text-gray-500" /> اطلاعات هویتی
             </h2>
             <form onSubmit={handleSaveProfile} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">نام</label>
                   <input
-                    type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                    type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                     value={driver.firstName || ''} onChange={e => setDriver({ ...driver, firstName: e.target.value })} required
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">نام خانوادگی</label>
                   <input
-                    type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                    type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                     value={driver.lastName || ''} onChange={e => setDriver({ ...driver, lastName: e.target.value })} required
                   />
                 </div>
@@ -288,27 +288,27 @@ export const DashboardDriver: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">استان</label>
                   <input
-                    type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                    type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                     value={driver.province || ''} onChange={e => setDriver({ ...driver, province: e.target.value })}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">شهر</label>
                   <input
-                    type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                    type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                     value={driver.city || ''} onChange={e => setDriver({ ...driver, city: e.target.value })}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">شماره شبا</label>
                   <input
-                    type="text" dir="ltr" placeholder="IR..." className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                    type="text" dir="ltr" placeholder="IR..." className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                     value={driver.shebaNumber || ''} onChange={e => setDriver({ ...driver, shebaNumber: e.target.value })}
                   />
                 </div>
               </div>
               <div className="pt-4 border-t">
-                <button type="submit" disabled={loading} className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 flex items-center gap-2 disabled:opacity-70">
+                <button type="submit" disabled={loading} className="bg-gray-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-700 flex items-center gap-2 disabled:opacity-70">
                   {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
                   ذخیره تغییرات
                 </button>
@@ -321,10 +321,10 @@ export const DashboardDriver: React.FC = () => {
         {activeTab === 'CAR' && (
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-              <Truck className="text-green-500" /> اطلاعات ناوگان
+              <Truck className="text-gray-500" /> اطلاعات ناوگان
             </h2>
             {!driver.id ? (
-              <div className="text-center p-8 bg-yellow-50 rounded-lg text-yellow-800">
+              <div className="text-center p-8 bg-gray-50 rounded-lg text-gray-800">
                 ابتدا اطلاعات هویتی راننده را تکمیل کنید.
               </div>
             ) : (
@@ -333,7 +333,7 @@ export const DashboardDriver: React.FC = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">نوع ماشین</label>
                     <select
-                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                       value={car.vehicleType || ''} onChange={e => setCar({ ...car, vehicleType: e.target.value })}
                     >
                       <option value="">انتخاب کنید</option>
@@ -345,27 +345,27 @@ export const DashboardDriver: React.FC = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">مدل ماشین</label>
                     <input
-                      type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                      type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                       value={car.carModel || ''} onChange={e => setCar({ ...car, carModel: e.target.value })} placeholder="مثال: آریسان"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">پلاک</label>
                     <input
-                      type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                      type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                       value={car.licensePlate || ''} onChange={e => setCar({ ...car, licensePlate: e.target.value })}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">ظرفیت بار (تن)</label>
                     <input
-                      type="number" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                      type="number" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
                       value={car.loadCapacity || ''} onChange={e => setCar({ ...car, loadCapacity: e.target.value })}
                     />
                   </div>
                 </div>
                 <div className="pt-4 border-t">
-                  <button type="submit" disabled={loading} className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 flex items-center gap-2 disabled:opacity-70">
+                  <button type="submit" disabled={loading} className="bg-gray-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-700 flex items-center gap-2 disabled:opacity-70">
                     {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
                     ذخیره خودرو
                   </button>
@@ -379,23 +379,23 @@ export const DashboardDriver: React.FC = () => {
         {activeTab === 'CARGO_HALL' && (
           <div className="space-y-6">
             {!driver.id ? (
-              <div className="bg-yellow-50 p-4 rounded-xl text-yellow-800 border border-yellow-200 text-center">
+              <div className="bg-gray-50 p-4 rounded-xl text-gray-800 border border-gray-200 text-center">
                 برای مشاهده بارها ابتدا پروفایل خود را تکمیل کنید.
               </div>
             ) : !selectedProvince ? (
               <>
                 <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                  <MapPin className="text-green-500" /> انتخاب استان مبدا
+                  <MapPin className="text-gray-500" /> انتخاب استان مبدا
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {Object.entries(provinceCounts).map(([province, count]) => (
                     <button
                       key={province}
                       onClick={() => setSelectedProvince(province)}
-                      className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md border border-gray-200 hover:border-green-500 transition-all text-center group"
+                      className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md border border-gray-200 hover:border-gray-500 transition-all text-center group"
                     >
-                      <h3 className="font-bold text-gray-800 text-lg group-hover:text-green-600 mb-2">{province}</h3>
-                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">
+                      <h3 className="font-bold text-gray-800 text-lg group-hover:text-gray-600 mb-2">{province}</h3>
+                      <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-bold">
                         {count} سفارش
                       </span>
                     </button>
@@ -424,7 +424,7 @@ export const DashboardDriver: React.FC = () => {
                   {openOrders.filter(o => o.originProvince === selectedProvince).map(order => {
                     const hasOffered = myOffers.some(off => off.orderID === order.id);
                     return (
-                      <div key={order.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-green-300 transition-all">
+                      <div key={order.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-gray-300 transition-all">
                         <div className="flex flex-col md:flex-row justify-between md:items-start gap-4">
                           <div>
                             <h3 className="font-bold text-lg text-gray-800 flex items-center gap-2">
@@ -436,7 +436,7 @@ export const DashboardDriver: React.FC = () => {
                               <p className="flex items-center gap-2"><Clock size={14} /> تاریخ حمل: {order.deliveryDate}</p>
                             </div>
                             {order.expectedPriceRange && (
-                              <p className="mt-3 text-sm font-bold text-green-700">مبلغ پیشنهادی شرکت: {order.expectedPriceRange} ریال</p>
+                              <p className="mt-3 text-sm font-bold text-gray-700">مبلغ پیشنهادی شرکت: {order.expectedPriceRange} ریال</p>
                             )}
                           </div>
                           <div>
@@ -447,7 +447,7 @@ export const DashboardDriver: React.FC = () => {
                             ) : (
                               <button
                                 onClick={() => setOfferModalOpen(order.id)}
-                                className="bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700 transition-colors flex items-center gap-2"
+                                className="bg-gray-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-gray-700 transition-colors flex items-center gap-2"
                               >
                                 <DollarSign size={18} />
                                 ارسال قیمت
@@ -466,16 +466,16 @@ export const DashboardDriver: React.FC = () => {
             {offerModalOpen && (
               <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                 <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-                  <div className="bg-green-600 p-4 text-white font-bold text-lg flex justify-between items-center">
+                  <div className="bg-gray-600 p-4 text-white font-bold text-lg flex justify-between items-center">
                     <span>ثبت پیشنهاد قیمت</span>
-                    <button onClick={() => setOfferModalOpen(null)} className="hover:bg-green-700 p-1 rounded">✕</button>
+                    <button onClick={() => setOfferModalOpen(null)} className="hover:bg-gray-700 p-1 rounded">✕</button>
                   </div>
                   <form onSubmit={handleSubmitOffer} className="p-6 space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">قیمت پیشنهادی (ریال)</label>
                       <input
                         type="number"
-                        className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500"
+                        className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-gray-500"
                         placeholder="مثلا: 25000000"
                         value={offerForm.price}
                         onChange={e => setOfferForm({ ...offerForm, price: e.target.value })}
@@ -486,7 +486,7 @@ export const DashboardDriver: React.FC = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-1">زمان تقریبی تحویل</label>
                       <input
                         type="text"
-                        className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500"
+                        className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-gray-500"
                         placeholder="مثلا: 2 روز کاری"
                         value={offerForm.time}
                         onChange={e => setOfferForm({ ...offerForm, time: e.target.value })}
@@ -496,7 +496,7 @@ export const DashboardDriver: React.FC = () => {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">توضیحات برای شرکت</label>
                       <textarea
-                        className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-green-500 h-24"
+                        className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-gray-500 h-24"
                         placeholder="توضیحات تکمیلی..."
                         value={offerForm.comment}
                         onChange={e => setOfferForm({ ...offerForm, comment: e.target.value })}
@@ -505,7 +505,7 @@ export const DashboardDriver: React.FC = () => {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition-all flex justify-center items-center gap-2"
+                      className="w-full bg-gray-600 text-white py-3 rounded-xl font-bold hover:bg-gray-700 transition-all flex justify-center items-center gap-2"
                     >
                       {loading ? <Loader2 className="animate-spin" /> : <><Send size={18} /> ارسال پیشنهاد</>}
                     </button>
@@ -521,10 +521,10 @@ export const DashboardDriver: React.FC = () => {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Main Wallet */}
-              <div className="bg-gradient-to-r from-green-600 to-green-400 rounded-2xl p-8 text-white shadow-lg">
+              <div className="bg-gradient-to-r from-gray-600 to-gray-400 rounded-2xl p-8 text-white shadow-lg">
                 <div className="flex justify-between items-start mb-8">
                   <div>
-                    <p className="text-green-100 mb-1">موجودی کیف پول</p>
+                    <p className="text-gray-100 mb-1">موجودی کیف پول</p>
                     <h3 className="text-4xl font-bold">{walletBalance.toLocaleString()} <span className="text-lg font-normal">ریال</span></h3>
                   </div>
                   <div className="bg-white/20 p-3 rounded-full">
@@ -532,10 +532,10 @@ export const DashboardDriver: React.FC = () => {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <button onClick={() => handleTopUp(100000)} className="bg-white text-green-700 py-3 rounded-xl font-bold hover:bg-green-50 transition-colors">
+                  <button onClick={() => handleTopUp(100000)} className="bg-white text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors">
                     شارژ ۱۰۰,۰۰۰
                   </button>
-                  <button onClick={() => handleTopUp(200000)} className="bg-white text-green-700 py-3 rounded-xl font-bold hover:bg-green-50 transition-colors">
+                  <button onClick={() => handleTopUp(200000)} className="bg-white text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors">
                     شارژ ۲۰۰,۰۰۰
                   </button>
                 </div>
@@ -567,7 +567,7 @@ export const DashboardDriver: React.FC = () => {
                       <p className="font-medium text-gray-800">{tx.description}</p>
                       <p className="text-xs text-gray-500 mt-1">{new Date(tx.timestamp).toLocaleDateString('fa-IR')}</p>
                     </div>
-                    <div className={`font-bold ${tx.balance_change > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <div className={`font-bold ${tx.balance_change > 0 ? 'text-gray-600' : 'text-red-600'}`}>
                       {tx.balance_change > 0 ? '+' : ''}{tx.balance_change.toLocaleString()}
                     </div>
                   </div>
@@ -583,13 +583,13 @@ export const DashboardDriver: React.FC = () => {
           <div className="space-y-8">
             {/* Income Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-green-500">
+              <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-gray-500">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-gray-500 mb-2 font-bold">کل درآمد کسب شده</p>
-                    <h3 className="text-3xl font-bold text-green-600 dir-ltr">{totalIncome.toLocaleString()} <span className="text-sm text-gray-500">ریال</span></h3>
+                    <h3 className="text-3xl font-bold text-gray-600 dir-ltr">{totalIncome.toLocaleString()} <span className="text-sm text-gray-500">ریال</span></h3>
                   </div>
-                  <div className="bg-green-50 p-3 rounded-lg text-green-600"><CreditCard size={24} /></div>
+                  <div className="bg-gray-50 p-3 rounded-lg text-gray-600"><CreditCard size={24} /></div>
                 </div>
               </div>
               <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-blue-500">
@@ -606,7 +606,7 @@ export const DashboardDriver: React.FC = () => {
             {/* Payments List */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-4 border-b font-bold text-gray-800 flex items-center gap-2">
-                <CreditCard size={18} className="text-green-500" /> دریافتی‌های شرکت
+                <CreditCard size={18} className="text-gray-500" /> دریافتی‌های شرکت
               </div>
               <div className="p-4 overflow-x-auto">
                 <table className="w-full text-right min-w-[600px]">
@@ -621,7 +621,7 @@ export const DashboardDriver: React.FC = () => {
                   <tbody className="divide-y">
                     {myPayments.map(p => (
                       <tr key={p.id}>
-                        <td className="p-3 font-bold text-green-700">{p.amount.toLocaleString()}</td>
+                        <td className="p-3 font-bold text-gray-700">{p.amount.toLocaleString()}</td>
                         <td className="p-3">{p.payType === 'BANK' ? 'کارت به کارت' : p.payType}</td>
                         <td className="p-3 text-sm text-gray-500">{p.transactionCode}</td>
                         <td className="p-3 text-sm">{p.year}/{p.month}/{p.day}</td>
@@ -641,9 +641,9 @@ export const DashboardDriver: React.FC = () => {
               <div className="divide-y">
                 {myOffers.map(offer => {
                   const statusColor =
-                    offer.state === OfferStatus.ACCEPTED ? 'bg-green-100 text-green-700' :
+                    offer.state === OfferStatus.ACCEPTED ? 'bg-gray-100 text-gray-700' :
                       offer.state === OfferStatus.REJECTED ? 'bg-red-100 text-red-700' :
-                        'bg-yellow-100 text-yellow-700';
+                        'bg-gray-100 text-gray-700';
 
                   return (
                     <div key={offer.id} className="p-4 flex justify-between items-center">

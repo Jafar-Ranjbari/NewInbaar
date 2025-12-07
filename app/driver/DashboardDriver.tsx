@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import { FiUser, FiBox, FiTruck, FiCreditCard, FiHome } from "react-icons/fi";
 import { useDriverDashboardData } from './useDriverDashboardData';
+import HeaderPanel from '../components/HeaderPanel';
 
 
 export const DashboardDriver: React.FC = () => {
@@ -224,7 +225,8 @@ export const DashboardDriver: React.FC = () => {
     return (
       <div className="bg-gray-100 min-h-screen">
         <div className="max-w-sm mx-auto bg-gray-100 relative">
-          <TopHeader />
+          {/* <TopHeader /> */}
+          <HeaderPanel/>
           <main className="p-4 space-y-4 pb-28">
             <UserInfo />
             <BalanceCard />
@@ -243,7 +245,7 @@ export const DashboardDriver: React.FC = () => {
   // لیست منوها برای تمیزی کد
   const menuItems = [
     { title: 'مشخصات شرکت', href: '/driver/profile', icon: <UserCircle size={32} />, color: 'text-blue-600 bg-blue-50' },
-    { title: 'مدیریت بار', href: '/dashboard/orders', icon: <PackagePlus size={32} />, color: 'text-green-600 bg-green-50' },
+    { title: 'مدیریت بار', href: '/dashboard/orders', icon: <PackagePlus size={32} />, color: 'text-gray-600 bg-gray-50' },
     { title: 'کیف پول', href: '/dashboard/wallet', icon: <Wallet size={32} />, color: 'text-purple-600 bg-purple-50' },
     { title: 'گزارشات', href: '/dashboard/reports', icon: <FileBarChart size={32} />, color: 'text-orange-600 bg-orange-50' },
   ];

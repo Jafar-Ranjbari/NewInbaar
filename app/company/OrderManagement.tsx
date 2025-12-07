@@ -262,7 +262,7 @@ export default function OrderManagement({ companyID }: Props) {
                           {of.state === OfferStatus.PENDING && (
                             <button
                               onClick={() => handleAccept(of)}
-                              className="bg-green-600 text-white px-3 py-1 rounded"
+                              className="bg-gray-600 text-white px-3 py-1 rounded"
                             >
                               قبول
                             </button>
@@ -295,7 +295,7 @@ export default function OrderManagement({ companyID }: Props) {
                         value={reviewForm.comment}
                         onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
                       />
-                      <button onClick={() => handleReview(o)} className="bg-green-600 text-white w-full py-1 rounded">
+                      <button onClick={() => handleReview(o)} className="bg-gray-600 text-white w-full py-1 rounded">
                         ثبت و پایان
                       </button>
                     </div>

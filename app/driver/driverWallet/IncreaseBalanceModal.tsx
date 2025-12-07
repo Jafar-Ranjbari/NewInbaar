@@ -43,7 +43,7 @@ const GiftIcon: React.FC<GiftIconProps> = ({ className }) => (
     <div className={`relative ${className}`}>
         <div className="absolute inset-0 bg-white/20 rounded-lg transform -rotate-6"></div>
         <div className="relative w-full h-full bg-white rounded-lg shadow p-2">
-            <div className="w-full h-full bg-indigo-50 rounded-md">
+            <div className="w-full h-full bg-gray-50 rounded-md">
                 <svg
                     viewBox="0 0 64 64"
                     fill="none"
@@ -81,7 +81,7 @@ const rechargeOptions: RechargeOptionData[] = [
         description: "مناسب برای شروع",
         priceTomans: 250000,
         priceRials: 2500000,
-        color: "bg-green-500",
+        color: "bg-gray-500",
     },
     {
         id: 2,
@@ -89,7 +89,7 @@ const rechargeOptions: RechargeOptionData[] = [
         description: "بهترین انتخاب",
         priceTomans: 450000,
         priceRials: 4500000,
-        color: "bg-indigo-500",
+        color: "bg-gray-500",
     },
     {
         id: 3,
@@ -106,7 +106,7 @@ const RechargeOption: React.FC<RechargeOptionProps> = ({ option, isSelected, onS
     <button
         onClick={onSelect}
         className={`flex items-center justify-between w-full p-3 mb-3 bg-white border-2 rounded-2xl shadow-sm transition-all duration-300 ${
-            isSelected ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-indigo-300"
+            isSelected ? "border-gray-500 bg-gray-50" : "border-gray-200 hover:border-gray-300"
         }`}
     >
         <div className="flex items-center">
@@ -118,7 +118,7 @@ const RechargeOption: React.FC<RechargeOptionProps> = ({ option, isSelected, onS
         </div>
         <div className="text-left">
             <p className="text-xs text-gray-500">تومان</p>
-            <p className="text-lg font-bold text-indigo-600">
+            <p className="text-lg font-bold text-gray-600">
                 {option.priceTomans.toLocaleString('fa-IR')}
             </p>
         </div>
@@ -183,7 +183,7 @@ const IncreaseBalanceModal: React.FC<IncreaseBalanceModalProps> = ({ isVisible, 
                 </div>
                 
                 {/* Banner (با استفاده از طرح شما) */}
-                <div className="relative bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-4 text-white mb-6 shadow-lg">
+                <div className="relative bg-gradient-to-br from-gray-500 to-purple-600 rounded-2xl p-4 text-white mb-6 shadow-lg">
                     <div className="relative flex items-center justify-between">
                         <div className="w-16 h-16">
                             <GiftIcon className="w-full h-full" />
@@ -211,8 +211,8 @@ const IncreaseBalanceModal: React.FC<IncreaseBalanceModalProps> = ({ isVisible, 
 
                 {/* Info */}
                 <ul className="mt-4 space-y-1 text-xs text-gray-600 pr-4">
-                    <li className="flex"><span className="text-indigo-500 ml-2 mt-1">•</span><span>مبالغ بر اساس **تومان** است.</span></li>
-                    <li className="flex"><span className="text-indigo-500 ml-2 mt-1">•</span><span>پس از پرداخت، موجودی کیف پول شما افزایش می‌یابد.</span></li>
+                    <li className="flex"><span className="text-gray-500 ml-2 mt-1">•</span><span>مبالغ بر اساس **تومان** است.</span></li>
+                    <li className="flex"><span className="text-gray-500 ml-2 mt-1">•</span><span>پس از پرداخت، موجودی کیف پول شما افزایش می‌یابد.</span></li>
                 </ul>
 
                 {/* Footer / Payment Button */}
@@ -222,7 +222,7 @@ const IncreaseBalanceModal: React.FC<IncreaseBalanceModalProps> = ({ isVisible, 
                         disabled={!selectedOption || isPaying}
                         className={`w-full py-3 rounded-xl text-base font-bold transition duration-300 flex items-center justify-center ${
                             selectedOption
-                                ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                                ? "bg-gray-600 text-white hover:bg-gray-700"
                                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
                         }`}
                     >

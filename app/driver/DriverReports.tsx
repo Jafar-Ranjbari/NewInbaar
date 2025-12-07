@@ -57,9 +57,9 @@ export const DriverReports: React.FC<Props> = ({ driverID }) => {
     <div className="space-y-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-green-500 flex justify-between items-start">
-                <div><p className="text-gray-500 mb-2 font-bold">کل درآمد</p><h3 className="text-3xl font-bold text-green-600 dir-ltr">{totalIncome.toLocaleString()} ریال</h3></div>
-                <div className="bg-green-50 p-3 rounded-lg text-green-600"><CreditCard size={24}/></div>
+            <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-gray-500 flex justify-between items-start">
+                <div><p className="text-gray-500 mb-2 font-bold">کل درآمد</p><h3 className="text-3xl font-bold text-gray-600 dir-ltr">{totalIncome.toLocaleString()} ریال</h3></div>
+                <div className="bg-gray-50 p-3 rounded-lg text-gray-600"><CreditCard size={24}/></div>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-blue-500 flex justify-between items-start">
                 <div><p className="text-gray-500 mb-2 font-bold">تعداد سفارشات</p><h3 className="text-3xl font-bold text-blue-600">{offers.length}</h3></div>
@@ -70,7 +70,7 @@ export const DriverReports: React.FC<Props> = ({ driverID }) => {
         {/* Chart Section */}
         <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="border-b pb-4 mb-6 flex items-center gap-2">
-                <TrendingUp size={20} className="text-green-600" />
+                <TrendingUp size={20} className="text-gray-600" />
                 <h3 className="font-bold text-gray-800">روند رشد درآمد</h3>
             </div>
             
@@ -85,7 +85,7 @@ export const DriverReports: React.FC<Props> = ({ driverID }) => {
 
         {/* Payments Table */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-            <div className="p-4 border-b font-bold text-gray-800 flex items-center gap-2"><CreditCard size={18} className="text-green-500"/> ریز دریافتی‌ها</div>
+            <div className="p-4 border-b font-bold text-gray-800 flex items-center gap-2"><CreditCard size={18} className="text-gray-500"/> ریز دریافتی‌ها</div>
             <div className="p-4 overflow-x-auto">
                  <table className="w-full text-right min-w-[600px]">
                     <thead className="bg-gray-50 text-gray-600 text-sm">
@@ -94,7 +94,7 @@ export const DriverReports: React.FC<Props> = ({ driverID }) => {
                     <tbody className="divide-y">
                         {payments.slice().reverse().map(p => (
                             <tr key={p.id}>
-                                <td className="p-3 font-bold text-green-700">{p.amount.toLocaleString()}</td>
+                                <td className="p-3 font-bold text-gray-700">{p.amount.toLocaleString()}</td>
                                 <td className="p-3">{p.payType}</td>
                                 <td className="p-3 text-sm text-gray-500">{p.transactionCode}</td>
                                 <td className="p-3 text-sm">{p.year}/{p.month}/{p.day}</td>
@@ -116,7 +116,7 @@ export const DriverReports: React.FC<Props> = ({ driverID }) => {
                             <p className="font-bold text-gray-800">پیشنهاد: {offer.price.toLocaleString()} ریال</p>
                             <p className="text-sm text-gray-500">{offer.deliveryEstimateTime}</p>
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-sm font-bold ${offer.state === OfferStatus.ACCEPTED ? 'bg-green-100 text-green-700' : offer.state === OfferStatus.REJECTED ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                        <span className={`px-3 py-1 rounded-full text-sm font-bold ${offer.state === OfferStatus.ACCEPTED ? 'bg-gray-100 text-gray-700' : offer.state === OfferStatus.REJECTED ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'}`}>
                             {offer.state === OfferStatus.ACCEPTED ? 'تایید شده' : offer.state === OfferStatus.REJECTED ? 'رد شده' : 'در انتظار'}
                         </span>
                     </div>

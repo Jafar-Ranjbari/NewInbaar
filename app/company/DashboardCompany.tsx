@@ -304,7 +304,7 @@ const DashboardCompany: React.FC = () => {
             {/* Grid Cards */}
             <div className="grid grid-cols-2 gap-4">
               <InfoCard icon={FiShoppingBag} title="فروشگاه زنجیره ای" href="/stores" count={stores} />
-              <InfoCard icon={FiSmile} title="مشتریان عادی" href="/customers" count={regularCustomers} />
+              <InfoCard icon={FiSmile} title="مشتریان عادی" href="/company/payManagement" count={regularCustomers} />
               <InfoCard icon={FiCheckSquare} title="کالاهای ارسال شده" href="/shipped" count={shippedGoods} />
               <InfoCard icon={FiClipboard} title="کل سفارشات" href="/orders" count={totalOrders} />
             </div>
@@ -366,8 +366,8 @@ const DashboardCompany: React.FC = () => {
                 </div>
             )}
             {walletBalance > 0 && transactions.length === 1 && (
-                <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-center">
-                    <p className="text-green-700 text-sm font-semibold">
+                <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-center">
+                    <p className="text-gray-700 text-sm font-semibold">
                         <FiCheckSquare className="inline w-4 h-4 ml-1" />
                         هدیه اولین ورود به مبلغ ۱۰۰,۰۰۰ ریال با موفقیت ثبت شد!
                     </p>

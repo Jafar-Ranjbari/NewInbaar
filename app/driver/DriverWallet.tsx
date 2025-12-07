@@ -52,14 +52,14 @@ export const DriverWallet: React.FC<Props> = ({ driverID, userID }) => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-gradient-to-r from-green-600 to-green-400 rounded-2xl p-8 text-white shadow-lg">
+        <div className="bg-gradient-to-r from-gray-600 to-gray-400 rounded-2xl p-8 text-white shadow-lg">
           <div className="flex justify-between items-start mb-8">
-            <div><p className="text-green-100 mb-1">موجودی کیف پول</p><h3 className="text-4xl font-bold">{walletBalance.toLocaleString()} ریال</h3></div>
+            <div><p className="text-gray-100 mb-1">موجودی کیف پول</p><h3 className="text-4xl font-bold">{walletBalance.toLocaleString()} ریال</h3></div>
             <div className="bg-white/20 p-3 rounded-full"><Wallet size={32} /></div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <button onClick={() => handleTopUp(100000)} className="bg-white text-green-700 py-3 rounded-xl font-bold hover:bg-green-50">شارژ ۱۰۰,۰۰۰</button>
-            <button onClick={() => handleTopUp(200000)} className="bg-white text-green-700 py-3 rounded-xl font-bold hover:bg-green-50">شارژ ۲۰۰,۰۰۰</button>
+            <button onClick={() => handleTopUp(100000)} className="bg-white text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-50">شارژ ۱۰۰,۰۰۰</button>
+            <button onClick={() => handleTopUp(200000)} className="bg-white text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-50">شارژ ۲۰۰,۰۰۰</button>
           </div>
         </div>
         <div className="bg-gradient-to-r from-purple-600 to-purple-400 rounded-2xl p-8 text-white shadow-lg">
@@ -76,7 +76,7 @@ export const DriverWallet: React.FC<Props> = ({ driverID, userID }) => {
           {transactions.slice().reverse().map(tx => (
             <div key={tx.id} className="flex justify-between p-4 bg-gray-50 rounded-lg border">
               <div><p className="font-medium">{tx.description}</p><p className="text-xs text-gray-500">{new Date(tx.timestamp).toLocaleDateString('fa-IR')}</p></div>
-              <div className={`font-bold ${tx.balance_change > 0 ? 'text-green-600' : 'text-red-600'}`}>{tx.balance_change.toLocaleString()}</div>
+              <div className={`font-bold ${tx.balance_change > 0 ? 'text-gray-600' : 'text-red-600'}`}>{tx.balance_change.toLocaleString()}</div>
             </div>
           ))}
         </div>

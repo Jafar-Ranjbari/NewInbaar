@@ -31,7 +31,7 @@ export const PasswordStep: React.FC = () => {
       </button>
 
       <div className="text-center mb-8">
-        <div className="bg-indigo-100 text-indigo-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="bg-gray-100 text-gray-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
           <Lock size={32} />
         </div>
         <h2 className="text-2xl font-bold text-gray-800">خوش آمدید</h2>
@@ -48,7 +48,7 @@ export const PasswordStep: React.FC = () => {
           <input
             type="password"
             dir="ltr"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -57,7 +57,7 @@ export const PasswordStep: React.FC = () => {
 
         <button
           type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all"
+          className="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 rounded-xl transition-all"
         >
           ورود به پنل
         </button>
@@ -66,7 +66,7 @@ export const PasswordStep: React.FC = () => {
           <button
             type="button"
             onClick={() => setStep(AuthStep.FORGOT_PASSWORD_SMS)}
-            className="text-sm text-indigo-600 hover:text-indigo-800 underline"
+            className="text-sm text-gray-600 hover:text-gray-800 underline"
           >
             رمز عبور را فراموش کرده‌اید؟
           </button>

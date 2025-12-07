@@ -250,7 +250,7 @@ const DriverCarTab: FC = () => {
   if (!driverID) {
     return (
       <div className="w-full max-w-sm mx-auto bg-gray-200 p-4 min-h-screen flex items-center justify-center">
-        <div className="bg-white rounded-xl shadow-lg p-6 text-center text-yellow-700 bg-yellow-50 border border-yellow-200 w-full">
+        <div className="bg-white rounded-xl shadow-lg p-6 text-center text-gray-700 bg-gray-50 border border-gray-200 w-full">
           ❌ ابتدا پروفایل راننده را تکمیل کنید.
         </div>
       </div>

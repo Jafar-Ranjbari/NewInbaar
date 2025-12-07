@@ -108,17 +108,17 @@ export const DashboardAdmin: React.FC = () => {
                             </div>
                             <p className="text-3xl font-bold text-gray-800">{users.length}</p>
                         </div>
-                        <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-green-500">
+                        <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-gray-500">
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-gray-500 font-bold">سفارشات</h3>
-                                <Package className="text-green-500 opacity-50"/>
+                                <Package className="text-gray-500 opacity-50"/>
                             </div>
                             <p className="text-3xl font-bold text-gray-800">{orders.length}</p>
                         </div>
-                         <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-yellow-500">
+                         <div className="bg-white p-6 rounded-xl shadow-sm border-b-4 border-gray-500">
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-gray-500 font-bold">ناوگان فعال</h3>
-                                <Truck className="text-yellow-500 opacity-50"/>
+                                <Truck className="text-gray-500 opacity-50"/>
                             </div>
                             <p className="text-3xl font-bold text-gray-800">{drivers.length}</p>
                         </div>
@@ -161,7 +161,7 @@ export const DashboardAdmin: React.FC = () => {
                                          <span>{users.filter(u => u.rolename === Role.DRIVER).length}</span>
                                      </div>
                                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                         <div className="h-full bg-green-500" style={{ width: `${(users.filter(u => u.rolename === Role.DRIVER).length / users.length) * 100}%` }}></div>
+                                         <div className="h-full bg-gray-500" style={{ width: `${(users.filter(u => u.rolename === Role.DRIVER).length / users.length) * 100}%` }}></div>
                                      </div>
                                  </div>
                                  <div>
@@ -228,7 +228,7 @@ export const DashboardAdmin: React.FC = () => {
                                     <td className="p-4 text-gray-500">{ord.originProvince} - {ord.originCity}</td>
                                     <td className="p-4 text-gray-500">{ord.destinationProvince} - {ord.destinationCity}</td>
                                     <td className="p-4">
-                                        <span className={`text-xs px-2 py-1 rounded-full ${ord.status === OrderStatus.FINISHED ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                        <span className={`text-xs px-2 py-1 rounded-full ${ord.status === OrderStatus.FINISHED ? 'bg-gray-100 text-gray-700' : 'bg-gray-100 text-gray-700'}`}>
                                             {ord.status}
                                         </span>
                                     </td>
@@ -256,7 +256,7 @@ export const DashboardAdmin: React.FC = () => {
                             {payments.map(pay => (
                                 <tr key={pay.id} className="hover:bg-gray-50">
                                     <td className="p-4 text-xs text-gray-400">{pay.id}</td>
-                                    <td className="p-4 font-bold text-green-600">{pay.amount.toLocaleString()}</td>
+                                    <td className="p-4 font-bold text-gray-600">{pay.amount.toLocaleString()}</td>
                                     <td className="p-4 text-sm">{pay.payType}</td>
                                     <td className="p-4 text-sm">{pay.transactionCode}</td>
                                     <td className="p-4 text-sm">{new Date(pay.createdAt).toLocaleDateString('fa-IR')}</td>

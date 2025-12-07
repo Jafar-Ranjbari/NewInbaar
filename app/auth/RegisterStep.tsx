@@ -99,7 +99,7 @@ export const RegisterStep: React.FC = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-all mt-4 flex justify-center"
+          className="w-full bg-black hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-all mt-4 flex justify-center"
         >
           {loading ? <Loader2 className="animate-spin" /> : "ثبت نام و ورود"}
         </button>

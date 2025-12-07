@@ -42,10 +42,10 @@ import {
 const getStatusLabel = (status: OrderStatus): { label: string, color: string } => {
   switch (status) {
     case OrderStatus.NEW: return { label: "در انتظار پیشنهاد", color: "bg-blue-100 text-blue-800" };
-    case OrderStatus.DRIVER_ASSIGNED: return { label: "راننده انتخاب شد", color: "bg-yellow-100 text-yellow-800" };
+    case OrderStatus.DRIVER_ASSIGNED: return { label: "راننده انتخاب شد", color: "bg-gray-100 text-gray-800" };
     case OrderStatus.DRIVER_EN_ROUTE: return { label: "در مسیر مبدا", color: "bg-orange-100 text-orange-800" };
-    case OrderStatus.ON_ROAD: return { label: "در حال حمل", color: "bg-indigo-100 text-indigo-800" };
-    case OrderStatus.DELIVERED: return { label: "تحویل شد (در انتظار تسویه)", color: "bg-green-100 text-green-800" };
+    case OrderStatus.ON_ROAD: return { label: "در حال حمل", color: "bg-gray-100 text-gray-800" };
+    case OrderStatus.DELIVERED: return { label: "تحویل شد (در انتظار تسویه)", color: "bg-gray-100 text-gray-800" };
     case OrderStatus.FINISHED: return { label: "پایان یافته", color: "bg-gray-100 text-gray-800" };
     case OrderStatus.CANCELED: return { label: "لغو شده", color: "bg-red-100 text-red-800" };
     default: return { label: "نامشخص", color: "bg-gray-200 text-gray-700" };
@@ -168,73 +168,6 @@ export default function OrderManagement() {
     }
   };
 
-  // 5. Handle Payment Submission
-  const handlePay = async (order: Order) => {
-    if (!order.driverID) return alert("راننده برای این سفارش تخصیص داده نشده است.");
-    const amount = Number(payForm.amount);
-    if (amount <= 0) return alert("مبلغ پرداخت باید مثبت باشد.");
-
-    setIsSaving(true);
-    try {
-      // 1. ثبت پرداخت
-      await createPayment({
-        orderID: order.id,
-        driverID: order.driverID,
-        amount: amount,
-        payType: payForm.type,
-        transactionCode: payForm.code,
-        year: 1403, // مقادیر ثابت سال و ماه و روز را حذف کردم
-        month: 1,
-        day: 1,
-        date: new Date().toISOString(),
-      } as Omit<PaymentDriver, 'id' | 'createdAt'>);
-
-      // 2. آپدیت وضعیت سفارش به تحویل شد (اگر پرداخت اولیه بود)
-      const upd = await updateOrder(order.id, { status: OrderStatus.DELIVERED });
-      setOrders((prev) => prev.map((o) => (o.id === order.id ? upd : o)));
-
-      alert(`پرداخت مبلغ ${amount.toLocaleString('fa-IR')} ریال با موفقیت ثبت شد.`);
-      setPayForm({ amount: "", type: "BANK", code: "" });
-    } catch (err) {
-      console.error(err);
-      alert("خطا در ثبت پرداخت");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  // 6. Handle Review Submission and Order Finish
-  const handleReview = async (order: Order) => {
-    if (!order.driverID || !companyID) return alert("اطلاعات ناقص است");
-
-    setIsSaving(true);
-    try {
-      // 1. ثبت نظردهی
-      await createReview({
-        orderID: order.id,
-        driverID: order.driverID,
-        companyID,
-        stars: reviewForm.stars,
-        commentText: reviewForm.comment,
-        strengths: reviewForm.strengths ? [reviewForm.strengths] : [],
-        weaknesses: reviewForm.weaknesses ? [reviewForm.weaknesses] : [],
-      } as Omit<DriverReview, 'id' | 'createdAt'>);
-
-      // 2. آپدیت وضعیت به پایان یافته
-      const upd = await updateOrder(order.id, { status: OrderStatus.FINISHED });
-      setOrders((prev) => prev.map((o) => (o.id === order.id ? upd : o)));
-
-      alert("نظردهی انجام و سفارش بسته شد.");
-      setReviewForm({ stars: 5, strengths: "", weaknesses: "", comment: "" });
-      setExpanded(null);
-    } catch (err) {
-      console.error(err);
-      alert("خطا در نظردهی");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   // --- UI Rendering ---
 
   if (loading) {
@@ -310,22 +243,9 @@ export default function OrderManagement() {
                     />
                   )}
 
-                  {(o.status === OrderStatus.DELIVERED || o.status === OrderStatus.DRIVER_ASSIGNED) && o.driverID && (
-                    <ManagementActions
-                      order={o}
-                      payForm={payForm}
-                      setPayForm={setPayForm}
-                      handlePay={handlePay}
-                      reviewForm={reviewForm}
-                      setReviewForm={setReviewForm}
-                      handleReview={handleReview}
-                      isSaving={isSaving}
-                    // اینجا می‌توانستیم جزئیات راننده را هم بیاوریم
-                    />
-                  )}
-
+                  
                   {o.status === OrderStatus.FINISHED && (
-                    <div className="bg-green-50 text-green-700 p-3 rounded-lg text-center font-bold">
+                    <div className="bg-gray-50 text-gray-700 p-3 rounded-lg text-center font-bold">
                       ✅ این سفارش با موفقیت پایان یافته است.
                     </div>
                   )}
@@ -394,7 +314,7 @@ const OffersSection: React.FC<OffersProps> = ({ offers, handleAccept, isLoading,
             <button
               onClick={() => handleAccept(of)}
               disabled={isLoading}
-              className="bg-green-600 text-white px-4 py-2 rounded-xl font-bold mt-2 sm:mt-0 hover:bg-green-700 transition disabled:opacity-50 flex items-center gap-1"
+              className="bg-gray-600 text-white px-4 py-2 rounded-xl font-bold mt-2 sm:mt-0 hover:bg-gray-700 transition disabled:opacity-50 flex items-center gap-1"
             >
               {isLoading ? <Loader2 className="animate-spin w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
               قبول
@@ -403,110 +323,12 @@ const OffersSection: React.FC<OffersProps> = ({ offers, handleAccept, isLoading,
         </div>
       ))
     ) : (
-      <div className="bg-yellow-50 text-yellow-700 p-3 rounded-lg">
+      <div className="bg-gray-50 text-gray-700 p-3 rounded-lg">
         <p>در حال حاضر پیشنهادی برای این بار ثبت نشده است.</p>
       </div>
     )}
   </div>
 );
 
-// 2. Payment & Review Section (For OrderStatus.DELIVERED/DRIVER_ASSIGNED)
-interface ManagementProps {
-  order: Order;
-  payForm: { amount: string; type: PaymentDriver['payType']; code: string };
-  setPayForm: React.Dispatch<React.SetStateAction<{ amount: string; type: PaymentDriver['payType']; code: string }>>;
-  handlePay: (order: Order) => Promise<void>;
-  reviewForm: { stars: number; strengths: string; weaknesses: string; comment: string };
-  setReviewForm: React.Dispatch<React.SetStateAction<{ stars: number; strengths: string; weaknesses: string; comment: string }>>;
-  handleReview: (order: Order) => Promise<void>;
-  isSaving: boolean;
-}
-
-const ManagementActions: React.FC<ManagementProps> = ({
-  order,
-  payForm,
-  setPayForm,
-  handlePay,
-  reviewForm,
-  setReviewForm,
-  handleReview,
-  isSaving
-}) => {
-
-  const isReadyForFinish = order.status === OrderStatus.DELIVERED;
-
-  return (
-    <div className="grid grid-cols-1 gap-4">
-      {/* Payment Section */}
-      <div className={`p-4 rounded-xl shadow-inner ${isReadyForFinish ? 'bg-gray-50' : 'bg-red-50 border border-red-200'}`}>
-        <h5 className="font-bold mb-3 text-gray-700 flex items-center gap-2 border-b pb-2">
-          <CreditCard className="w-4 h-4 text-red-500" /> ثبت پرداخت (تسویه)
-        </h5>
-        <input
-          type="number"
-          placeholder="مبلغ (ریال)"
-          className="input-base mb-3"
-          value={payForm.amount}
-          onChange={(e) => setPayForm({ ...payForm, amount: e.target.value })}
-        />
-        <select
-          className="input-base mb-3 bg-white"
-          value={payForm.type}
-          onChange={(e) => setPayForm({ ...payForm, type: e.target.value as PaymentDriver['payType'] })}
-        >
-          <option value="BANK">کارت به کارت</option>
-          <option value="CASH">نقدی</option>
-          <option value="POS">دستگاه پوز</option>
-        </select>
-        <input
-          placeholder="کد رهگیری/توضیحات"
-          className="input-base mb-3"
-          value={payForm.code}
-          onChange={(e) => setPayForm({ ...payForm, code: e.target.value })}
-        />
-        <button
-          onClick={() => handlePay(order)}
-          disabled={isSaving}
-          className="bg-red-600 text-white w-full py-2 rounded-xl font-bold hover:bg-red-700 transition disabled:opacity-50 flex justify-center items-center gap-2"
-        >
-          {isSaving ? <Loader2 className="animate-spin w-5 h-5" /> : null}
-          ثبت پرداخت
-        </button>
-        {!isReadyForFinish && <p className="text-xs text-red-600 mt-2">سفارش هنوز تحویل نشده است. ثبت پرداخت صرفاً برای پیگیری داخلی است.</p>}
-      </div>
-
-      {/* Review Section */}
-      <div className={`p-4 rounded-xl shadow-inner ${isReadyForFinish ? 'bg-green-50 border border-green-200' : 'bg-gray-50'}`}>
-        <h5 className="font-bold mb-3 text-gray-700 flex items-center gap-2 border-b pb-2">
-          <Star className="w-4 h-4 text-green-600" /> نظردهی و اتمام سفارش
-        </h5>
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-sm font-medium">امتیاز:</span>
-          <input
-            type="number"
-            min="1"
-            max="5"
-            className="input-base w-16 text-center"
-            value={reviewForm.stars}
-            onChange={(e) => setReviewForm({ ...reviewForm, stars: Number(e.target.value) })}
-          /> / ۵ ستاره
-        </div>
-        <textarea
-          placeholder="نظرات، نقاط قوت و ضعف راننده..."
-          className="input-base mb-3"
-          value={reviewForm.comment}
-          onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
-        />
-        <button
-          onClick={() => handleReview(order)}
-          disabled={isSaving || !isReadyForFinish}
-          className="bg-green-600 text-white w-full py-2 rounded-xl font-bold hover:bg-green-700 transition disabled:opacity-50 flex justify-center items-center gap-2"
-        >
-          {isSaving ? <Loader2 className="animate-spin w-5 h-5" /> : null}
-          ثبت نهایی و اتمام سفارش
-        </button>
-        {!isReadyForFinish && <p className="text-xs text-red-600 mt-2">ابتدا باید وضعیت سفارش به "تحویل شد" تغییر یابد.</p>}
-      </div>
-    </div>
-  );
-};
+ 
+ 

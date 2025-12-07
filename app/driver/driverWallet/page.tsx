@@ -66,14 +66,14 @@ const TransactionItem = ({ tx }: { tx: WalletTransaction }) => {
     <div className="flex items-center justify-between py-3 border-b last:border-b-0">
       <div className="flex items-center">
         <div className="bg-gray-100 rounded-xl w-12 h-12 flex items-center justify-center ml-4">
-          {isCredit ? <FiPlus className="text-green-500 w-6 h-6" /> : <MessageSquare className="text-red-500 w-6 h-6" />}
+          {isCredit ? <FiPlus className="text-gray-500 w-6 h-6" /> : <MessageSquare className="text-red-500 w-6 h-6" />}
         </div>
         <div>
           <p className="font-bold text-gray-800">{tx.description}</p>
           <p className="text-xs text-gray-500 mt-1">{date}</p>
         </div>
       </div>
-      <p className={`font-bold text-base tracking-wider ${isCredit ? 'text-green-600' : 'text-red-600'}`}>
+      <p className={`font-bold text-base tracking-wider ${isCredit ? 'text-gray-600' : 'text-red-600'}`}>
         {isCredit ? '+' : '-'} {amountInTomans} <span className="text-sm text-gray-600">تومان</span>
       </p>
     </div>

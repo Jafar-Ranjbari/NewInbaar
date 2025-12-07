@@ -33,7 +33,7 @@ export const CompanyWallet: React.FC<Props> = ({ companyID, userID }) => {
                  {txs.slice().reverse().map(t => (
                      <div key={t.id} className="flex justify-between py-2 border-b">
                          <span>{t.description}</span>
-                         <span className={t.balance_change > 0 ? 'text-green-600' : 'text-red-600'}>{t.balance_change}</span>
+                         <span className={t.balance_change > 0 ? 'text-gray-600' : 'text-red-600'}>{t.balance_change}</span>
                      </div>
                  ))}
              </div>

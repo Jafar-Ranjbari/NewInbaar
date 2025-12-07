@@ -10,7 +10,7 @@ const Overview = ({ users, orders, drivers, payments }: any) => (
             <h3 className="text-gray-500">کاربران</h3>
             <p className="text-2xl font-bold">{users.length}</p>
         </div>
-        <div className="bg-white p-4 rounded shadow border-b-4 border-green-500">
+        <div className="bg-white p-4 rounded shadow border-b-4 border-gray-500">
              <h3 className="text-gray-500">سفارشات</h3>
              <p className="text-2xl font-bold">{orders.length}</p>
         </div>
