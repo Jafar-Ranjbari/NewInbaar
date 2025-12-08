@@ -82,7 +82,7 @@ const ProfileScreen: React.FC = () => {
       title: "کیف پول",
       subtitle: "شارژ کیف پول، واریز و برداشت",
       badge: { count: 1, color: "bg-red-600" },
-      link: "/driver/wallet",
+      link: "/driver/driverWallet",
     },
     {
       icon: <BsLock />,

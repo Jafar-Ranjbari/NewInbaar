@@ -44,7 +44,7 @@ export const DriverCarTab: React.FC<Props> = ({ driverID }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm p-6">
         <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <Truck className="text-gray-500" /> اطلاعات ناوگان
+            <Truck className="text-gray-500" /> اطلاعات خودرو
         </h2>
         <form onSubmit={handleSave} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

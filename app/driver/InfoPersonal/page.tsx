@@ -1,10 +1,8 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 import { useAuthStore } from '@/app/store/useAuthStore'; // مسیر استور خود را چک کنید
 import { Driver } from '@/app/types';
 import { getDriverByUserId } from '../driverService';
@@ -48,30 +46,14 @@ export default function ProfilePage() {
   if (!currentUser) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* دکمه بازگشت به داشبورد */}
-        <div className="mb-6">
-          <Link 
-            href="/driver/panelDriver" 
-            className="inline-flex items-center text-gray-600 hover:text-blue-600 transition-colors"
-          >
-            <ArrowRight className="ml-2" size={20} />
-            بازگشت به داشبورد
-          </Link>
-        </div>
+    <>
+      {/* فراخوانی کامپوننت شما */}
+      <DriverProfile
+        driver={driverData || {}}
+        userID={currentUser.id}
+        onUpdate={handleUpdate}
+      />
+    </>
 
-        <div className="space-y-6">
-          <h1 className="text-2xl font-bold text-gray-800">ویرایش پروفایل</h1>
-          
-          {/* فراخوانی کامپوننت شما */}
-          <DriverProfile 
-            driver={driverData || {}} 
-            userID={currentUser.id} 
-            onUpdate={handleUpdate} 
-          />
-        </div>
-      </div>
-    </div>
   );
 }

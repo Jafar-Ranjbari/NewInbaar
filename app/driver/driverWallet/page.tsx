@@ -14,12 +14,7 @@ import { TbTruckDelivery } from 'react-icons/tb';
 import IncreaseBalanceModal from './IncreaseBalanceModal'; // کامپوننت موجود
 import SmsRechargeModal from './SmsRechargeModal';
 import ReportFinanacrdriver from '../financeReporttDriver/ReportFinanacrdriver';
-// ********** کامپوننت شارژ پیامک **********
-// فرض می‌کنیم SmsRechargeModal از فایل مجزا import شده است
-
-// -------------------------------------------------------------------------------------
-// کامپوننت‌های کمکی (همان کدهای اولیه)
-// -------------------------------------------------------------------------------------
+import PageLayout from '@/app/components/PageLayout';
 
 const BalanceDetailRow = ({ icon, label, amount, actionHandler }: { icon: React.ReactNode, label: string, amount: number | string, actionHandler: () => void }) => (
   <div className="flex items-center justify-between bg-white/20 p-3 rounded-2xl mb-2">
@@ -173,81 +168,75 @@ const DriverWallet: React.FC = () => {
   if (loading && transactions.length === 0) return <div className="p-4 text-center">در حال بارگذاری...</div>;
 
   return (
-    <div dir="rtl" className="bg-white min-h-screen font-[sans-serif] text-gray-900 w-full max-w-md mx-auto">
-      <header className="bg-black text-white text-center py-4 sticky top-0 z-10">
-        <h1 className="text-lg font-bold">کیف پول</h1>
-      </header>
-      <main className="p-4 pb-20">
+    <PageLayout title="کیف پول">
+      {/* کارت کیف پول */}
+      <div className="bg-gradient-to-b from-blue-500 to-blue-600 rounded-3xl p-5 shadow-lg relative overflow-hidden">
+        <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full"></div>
+        <div className="absolute -bottom-16 -right-5 w-48 h-48 bg-white/10 rounded-full"></div>
+        <div className="relative z-10">
 
-        {/* کارت کیف پول */}
-        <div className="bg-gradient-to-b from-blue-500 to-blue-600 rounded-3xl p-5 shadow-lg relative overflow-hidden">
-          <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full"></div>
-          <div className="absolute -bottom-16 -right-5 w-48 h-48 bg-white/10 rounded-full"></div>
-          <div className="relative z-10">
-
-            {/* موجودی کل */}
-            <div className="flex flex-col items-center text-white mb-6">
-              <p className="text-sm opacity-80">موجودی کیف پول</p>
-              <div className="flex items-baseline mt-2">
-                <span className="text-5xl font-bold tracking-wider">{walletBalanceInTomans.toLocaleString('fa-IR')}</span>
-                <span className="text-base font-semibold mr-2">تومان</span>
-              </div>
+          {/* موجودی کل */}
+          <div className="flex flex-col items-center text-white mb-6">
+            <p className="text-sm opacity-80">موجودی کیف پول</p>
+            <div className="flex items-baseline mt-2">
+              <span className="text-5xl font-bold tracking-wider">{walletBalanceInTomans.toLocaleString('fa-IR')}</span>
+              <span className="text-base font-semibold mr-2">تومان</span>
             </div>
-
-            {/* جزئیات موجودی‌ها */}
-            <BalanceDetailRow
-              icon={<TbTruckDelivery size={24} />}
-              label="موجودی کیف پول شارژ سفارش"
-              amount={walletBalance}
-              actionHandler={() => setShowRechargeModal(true)}
-            />
-
-            <BalanceDetailRow
-              icon={<FiMail size={24} />}
-              label="اعتبار پیامک (عدد)"
-              amount={`${smsBalance} عدد`}
-              actionHandler={() => setShowSmsRechargeModal(true)} // <--- باز کردن مودال پیامک
-            />
-
           </div>
-        </div>
 
-        {/* دکمه‌های اقدام */}
-        <div className="my-8 flex justify-around items-start">
-          <ActionButton
-            icon={<FiMail size={28} />}
-            label="شارژ پیامک"
-            onClick={() => setShowSmsRechargeModal(true)} // <--- باز کردن مودال پیامک
-            disabled={loading}
+          {/* جزئیات موجودی‌ها */}
+          <BalanceDetailRow
+            icon={<TbTruckDelivery size={24} />}
+            label="موجودی کیف پول شارژ سفارش"
+            amount={walletBalance}
+            actionHandler={() => setShowRechargeModal(true)}
           />
-          <ActionButton
-            icon={<FiPlus size={32} />}
-            label="افزایش موجودی"
-            onClick={() => setShowRechargeModal(true)}
-            disabled={loading}
-          />
-          <ActionButton
-            icon={<IoStatsChart size={28} />}
-            label="گزارش مالی"
-            onClick={()=>setshowreportFinacaeModal(true)}
+
+          <BalanceDetailRow
+            icon={<FiMail size={24} />}
+            label="اعتبار پیامک (عدد)"
+            amount={`${smsBalance} عدد`}
+            actionHandler={() => setShowSmsRechargeModal(true)} // <--- باز کردن مودال پیامک
           />
 
         </div>
+      </div>
 
-        {/* سوابق تراکنش */}
-        <div className="mt-8 px-2">
-          <h2 className="font-bold text-lg text-gray-800 mb-4">سوابق تراکنش</h2>
-          <div className="space-y-2">
-            {transactions.length > 0 ? (
-              transactions.slice().reverse().map(tx => (
-                <TransactionItem key={tx.id} tx={tx} />
-              ))
-            ) : (
-              <p className="text-center text-gray-500">تراکنشی یافت نشد.</p>
-            )}
-          </div>
+      {/* دکمه‌های اقدام */}
+      <div className="my-8 flex justify-around items-start">
+        <ActionButton
+          icon={<FiMail size={28} />}
+          label="شارژ پیامک"
+          onClick={() => setShowSmsRechargeModal(true)} // <--- باز کردن مودال پیامک
+          disabled={loading}
+        />
+        <ActionButton
+          icon={<FiPlus size={32} />}
+          label="افزایش موجودی"
+          onClick={() => setShowRechargeModal(true)}
+          disabled={loading}
+        />
+        <ActionButton
+          icon={<IoStatsChart size={28} />}
+          label="گزارش مالی"
+          onClick={() => setshowreportFinacaeModal(true)}
+        />
+
+      </div>
+
+      {/* سوابق تراکنش */}
+      <div className="mt-8 px-2">
+        <h2 className="font-bold text-lg text-gray-800 mb-4">سوابق تراکنش</h2>
+        <div className="space-y-2">
+          {transactions.length > 0 ? (
+            transactions.slice().reverse().map(tx => (
+              <TransactionItem key={tx.id} tx={tx} />
+            ))
+          ) : (
+            <p className="text-center text-gray-500">تراکنشی یافت نشد.</p>
+          )}
         </div>
-      </main>
+      </div>
 
       {/* کامپوننت مودال افزایش موجودی (Wallet) */}
       <IncreaseBalanceModal
@@ -263,12 +252,12 @@ const DriverWallet: React.FC = () => {
         onBuySms={handleBuySms} // اتصال به تابع جدید خرید پیامک
       />
 
-       {/*  کامپوننت  گزارش  فروش  .... */}
+      {/*  کامپوننت  گزارش  فروش  .... */}
       <ReportFinanacrdriver
         isVisible={showreportFinacaeModal}
         onClose={() => setshowreportFinacaeModal(false)}
       />
-    </div>
+    </PageLayout>
   );
 };
 

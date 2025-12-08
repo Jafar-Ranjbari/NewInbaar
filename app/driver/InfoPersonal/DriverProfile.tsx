@@ -14,12 +14,7 @@ interface Props {
   userID: string;
   onUpdate: (d: Driver) => void;
 }
-
-// --- Reusable UI Components (Based on the provided new structure) ---
-
-// این کامپوننت‌ها به دلایل زیر تغییر کمی داشته‌اند:
-// 1. اضافه شدن type: string به onChange
-// 2. تغییرات جزئی در استایل برای انطباق بهتر با Tailwind
+ 
 
 interface FormFieldProps {
   label: string;
@@ -326,17 +321,17 @@ export const DriverProfile: React.FC<Props> = ({ driver, userID, onUpdate }) => 
       
       <div className="w-full max-w-md bg-white shadow-lg flex flex-col min-h-screen">
         <header className="bg-black text-white p-6 sticky top-0 z-10">
-          <div className="flex justify-between items-center">
+          <h2 className="text-center text-lg font-semibold mt-4">تکمیل اطلاعات راننده</h2>
+          <div className="flex  items-center">
             <div className="bg-gray-700 p-3 rounded-full">
               <FaUser className="text-white text-3xl" />
             </div>
             <div className="text-right">
               {/* می‌توان از اطلاعات فعلی راننده استفاده کرد یا یک نام placeholder */}
-              <h1 className="text-xl font-bold">{formData.firstName || 'راننده'} {formData.lastName || 'عزیز'}</h1>
-              <p className="text-sm text-gray-300">سلام کاپیتان</p>
+              <h1 className="text-l font-bold">{formData.firstName || 'راننده'} {formData.lastName || 'عزیز'}</h1>
+              <p className="text-sm text-gray-300">سلام کاپیتان    </p>
             </div>
           </div>
-          <h2 className="text-center text-lg font-semibold mt-4">تکمیل اطلاعات راننده</h2>
         </header>
 
         <form onSubmit={handleSubmit}>
@@ -344,7 +339,7 @@ export const DriverProfile: React.FC<Props> = ({ driver, userID, onUpdate }) => 
             
             {/* اطلاعات فردی */}
             <section>
-              <h3 className="font-bold text-right mb-4 border-b pb-2 text-gray-800">اطلاعات هویتی و تماس</h3>
+              <h3 className="font-bold text-right mb-4 border-b pb-2 text-gray-800">     اطلاعات فردی  </h3>
               <div className="grid grid-cols-2 gap-x-4 gap-y-4">
                 
                 <FormField 
@@ -522,7 +517,7 @@ export const DriverProfile: React.FC<Props> = ({ driver, userID, onUpdate }) => 
           </main>
 
           {/* دکمه ذخیره */}
-          <footer className="p-6 bg-white sticky bottom-0 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)]">
+          <footer className="p-6 bg-white shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)]">
             <button 
               type="submit" 
               disabled={loading}
@@ -536,94 +531,4 @@ export const DriverProfile: React.FC<Props> = ({ driver, userID, onUpdate }) => 
       </div>
     </div>
   );
-};
-
-// import React, { useState } from 'react';
-// import { Driver } from '../../types';
-// import { createOrUpdateDriver } from '../driverService';
-// import { UserCircle, Save, Loader2 } from 'lucide-react';
-
-// interface Props {
-//   driver: Partial<Driver>;
-//   userID: string;
-//   onUpdate: (d: Driver) => void;
-// }
-
-// export const DriverProfile: React.FC<Props> = ({ driver, userID, onUpdate }) => {
-//   const [formData, setFormData] = useState<Partial<Driver>>(driver);
-//   const [loading, setLoading] = useState(false);
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     setLoading(true);
-//     try {
-//       const saved = await createOrUpdateDriver({ ...formData, userID });
-//       onUpdate(saved);
-//       alert('اطلاعات راننده ذخیره شد');
-//     } catch (err) {
-//       alert('خطا در ذخیره اطلاعات');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="bg-white rounded-xl shadow-sm p-6">
-//         <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-//             <UserCircle className="text-gray-500" /> اطلاعات هویتی
-//         </h2>
-//         <form onSubmit={handleSubmit} className="space-y-6">
-//             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">نام</label>
-//                     <input 
-//                         type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
-//                         value={formData.firstName || ''} onChange={e => setFormData({...formData, firstName: e.target.value})} required
-//                     />
-//                 </div>
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">نام خانوادگی</label>
-//                     <input 
-//                         type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
-//                         value={formData.lastName || ''} onChange={e => setFormData({...formData, lastName: e.target.value})} required
-//                     />
-//                 </div>
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">موبایل اصلی</label>
-//                     <input 
-//                         type="text" disabled className="w-full p-2 border rounded-lg bg-gray-100 text-gray-500"
-//                         value={formData.mobile1 || ''}
-//                     />
-//                 </div>
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">استان</label>
-//                     <input 
-//                         type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
-//                         value={formData.province || ''} onChange={e => setFormData({...formData, province: e.target.value})}
-//                     />
-//                 </div>
-//                 <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">شهر</label>
-//                     <input 
-//                         type="text" className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
-//                         value={formData.city || ''} onChange={e => setFormData({...formData, city: e.target.value})}
-//                     />
-//                 </div>
-//                     <div>
-//                     <label className="block text-sm font-medium text-gray-700 mb-1">شماره شبا</label>
-//                     <input 
-//                         type="text" dir="ltr" placeholder="IR..." className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-gray-500"
-//                         value={formData.shebaNumber || ''} onChange={e => setFormData({...formData, shebaNumber: e.target.value})}
-//                     />
-//                 </div>
-//             </div>
-//             <div className="pt-4 border-t">
-//                 <button type="submit" disabled={loading} className="bg-gray-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-700 flex items-center gap-2 disabled:opacity-70">
-//                     {loading ? <Loader2 className="animate-spin" size={20}/> : <Save size={20}/>}
-//                     ذخیره تغییرات
-//                 </button>
-//             </div>
-//         </form>
-//     </div>
-//   );
-// };
+}; 

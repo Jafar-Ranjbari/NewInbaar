@@ -265,7 +265,7 @@ const DriverCarTab: FC = () => {
         <header className="bg-black text-white pt-8 pb-4 mb-10 rounded-b-[3rem] sticky top-0 z-20">
           <div className="px-4">
             <h1 className="text-center text-lg font-bold mb-4 flex items-center justify-center gap-2">
-                <TruckIcon size={20} className="text-white" /> اطلاعات ناوگان
+                <TruckIcon size={20} className="text-white" /> اطلاعات  خودرو
             </h1>
             <div className="flex items-center justify-start gap-3">
               <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center border-4 border-gray-500">
@@ -380,7 +380,7 @@ const DriverCarTab: FC = () => {
           </main>
 
           {/* Footer / Save Button */}
-          <footer className="fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-white p-4 border-t border-gray-200 z-50 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.1)]">
+          <footer className="left-0 right-0 max-w-sm mx-auto   p-4 border-t border-gray-200 z-50 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.1)]">
             <button
               type="submit"
               disabled={loading}
