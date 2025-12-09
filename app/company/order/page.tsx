@@ -1,692 +1,74 @@
-//  "use client";
+ "use client"
 
-// import React, { useState, useEffect, useCallback } from "react";
-// import { useAuthStore } from "../../store/useAuthStore";
-// import { 
-//     Order, 
-//     OrderOffer, 
-//     OrderStatus, 
-//     OfferStatus, 
-//     PaymentDriver, 
-//     DriverReview,
-//     CompanyType
-// } from "../../types";
-// import {
-//     getCompanyOrders,
-//     createOrder,
-//     getOffersByOrderId,
-//     updateOfferStatus,
-//     updateOrder,
-//     createCompanyWalletTransaction,
-//     createDriverWalletTransaction,
-//     createPayment,
-//     createReview,
-//     getCompanyByUserId,
-//     createCompany // برای اطمینان از وجود شرکت
-// } from "../companyService"; // فرض می‌کنیم companyService در این مسیر است
-// import {
-//     PackagePlus,
-//     FileText,
-//     Users,
-//     CheckCircle,
-//     XCircle,
-//     CreditCard,
-//     Star,
-//     Loader2,
-//     Truck,
-//     MapPin,
-//     Calendar
-// } from "lucide-react";
-
-// // Helper Function for Order Status Display
-// const getStatusLabel = (status: OrderStatus): { label: string, color: string } => {
-//     switch (status) {
-//         case OrderStatus.NEW: return { label: "در انتظار پیشنهاد", color: "bg-blue-100 text-blue-800" };
-//         case OrderStatus.DRIVER_ASSIGNED: return { label: "راننده انتخاب شد", color: "bg-gray-100 text-gray-800" };
-//         case OrderStatus.DRIVER_EN_ROUTE: return { label: "در مسیر مبدا", color: "bg-orange-100 text-orange-800" };
-//         case OrderStatus.ON_ROAD: return { label: "در حال حمل", color: "bg-gray-100 text-gray-800" };
-//         case OrderStatus.DELIVERED: return { label: "تحویل شد (در انتظار تسویه)", color: "bg-gray-100 text-gray-800" };
-//         case OrderStatus.FINISHED: return { label: "پایان یافته", color: "bg-gray-100 text-gray-800" };
-//         case OrderStatus.CANCELED: return { label: "لغو شده", color: "bg-red-100 text-red-800" };
-//         default: return { label: "نامشخص", color: "bg-gray-200 text-gray-700" };
-//     }
-// };
-
-// // --- Component ---
-// export default function OrderManagement() {
-//     const { currentUser } = useAuthStore();
-//     const [companyID, setCompanyID] = useState<string | null>(null);
-
-//     const [orders, setOrders] = useState<Order[]>([]);
-//     const [newOrder, setNewOrder] = useState<Partial<Order>>({ weightType: "KG", loadType: "عمومی", receiverName: "" });
-//     const [expanded, setExpanded] = useState<string | null>(null);
-//     const [offers, setOffers] = useState<OrderOffer[]>([]);
-//     const [loading, setLoading] = useState(true);
-//     const [isSaving, setIsSaving] = useState(false);
-
-//     // Payment & Review Forms
-//     const [payForm, setPayForm] = useState({
-//         amount: "",
-//         type: "BANK" as PaymentDriver['payType'],
-//         code: "",
-//     });
-//     const [reviewForm, setReviewForm] = useState({
-//         stars: 5,
-//         strengths: "",
-//         weaknesses: "",
-//         comment: "",
-//     });
-
-//     // 1. Load CompanyID and Orders
-//     useEffect(() => {
-//         let mounted = true;
-//         const loadCompanyAndOrders = async () => {
-//             if (!currentUser) {
-//                 setLoading(false);
-//                 return;
-//             }
-//             try {
-//                 let comp = await getCompanyByUserId(currentUser.id);
-//                 if (!comp) {
-//                      // فرض می‌کنیم شرکت در این مرحله برای کاربر ساخته می‌شود
-//                     comp = await createCompany(currentUser.id, CompanyType.REAL);
-//                 }
-//                 const cID = comp.id;
-//                 setCompanyID(cID);
-
-//                 if (mounted) {
-//                     const res = await getCompanyOrders(cID);
-//                     setOrders(res || []);
-//                 }
-//             } catch (err) {
-//                 console.error("Error loading company or orders:", err);
-//                 if (mounted) setOrders([]);
-//             } finally {
-//                 if (mounted) setLoading(false);
-//             }
-//         };
-
-//         loadCompanyAndOrders();
-
-//         return () => {
-//             mounted = false;
-//         };
-//     }, [currentUser]);
-
-//     // 2. Handle New Order Creation
-//     const handleCreate = async (e: React.FormEvent) => {
-//         e.preventDefault();
-//         if (!companyID) return alert("ابتدا اطلاعات شرکت باید بارگذاری شود.");
-//         if (!newOrder.originCity || !newOrder.destinationCity || !newOrder.goodType || !newOrder.weight || !newOrder.deliveryDate || !newOrder.receiverName) {
-//             return alert("لطفاً تمام فیلدهای اصلی را پر کنید.");
-//         }
-
-//         setIsSaving(true);
-//         try {
-//             const o = await createOrder({
-//                 ...newOrder,
-//                 companyID,
-//                 status: OrderStatus.NEW,
-//                 weight: Number(newOrder.weight || 0),
-//                 originProvince: "نامشخص", // باید در فرم اضافه شود
-//                 destinationProvince: "نامشخص", // باید در فرم اضافه شود
-//             } as Omit<Order, 'id' | 'createdAt'>);
-
-//             setOrders((prev) => [...prev, o]);
-//             alert("سفارش با موفقیت ثبت و در انتظار پیشنهاد است.");
-//             setNewOrder({ weightType: "KG", loadType: "عمومی", receiverName: "" }); // Reset form
-//         } catch (err) {
-//             console.error(err);
-//             alert("خطا در ایجاد سفارش");
-//         } finally {
-//             setIsSaving(false);
-//         }
-//     };
-
-//     // 3. Handle Expand and Load Offers
-//     const handleExpand = async (order: Order) => {
-//         const next = expanded === order.id ? null : order.id;
-//         setExpanded(next);
-
-//         if (next === order.id && order.status === OrderStatus.NEW) {
-//             setOffers([]); // Clear old offers
-//             setIsSaving(true); // Using saving state for offers loading
-//             try {
-//                 const res = await getOffersByOrderId(order.id);
-//                 setOffers(res.filter(offer => offer.state === OfferStatus.PENDING) || []); // Only show PENDING offers
-//             } catch (err) {
-//                 console.error(err);
-//                 setOffers([]);
-//             } finally {
-//                 setIsSaving(false);
-//             }
-//         }
-//     };
-
-//     // 4. Handle Offer Acceptance
-//     const handleAccept = async (offer: OrderOffer) => {
-//         if (!companyID) return alert("اطلاعات شرکت ناقص است.");
-//         if (offer.price <= 0) return alert("قیمت پیشنهاد معتبر نیست.");
-
-//         setIsSaving(true);
-//         try {
-//             // 1. آپدیت وضعیت پیشنهاد به Accepted
-//             await updateOfferStatus(offer.id, OfferStatus.ACCEPTED);
-
-//             // 2. آپدیت وضعیت سفارش و تخصیص راننده
-//             const upd = await updateOrder(offer.orderID, {
-//                 status: OrderStatus.DRIVER_ASSIGNED,
-//                 driverID: offer.driverID,
-//             });
-
-//             // 3. کسر کارمزد از شرکت (مثلا 50,000 ریال)
-//             await createCompanyWalletTransaction(companyID, -50000, "کارمزد تخصیص راننده");
-
-//             // 4. کسر کارمزد از راننده (اختیاری - اگر راننده هم کارمزد می‌دهد)
-//             // await createDriverWalletTransaction(offer.driverID, -50000, "کارمزد تخصیص بار");
-
-//             // 5. به‌روزرسانی لیست سفارش‌ها
-//             setOrders((prev) => prev.map((o) => (o.id === offer.orderID ? upd : o)));
-//             setExpanded(null);
-//             alert(`پیشنهاد راننده ${offer.driverName || offer.driverID} با موفقیت قبول شد. مبلغ 50,000 ریال بابت کارمزد از کیف پول کسر گردید.`);
-//         } catch (err) {
-//             console.error(err);
-//             alert("خطا در قبول پیشنهاد. لطفاً مجدداً تلاش کنید.");
-//         } finally {
-//             setIsSaving(false);
-//         }
-//     };
-
-//     // 5. Handle Payment Submission
-//     const handlePay = async (order: Order) => {
-//         if (!order.driverID) return alert("راننده برای این سفارش تخصیص داده نشده است.");
-//         const amount = Number(payForm.amount);
-//         if (amount <= 0) return alert("مبلغ پرداخت باید مثبت باشد.");
-
-//         setIsSaving(true);
-//         try {
-//              // 1. ثبت پرداخت
-//             await createPayment({
-//                 orderID: order.id,
-//                 driverID: order.driverID,
-//                 amount: amount,
-//                 payType: payForm.type,
-//                 transactionCode: payForm.code,
-//                 year: 1403, // مقادیر ثابت سال و ماه و روز را حذف کردم
-//                 month: 1,
-//                 day: 1,
-//                 date: new Date().toISOString(),
-//             } as Omit<PaymentDriver, 'id' | 'createdAt'>);
-
-//             // 2. آپدیت وضعیت سفارش به تحویل شد (اگر پرداخت اولیه بود)
-//             const upd = await updateOrder(order.id, { status: OrderStatus.DELIVERED });
-//             setOrders((prev) => prev.map((o) => (o.id === order.id ? upd : o)));
-
-//             alert(`پرداخت مبلغ ${amount.toLocaleString('fa-IR')} ریال با موفقیت ثبت شد.`);
-//             setPayForm({ amount: "", type: "BANK", code: "" });
-//         } catch (err) {
-//             console.error(err);
-//             alert("خطا در ثبت پرداخت");
-//         } finally {
-//             setIsSaving(false);
-//         }
-//     };
-
-//     // 6. Handle Review Submission and Order Finish
-//     const handleReview = async (order: Order) => {
-//         if (!order.driverID || !companyID) return alert("اطلاعات ناقص است");
-
-//         setIsSaving(true);
-//         try {
-//             // 1. ثبت نظردهی
-//             await createReview({
-//                 orderID: order.id,
-//                 driverID: order.driverID,
-//                 companyID,
-//                 stars: reviewForm.stars,
-//                 commentText: reviewForm.comment,
-//                 strengths: reviewForm.strengths ? [reviewForm.strengths] : [],
-//                 weaknesses: reviewForm.weaknesses ? [reviewForm.weaknesses] : [],
-//             } as Omit<DriverReview, 'id' | 'createdAt'>);
-
-//             // 2. آپدیت وضعیت به پایان یافته
-//             const upd = await updateOrder(order.id, { status: OrderStatus.FINISHED });
-//             setOrders((prev) => prev.map((o) => (o.id === order.id ? upd : o)));
-
-//             alert("نظردهی انجام و سفارش بسته شد.");
-//             setReviewForm({ stars: 5, strengths: "", weaknesses: "", comment: "" });
-//             setExpanded(null);
-//         } catch (err) {
-//             console.error(err);
-//             alert("خطا در نظردهی");
-//         } finally {
-//             setIsSaving(false);
-//         }
-//     };
-
-//     // --- UI Rendering ---
-
-//     if (loading) {
-//         return (
-//             <div className="flex justify-center items-center h-48 bg-gray-100 p-6">
-//                 <Loader2 className="animate-spin text-blue-600 w-8 h-8" />
-//                 <p className="mr-2 text-gray-600">در حال بارگذاری سفارشات...</p>
-//             </div>
-//         );
-//     }
-
-//     if (!currentUser) return <div className="p-6 text-center text-red-500">لطفا ابتدا وارد شوید.</div>;
-
-//     return (
-//         <div dir="rtl" className="max-w-xl mx-auto p-4 sm:p-6 bg-gray-100 min-h-screen space-y-8">
-//             <h1 className="text-2xl font-bold text-gray-800 border-b pb-2 flex items-center gap-2">
-//                 <Truck className="text-blue-600" /> مدیریت بارها و سفارشات
-//             </h1>
-
-//             {/* 1. New Order Form (Mobile-Optimized) */}
-//             <div className="bg-white rounded-xl shadow-lg p-5 border-t-4 border-blue-600">
-//                 <h2 className="font-bold text-xl mb-4 flex items-center gap-2 text-gray-700">
-//                     <PackagePlus className="text-blue-500" /> ثبت بار جدید
-//                 </h2>
-//                 <form onSubmit={handleCreate} className="grid gap-4 grid-cols-2">
-//                     {/* Destination/Origin */}
-//                     <input
-//                         placeholder="شهر مبدا (الزامی)"
-//                         className="input-base col-span-2 sm:col-span-1"
-//                         value={newOrder.originCity || ""}
-//                         onChange={(e) => setNewOrder({ ...newOrder, originCity: e.target.value })}
-//                         required
-//                     />
-//                     <input
-//                         placeholder="شهر مقصد (الزامی)"
-//                         className="input-base col-span-2 sm:col-span-1"
-//                         value={newOrder.destinationCity || ""}
-//                         onChange={(e) => setNewOrder({ ...newOrder, destinationCity: e.target.value })}
-//                         required
-//                     />
-//                     {/* Good Type / Weight */}
-//                     <input
-//                         placeholder="نوع کالا (الزامی)"
-//                         className="input-base col-span-2 sm:col-span-1"
-//                         value={newOrder.goodType || ""}
-//                         onChange={(e) => setNewOrder({ ...newOrder, goodType: e.target.value })}
-//                         required
-//                     />
-//                     <div className="flex col-span-2 sm:col-span-1">
-//                          <input
-//                             type="number"
-//                             placeholder="وزن (الزامی)"
-//                             className="input-base rounded-l-none border-r-0"
-//                             value={newOrder.weight ? String(newOrder.weight) : ""}
-//                             onChange={(e) => setNewOrder({ ...newOrder, weight: Number(e.target.value) })}
-//                             required
-//                         />
-//                         <select
-//                             className="input-base w-20 rounded-r-none border-l-0 bg-gray-50 text-sm"
-//                             value={newOrder.weightType || "KG"}
-//                             onChange={(e) => setNewOrder({ ...newOrder, weightType: e.target.value as 'KG' | 'TON' })}
-//                         >
-//                             <option value="KG">کیلو</option>
-//                             <option value="TON">تن</option>
-//                         </select>
-//                     </div>
-//                     {/* Delivery Date / Receiver Name */}
-//                     <input
-//                         type="date"
-//                         className="input-base col-span-2 sm:col-span-1"
-//                         placeholder="تاریخ تحویل"
-//                         value={newOrder.deliveryDate || ""}
-//                         onChange={(e) => setNewOrder({ ...newOrder, deliveryDate: e.target.value })}
-//                         required
-//                     />
-//                      <input
-//                         placeholder="نام گیرنده (الزامی)"
-//                         className="input-base col-span-2 sm:col-span-1"
-//                         value={newOrder.receiverName || ""}
-//                         onChange={(e) => setNewOrder({ ...newOrder, receiverName: e.target.value })}
-//                         required
-//                     />
-
-//                     <button 
-//                         type="submit" 
-//                         disabled={isSaving} 
-//                         className="col-span-2 bg-blue-600 text-white rounded-xl px-4 py-3 font-bold hover:bg-blue-700 transition flex justify-center items-center gap-2 disabled:opacity-70 mt-2"
-//                     >
-//                         {isSaving ? <Loader2 className="animate-spin w-5 h-5" /> : <PackagePlus className="w-5 h-5" />}
-//                         {isSaving ? 'در حال ثبت...' : 'ثبت نهایی سفارش'}
-//                     </button>
-//                 </form>
-//             </div>
-
-//             {/* 2. Orders List */}
-//             <div className="space-y-4">
-//                 <h2 className="text-xl font-bold text-gray-700 flex items-center gap-2 border-b pb-2">
-//                     <FileText className="text-gray-500" /> لیست سفارشات ({orders.length})
-//                 </h2>
-
-//                 {orders.length === 0 && !loading ? (
-//                     <p className="text-center text-gray-500 p-8 bg-white rounded-xl shadow-sm">هنوز سفارشی ثبت نکرده‌اید.</p>
-//                 ) : (
-//                     orders.slice().reverse().map((o) => (
-//                         <div key={o.id} className="bg-white rounded-xl shadow-md border-t-4 border-gray-300 p-4">
-//                             <div className="flex justify-between items-center mb-3">
-//                                 <h4 className="font-extrabold text-gray-800 text-lg">
-//                                     {o.goodType}
-//                                 </h4>
-//                                 <span className={`text-xs font-semibold px-3 py-1 rounded-full ${getStatusLabel(o.status).color}`}>
-//                                     {getStatusLabel(o.status).label}
-//                                 </span>
-//                             </div>
-
-//                             <div className="text-sm text-gray-600 space-y-1 mb-3">
-//                                 <div className="flex items-center gap-2">
-//                                     <MapPin className="w-4 h-4 text-red-500" />
-//                                     <span className="font-medium">مسیر:</span> {o.originCity} ← {o.destinationCity}
-//                                 </div>
-//                                 <div className="flex items-center gap-2">
-//                                     <Calendar className="w-4 h-4 text-blue-500" />
-//                                     <span className="font-medium">تاریخ تحویل:</span> {o.deliveryDate}
-//                                 </div>
-//                                 <div className="flex items-center gap-2">
-//                                     <FileText className="w-4 h-4 text-gray-500" />
-//                                     <span className="font-medium">وزن:</span> {o.weight} {o.weightType}
-//                                 </div>
-//                             </div>
-
-//                             <button 
-//                                 onClick={() => handleExpand(o)} 
-//                                 className="w-full text-blue-600 font-bold py-2 border-t mt-2 hover:bg-blue-50 transition rounded-b-lg"
-//                             >
-//                                 {expanded === o.id ? "▲ بستن جزئیات" : "▼ مدیریت سفارش"}
-//                             </button>
-
-//                             {/* Expanded Content */}
-//                             {expanded === o.id && (
-//                                 <div className="mt-4 pt-4 border-t border-gray-200">
-
-//                                     {o.status === OrderStatus.NEW && (
-//                                         <OffersSection 
-//                                             offers={offers} 
-//                                             handleAccept={handleAccept} 
-//                                             isLoading={isSaving} 
-//                                             orderID={o.id}
-//                                         />
-//                                     )}
-
-//                                     {(o.status === OrderStatus.DELIVERED || o.status === OrderStatus.DRIVER_ASSIGNED) && o.driverID && (
-//                                         <ManagementActions
-//                                             order={o}
-//                                             payForm={payForm}
-//                                             setPayForm={setPayForm}
-//                                             handlePay={handlePay}
-//                                             reviewForm={reviewForm}
-//                                             setReviewForm={setReviewForm}
-//                                             handleReview={handleReview}
-//                                             isSaving={isSaving}
-//                                             // اینجا می‌توانستیم جزئیات راننده را هم بیاوریم
-//                                         />
-//                                     )}
-
-//                                     {o.status === OrderStatus.FINISHED && (
-//                                         <div className="bg-gray-50 text-gray-700 p-3 rounded-lg text-center font-bold">
-//                                             ✅ این سفارش با موفقیت پایان یافته است.
-//                                         </div>
-//                                     )}
-//                                 </div>
-//                             )}
-//                         </div>
-//                     ))
-//                 )}
-//             </div>
-
-
-//             <style jsx>{`
-//                 .input-base { 
-//                     width: 100%; 
-//                     padding: 0.65rem 1rem; 
-//                     border: 1px solid #d1d5db; /* gray-300 */
-//                     border-radius: 0.75rem; 
-//                     outline: none; 
-//                     transition: border-color 0.2s, box-shadow 0.2s;
-//                     font-size: 0.95rem;
-//                 }
-//                 .input-base:focus { 
-//                     border-color: #3b82f6; /* blue-500 */
-//                     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); 
-//                 }
-//                 textarea.input-base {
-//                     min-height: 80px;
-//                 }
-//             `}</style>
-//         </div>
-//     );
-// }
-
-// // --------------------------- Helper Components ---------------------------
-
-// // 1. Offers Section (For OrderStatus.NEW)
-// interface OffersProps {
-//     offers: OrderOffer[];
-//     handleAccept: (offer: OrderOffer) => Promise<void>;
-//     isLoading: boolean;
-//     orderID: string;
-// }
-
-// const OffersSection: React.FC<OffersProps> = ({ offers, handleAccept, isLoading, orderID }) => (
-//     <div className="space-y-3">
-//         <h5 className="font-bold text-gray-700 flex items-center gap-2 mb-2">
-//             <Users className="w-4 h-4 text-blue-500" /> پیشنهادات فعال
-//         </h5>
-//         {isLoading ? (
-//              <div className="text-center py-4 text-blue-600">
-//                 <Loader2 className="animate-spin inline-block w-5 h-5" /> در حال بارگذاری پیشنهادات...
-//             </div>
-//         ) : offers.length > 0 ? (
-//             offers.map((of) => (
-//                 <div key={of.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50 p-3 rounded-lg border">
-//                     <div className="flex flex-col">
-//                         <span className="font-bold text-blue-600 text-lg">
-//                             {of.price.toLocaleString('fa-IR')} ریال
-//                         </span>
-//                         <span className="text-sm text-gray-600">
-//                             راننده: {of.driverName || 'ناشناس'} 
-//                             {of.deliveryEstimateTime && ` | تحویل: ${of.deliveryEstimateTime}`}
-//                         </span>
-//                     </div>
-//                     {of.state === OfferStatus.PENDING && (
-//                         <button
-//                             onClick={() => handleAccept(of)}
-//                             disabled={isLoading}
-//                             className="bg-gray-600 text-white px-4 py-2 rounded-xl font-bold mt-2 sm:mt-0 hover:bg-gray-700 transition disabled:opacity-50 flex items-center gap-1"
-//                         >
-//                             {isLoading ? <Loader2 className="animate-spin w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
-//                             قبول
-//                         </button>
-//                     )}
-//                 </div>
-//             ))
-//         ) : (
-//             <div className="bg-gray-50 text-gray-700 p-3 rounded-lg">
-//                 <p>در حال حاضر پیشنهادی برای این بار ثبت نشده است.</p>
-//             </div>
-//         )}
-//     </div>
-// );
-
-// // 2. Payment & Review Section (For OrderStatus.DELIVERED/DRIVER_ASSIGNED)
-// interface ManagementProps {
-//     order: Order;
-//     payForm: { amount: string; type: PaymentDriver['payType']; code: string };
-//     setPayForm: React.Dispatch<React.SetStateAction<{ amount: string; type: PaymentDriver['payType']; code: string }>>;
-//     handlePay: (order: Order) => Promise<void>;
-//     reviewForm: { stars: number; strengths: string; weaknesses: string; comment: string };
-//     setReviewForm: React.Dispatch<React.SetStateAction<{ stars: number; strengths: string; weaknesses: string; comment: string }>>;
-//     handleReview: (order: Order) => Promise<void>;
-//     isSaving: boolean;
-// }
-
-// const ManagementActions: React.FC<ManagementProps> = ({ 
-//     order, 
-//     payForm, 
-//     setPayForm, 
-//     handlePay, 
-//     reviewForm, 
-//     setReviewForm, 
-//     handleReview,
-//     isSaving
-// }) => {
-
-//     const isReadyForFinish = order.status === OrderStatus.DELIVERED;
-
-//     return (
-//         <div className="grid grid-cols-1 gap-4">
-//             {/* Payment Section */}
-//             <div className={`p-4 rounded-xl shadow-inner ${isReadyForFinish ? 'bg-gray-50' : 'bg-red-50 border border-red-200'}`}>
-//                 <h5 className="font-bold mb-3 text-gray-700 flex items-center gap-2 border-b pb-2">
-//                     <CreditCard className="w-4 h-4 text-red-500" /> ثبت پرداخت (تسویه)
-//                 </h5>
-//                 <input
-//                     type="number"
-//                     placeholder="مبلغ (ریال)"
-//                     className="input-base mb-3"
-//                     value={payForm.amount}
-//                     onChange={(e) => setPayForm({ ...payForm, amount: e.target.value })}
-//                 />
-//                 <select
-//                     className="input-base mb-3 bg-white"
-//                     value={payForm.type}
-//                     onChange={(e) => setPayForm({ ...payForm, type: e.target.value as PaymentDriver['payType'] })}
-//                 >
-//                     <option value="BANK">کارت به کارت</option>
-//                     <option value="CASH">نقدی</option>
-//                     <option value="POS">دستگاه پوز</option>
-//                 </select>
-//                  <input
-//                     placeholder="کد رهگیری/توضیحات"
-//                     className="input-base mb-3"
-//                     value={payForm.code}
-//                     onChange={(e) => setPayForm({ ...payForm, code: e.target.value })}
-//                 />
-//                 <button 
-//                     onClick={() => handlePay(order)} 
-//                     disabled={isSaving} 
-//                     className="bg-red-600 text-white w-full py-2 rounded-xl font-bold hover:bg-red-700 transition disabled:opacity-50 flex justify-center items-center gap-2"
-//                 >
-//                     {isSaving ? <Loader2 className="animate-spin w-5 h-5" /> : null}
-//                     ثبت پرداخت
-//                 </button>
-//                 {!isReadyForFinish && <p className="text-xs text-red-600 mt-2">سفارش هنوز تحویل نشده است. ثبت پرداخت صرفاً برای پیگیری داخلی است.</p>}
-//             </div>
-
-//             {/* Review Section */}
-//             <div className={`p-4 rounded-xl shadow-inner ${isReadyForFinish ? 'bg-gray-50 border border-gray-200' : 'bg-gray-50'}`}>
-//                 <h5 className="font-bold mb-3 text-gray-700 flex items-center gap-2 border-b pb-2">
-//                     <Star className="w-4 h-4 text-gray-600" /> نظردهی و اتمام سفارش
-//                 </h5>
-//                  <div className="flex items-center gap-2 mb-3">
-//                     <span className="text-sm font-medium">امتیاز:</span>
-//                     <input 
-//                         type="number" 
-//                         min="1" 
-//                         max="5" 
-//                         className="input-base w-16 text-center"
-//                         value={reviewForm.stars}
-//                         onChange={(e) => setReviewForm({ ...reviewForm, stars: Number(e.target.value) })}
-//                     /> / ۵ ستاره
-//                 </div>
-//                 <textarea
-//                     placeholder="نظرات، نقاط قوت و ضعف راننده..."
-//                     className="input-base mb-3"
-//                     value={reviewForm.comment}
-//                     onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
-//                 />
-//                 <button 
-//                     onClick={() => handleReview(order)} 
-//                     disabled={isSaving || !isReadyForFinish} 
-//                     className="bg-gray-600 text-white w-full py-2 rounded-xl font-bold hover:bg-gray-700 transition disabled:opacity-50 flex justify-center items-center gap-2"
-//                 >
-//                     {isSaving ? <Loader2 className="animate-spin w-5 h-5" /> : null}
-//                     ثبت نهایی و اتمام سفارش
-//                 </button>
-//                 {!isReadyForFinish && <p className="text-xs text-red-600 mt-2">ابتدا باید وضعیت سفارش به "تحویل شد" تغییر یابد.</p>}
-//             </div>
-//         </div>
-//     );
-// };
-
-
-
-"use client";
-
-import React, { useState, useEffect, useCallback } from "react";
-import { useAuthStore } from "../../store/useAuthStore";
-import {
-  Order,
-  OrderOffer,
-  OrderStatus,
-  OfferStatus,
-  PaymentDriver,
-  DriverReview,
-  CompanyType
-} from "../../types";
-import {
-  getCompanyOrders,
-  createOrder,
-  getOffersByOrderId,
-  updateOfferStatus,
-  updateOrder,
-  createCompanyWalletTransaction,
-  createDriverWalletTransaction,
-  createPayment,
-  createReview,
-  getCompanyByUserId,
-  createCompany // برای اطمینان از وجود شرکت
-} from "../companyService"; // فرض می‌کنیم companyService در این مسیر است
+import React, { useState, useEffect } from "react";
+import { useAuthStore } from "./../../store/useAuthStore";
+import { Order, OrderStatus, CompanyType } from "./../../types"; // مطمئن شوید Order شامل فیلدهای جدید است
+import { createOrder, createCompany, getCompanyByUserId } from "./../companyService";
 import {
   PackagePlus,
-  FileText,
-  Users,
-  CheckCircle,
-  XCircle,
-  CreditCard,
-  Star,
   Loader2,
-  Truck,
-  MapPin,
-  Calendar
+  Search,
+  ChevronRight,
+  ChevronLeft,
+  CloudRain,
+  Sun,
+  CloudLightning,
+  Cloud,
+  Thermometer,
 } from "lucide-react";
 
+import { FormInput, FormSelect, FormTextArea, InputLabel } from "./FormComponents";
+import {
+  PROVINCE_OPTIONS,
+  CITY_OPTIONS,
+  CARGO_TYPE_OPTIONS,
+  PACKAGE_OPTIONS,
+  VEHICLE_TYPE_OPTIONS,
+  PAYMENT_OPTIONS,
+  WEATHER_DAYS
+} from "./../../constants";
 
-
-// --- Component ---
-export default function OrderManagement() {
+export default function OrderManagementNew() {
   const { currentUser } = useAuthStore();
   const [companyID, setCompanyID] = useState<string | null>(null);
-
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [newOrder, setNewOrder] = useState<Partial<Order>>({ weightType: "KG", loadType: "عمومی", receiverName: "" });
-  const [expanded, setExpanded] = useState<string | null>(null);
-  const [offers, setOffers] = useState<OrderOffer[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [customerType, setCustomerType] = useState<'regular' | 'chain'>('regular');
+  
+  // 💥 تمامی فیلدهای اضافی به State اصلی newOrder منتقل شدند 💥
 
-  // Payment & Review Forms
-  const [payForm, setPayForm] = useState({
-    amount: "",
-    type: "BANK" as PaymentDriver['payType'],
-    code: "",
-  });
-  const [reviewForm, setReviewForm] = useState({
-    stars: 5,
-    strengths: "",
-    weaknesses: "",
-    comment: "",
+  // --- State for the Order (شامل فیلدهای جدید) ---
+  const [newOrder, setNewOrder] = useState<Partial<Order>>({
+    weightType: "KG",
+    loadType: CARGO_TYPE_OPTIONS[5], // Default to 'عمومی'
+    originProvince: PROVINCE_OPTIONS[0],
+    originCity: '',
+    destinationProvince: PROVINCE_OPTIONS[0],
+    destinationCity: '',
+    goodType: CARGO_TYPE_OPTIONS[0],
+    weight: 0,
+    deliveryDate: new Date().toISOString().substring(0, 10),
+    requiredVehicleType: VEHICLE_TYPE_OPTIONS[0],
+    receiverName: '',
+    loadDescription: '',
+    size: '',
+    
+    // فیلدهای جدید (باید در Order interface تعریف شده باشند)
+    invoiceNumber: '',
+    receiverContact: '',
+    packageType: PACKAGE_OPTIONS[0],
+    packageCount: '1',
+    goodsValue: undefined, // یا 0
+    paymentMethod: PAYMENT_OPTIONS[0],
+    unloadingAddress: '', 
+    unloadingFromHour: '',
+    unloadingToHour: '',
   });
 
-  // 1. Load CompanyID and Orders
+  // 1. Load CompanyID
   useEffect(() => {
     let mounted = true;
-    const loadCompanyAndOrders = async () => {
+    const loadCompany = async () => {
       if (!currentUser) {
         setLoading(false);
         return;
@@ -694,53 +76,73 @@ export default function OrderManagement() {
       try {
         let comp = await getCompanyByUserId(currentUser.id);
         if (!comp) {
-          // فرض می‌کنیم شرکت در این مرحله برای کاربر ساخته می‌شود
           comp = await createCompany(currentUser.id, CompanyType.REAL);
         }
-        const cID = comp.id;
-        setCompanyID(cID);
-
         if (mounted) {
-          const res = await getCompanyOrders(cID);
-          setOrders(res || []);
+          setCompanyID(comp.id);
         }
       } catch (err) {
-        console.error("Error loading company or orders:", err);
-        if (mounted) setOrders([]);
+        console.error("Error loading company:", err);
       } finally {
         if (mounted) setLoading(false);
       }
     };
 
-    loadCompanyAndOrders();
-
-    return () => {
-      mounted = false;
-    };
+    loadCompany();
+    return () => { mounted = false; };
   }, [currentUser]);
 
   // 2. Handle New Order Creation
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!companyID) return alert("ابتدا اطلاعات شرکت باید بارگذاری شود.");
-    if (!newOrder.originCity || !newOrder.destinationCity || !newOrder.goodType || !newOrder.weight || !newOrder.deliveryDate || !newOrder.receiverName) {
-      return alert("لطفاً تمام فیلدهای اصلی را پر کنید.");
+
+    // Enhanced Validation Check (استفاده از فیلدهای جدید در newOrder)
+    if (
+        !newOrder.invoiceNumber ||
+        !newOrder.receiverName ||
+        !newOrder.receiverContact ||
+        !newOrder.originCity ||
+        !newOrder.destinationCity ||
+        !newOrder.packageType ||
+        !newOrder.packageCount ||
+        !newOrder.goodType ||
+        !newOrder.requiredVehicleType ||
+        !newOrder.weight || (newOrder.weight <= 0) ||
+        !newOrder.unloadingAddress ||
+        !newOrder.unloadingFromHour ||
+        !newOrder.unloadingToHour ||
+        !newOrder.deliveryDate
+    ) {
+        return alert("لطفاً تمام فیلدهای ستاره‌دار (الزامی) را پر کنید.");
     }
 
     setIsSaving(true);
     try {
-      const o = await createOrder({
+      
+      const orderData = {
         ...newOrder,
         companyID,
         status: OrderStatus.NEW,
-        weight: Number(newOrder.weight || 0),
-        originProvince: "نامشخص", // باید در فرم اضافه شود
-        destinationProvince: "نامشخص", // باید در فرم اضافه شود
-      } as Omit<Order, 'id' | 'createdAt'>);
+        weight: Number(newOrder.weight),
+        // فیلدهای زیر اکنون جداگانه ارسال می‌شوند و نیازی به ادغام ندارند:
+        loadDescription: newOrder.loadDescription || '', // فقط توضیحات اضافی
+        goodsValue: newOrder.goodsValue ? Number(newOrder.goodsValue) : 0, 
+      } as Omit<Order, 'id' | 'createdAt'>;
 
-      setOrders((prev) => [...prev, o]);
-      alert("سفارش با موفقیت ثبت و در انتظار پیشنهاد است.");
-      setNewOrder({ weightType: "KG", loadType: "عمومی", receiverName: "" }); // Reset form
+      const o = await createOrder(orderData);
+
+      alert(`سفارش با موفقیت ثبت شد: ${o.id}`);
+      
+      // Reset form state (شامل فیلدهای جدید):
+      setNewOrder({
+          weightType: "KG", loadType: CARGO_TYPE_OPTIONS[5], originProvince: PROVINCE_OPTIONS[0], destinationProvince: PROVINCE_OPTIONS[0], weight: 0, requiredVehicleType: VEHICLE_TYPE_OPTIONS[0],
+          originCity: '', destinationCity: '', goodType: CARGO_TYPE_OPTIONS[0], receiverName: '', deliveryDate: new Date().toISOString().substring(0, 10), loadDescription: '', size: '',
+          
+          invoiceNumber: '', receiverContact: '', packageType: PACKAGE_OPTIONS[0], packageCount: '1', goodsValue: undefined, paymentMethod: PAYMENT_OPTIONS[0], unloadingAddress: '', unloadingFromHour: '', unloadingToHour: '',
+      });
+
     } catch (err) {
       console.error(err);
       alert("خطا در ایجاد سفارش");
@@ -749,124 +151,13 @@ export default function OrderManagement() {
     }
   };
 
-  // 3. Handle Expand and Load Offers
-  const handleExpand = async (order: Order) => {
-    const next = expanded === order.id ? null : order.id;
-    setExpanded(next);
-
-    if (next === order.id && order.status === OrderStatus.NEW) {
-      setOffers([]); // Clear old offers
-      setIsSaving(true); // Using saving state for offers loading
-      try {
-        const res = await getOffersByOrderId(order.id);
-        setOffers(res.filter(offer => offer.state === OfferStatus.PENDING) || []); // Only show PENDING offers
-      } catch (err) {
-        console.error(err);
-        setOffers([]);
-      } finally {
-        setIsSaving(false);
-      }
-    }
-  };
-
-  // 4. Handle Offer Acceptance
-  const handleAccept = async (offer: OrderOffer) => {
-    if (!companyID) return alert("اطلاعات شرکت ناقص است.");
-    if (offer.price <= 0) return alert("قیمت پیشنهاد معتبر نیست.");
-
-    setIsSaving(true);
-    try {
-      // 1. آپدیت وضعیت پیشنهاد به Accepted
-      await updateOfferStatus(offer.id, OfferStatus.ACCEPTED);
-
-      // 2. آپدیت وضعیت سفارش و تخصیص راننده
-      const upd = await updateOrder(offer.orderID, {
-        status: OrderStatus.DRIVER_ASSIGNED,
-        driverID: offer.driverID,
-      });
-
-      // 3. کسر کارمزد از شرکت (مثلا 50,000 ریال)
-      await createCompanyWalletTransaction(companyID, -50000, "کارمزد تخصیص راننده");
-
-      // 4. کسر کارمزد از راننده (اختیاری - اگر راننده هم کارمزد می‌دهد)
-      // await createDriverWalletTransaction(offer.driverID, -50000, "کارمزد تخصیص بار");
-
-      // 5. به‌روزرسانی لیست سفارش‌ها
-      setOrders((prev) => prev.map((o) => (o.id === offer.orderID ? upd : o)));
-      setExpanded(null);
-      alert(`پیشنهاد راننده ${offer.driverName || offer.driverID} با موفقیت قبول شد. مبلغ 50,000 ریال بابت کارمزد از کیف پول کسر گردید.`);
-    } catch (err) {
-      console.error(err);
-      alert("خطا در قبول پیشنهاد. لطفاً مجدداً تلاش کنید.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  // 5. Handle Payment Submission
-  const handlePay = async (order: Order) => {
-    if (!order.driverID) return alert("راننده برای این سفارش تخصیص داده نشده است.");
-    const amount = Number(payForm.amount);
-    if (amount <= 0) return alert("مبلغ پرداخت باید مثبت باشد.");
-
-    setIsSaving(true);
-    try {
-      // 1. ثبت پرداخت
-      await createPayment({
-        orderID: order.id,
-        driverID: order.driverID,
-        amount: amount,
-        payType: payForm.type,
-        transactionCode: payForm.code,
-        year: 1403, // مقادیر ثابت سال و ماه و روز را حذف کردم
-        month: 1,
-        day: 1,
-        date: new Date().toISOString(),
-      } as Omit<PaymentDriver, 'id' | 'createdAt'>);
-
-      // 2. آپدیت وضعیت سفارش به تحویل شد (اگر پرداخت اولیه بود)
-      const upd = await updateOrder(order.id, { status: OrderStatus.DELIVERED });
-      setOrders((prev) => prev.map((o) => (o.id === order.id ? upd : o)));
-
-      alert(`پرداخت مبلغ ${amount.toLocaleString('fa-IR')} ریال با موفقیت ثبت شد.`);
-      setPayForm({ amount: "", type: "BANK", code: "" });
-    } catch (err) {
-      console.error(err);
-      alert("خطا در ثبت پرداخت");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  // 6. Handle Review Submission and Order Finish
-  const handleReview = async (order: Order) => {
-    if (!order.driverID || !companyID) return alert("اطلاعات ناقص است");
-
-    setIsSaving(true);
-    try {
-      // 1. ثبت نظردهی
-      await createReview({
-        orderID: order.id,
-        driverID: order.driverID,
-        companyID,
-        stars: reviewForm.stars,
-        commentText: reviewForm.comment,
-        strengths: reviewForm.strengths ? [reviewForm.strengths] : [],
-        weaknesses: reviewForm.weaknesses ? [reviewForm.weaknesses] : [],
-      } as Omit<DriverReview, 'id' | 'createdAt'>);
-
-      // 2. آپدیت وضعیت به پایان یافته
-      const upd = await updateOrder(order.id, { status: OrderStatus.FINISHED });
-      setOrders((prev) => prev.map((o) => (o.id === order.id ? upd : o)));
-
-      alert("نظردهی انجام و سفارش بسته شد.");
-      setReviewForm({ stars: 5, strengths: "", weaknesses: "", comment: "" });
-      setExpanded(null);
-    } catch (err) {
-      console.error(err);
-      alert("خطا در نظردهی");
-    } finally {
-      setIsSaving(false);
+  const getWeatherIcon = (iconName: string, className: string) => {
+    switch (iconName) {
+      case 'storm': return <CloudLightning className={className} />;
+      case 'rain': return <CloudRain className={className} />;
+      case 'sun': return <Sun className={className} />;
+      case 'partly-cloudy': return <Cloud className={className} />;
+      default: return <Sun className={className} />;
     }
   };
 
@@ -874,9 +165,9 @@ export default function OrderManagement() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-48 bg-gray-100 p-6">
-        <Loader2 className="animate-spin text-blue-600 w-8 h-8" />
-        <p className="mr-2 text-gray-600">در حال بارگذاری سفارشات...</p>
+      <div className="flex justify-center items-center h-screen bg-white p-6">
+        <Loader2 className="animate-spin text-black w-8 h-8" />
+        <p className="mr-2 text-gray-600">در حال بارگذاری اطلاعات شرکت...</p>
       </div>
     );
   }
@@ -884,108 +175,321 @@ export default function OrderManagement() {
   if (!currentUser) return <div className="p-6 text-center text-red-500">لطفا ابتدا وارد شوید.</div>;
 
   return (
-    <div dir="rtl" className="max-w-xl mx-auto p-4 sm:p-6 bg-gray-100 min-h-screen space-y-8">
-      <h1 className="text-2xl font-bold text-gray-800 border-b pb-2 flex items-center gap-2">
-        <Truck className="text-blue-600" /> مدیریت بارها و سفارشات
-      </h1>
+    <div className="min-h-screen bg-white w-full max-w-md mx-auto shadow-xl overflow-hidden flex flex-col relative pb-24">
 
-      {/* 1. New Order Form (Mobile-Optimized) */}
-      <div className="bg-white rounded-xl shadow-lg p-5 border-t-4 border-blue-600">
-        <h2 className="font-bold text-xl mb-4 flex items-center gap-2 text-gray-700">
-          <PackagePlus className="text-blue-500" /> ثبت بار جدید
-        </h2>
-        <form onSubmit={handleCreate} className="grid gap-4 grid-cols-2">
-          {/* Destination/Origin */}
-          <input
-            placeholder="شهر مبدا (الزامی)"
-            className="input-base col-span-2 sm:col-span-1"
-            value={newOrder.originCity || ""}
-            onChange={(e) => setNewOrder({ ...newOrder, originCity: e.target.value })}
-            required
-          />
-          <input
-            placeholder="شهر مقصد (الزامی)"
-            className="input-base col-span-2 sm:col-span-1"
-            value={newOrder.destinationCity || ""}
-            onChange={(e) => setNewOrder({ ...newOrder, destinationCity: e.target.value })}
-            required
-          />
-          {/* Good Type / Weight */}
-          <input
-            placeholder="نوع کالا (الزامی)"
-            className="input-base col-span-2 sm:col-span-1"
-            value={newOrder.goodType || ""}
-            onChange={(e) => setNewOrder({ ...newOrder, goodType: e.target.value })}
-            required
-          />
-          <div className="flex col-span-2 sm:col-span-1">
-            <input
-              type="number"
-              placeholder="وزن (الزامی)"
-              className="input-base rounded-l-none border-r-0"
-              value={newOrder.weight ? String(newOrder.weight) : ""}
-              onChange={(e) => setNewOrder({ ...newOrder, weight: Number(e.target.value) })}
-              required
-            />
-            <select
-              className="input-base w-20 rounded-r-none border-l-0 bg-gray-50 text-sm"
-              value={newOrder.weightType || "KG"}
-              onChange={(e) => setNewOrder({ ...newOrder, weightType: e.target.value as 'KG' | 'TON' })}
-            >
-              <option value="KG">کیلو</option>
-              <option value="TON">تن</option>
-            </select>
-          </div>
-          {/* Delivery Date / Receiver Name */}
-          <input
-            type="date"
-            className="input-base col-span-2 sm:col-span-1"
-            placeholder="تاریخ تحویل"
-            value={newOrder.deliveryDate || ""}
-            onChange={(e) => setNewOrder({ ...newOrder, deliveryDate: e.target.value })}
-            required
-          />
-          <input
-            placeholder="نام گیرنده (الزامی)"
-            className="input-base col-span-2 sm:col-span-1"
-            value={newOrder.receiverName || ""}
-            onChange={(e) => setNewOrder({ ...newOrder, receiverName: e.target.value })}
-            required
-          />
+      {/* Header Title */}
+      <header className="pt-6 pb-4 px-4 text-center">
+        <h1 className="text-lg font-bold text-gray-900">ثبت سفارش حمل بار</h1>
+      </header>
 
+      <main className="flex-1 px-4 space-y-5 overflow-y-auto no-scrollbar">
+
+        {/* Toggle Switch */}
+        <div className="bg-gray-200 rounded-full p-1 flex relative h-10 items-center">
           <button
-            type="submit"
-            disabled={isSaving}
-            className="col-span-2 bg-blue-600 text-white rounded-xl px-4 py-3 font-bold hover:bg-blue-700 transition flex justify-center items-center gap-2 disabled:opacity-70 mt-2"
+            onClick={() => setCustomerType('regular')}
+            className={`flex-1 text-sm font-medium rounded-full h-full transition-all duration-300 z-10 ${customerType === 'regular' ? 'text-white' : 'text-gray-500'
+              }`}
           >
-            {isSaving ? <Loader2 className="animate-spin w-5 h-5" /> : <PackagePlus className="w-5 h-5" />}
-            {isSaving ? 'در حال ثبت...' : 'ثبت نهایی سفارش'}
+            مشتریان عادی
           </button>
+          <button
+            onClick={() => setCustomerType('chain')}
+            className={`flex-1 text-sm font-medium rounded-full h-full transition-all duration-300 z-10 ${customerType === 'chain' ? 'text-white' : 'text-gray-500'
+              }`}
+          >
+            فروشگاه زنجیره ای
+          </button>
+
+          {/* Animated Background Pill */}
+          <div
+            className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-black rounded-full transition-all duration-300 ${customerType === 'regular' ? 'right-1' : 'right-[50%]'
+              }`}
+          />
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="جستجو نام مشتری"
+            className="w-full bg-gray-100 rounded-2xl py-3 pr-4 pl-10 text-sm focus:outline-none focus:ring-1 focus:ring-gray-300"
+          />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+        </div>
+
+        {/* Weather Widget */}
+        <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+          {/* Days Scroller */}
+          <div className="flex items-center justify-between mb-4 text-gray-400 text-xs">
+            <ChevronRight className="w-4 h-4 text-orange-400" />
+            <div className="flex gap-4 overflow-x-auto no-scrollbar px-2">
+              {WEATHER_DAYS.map((day, idx) => (
+                <div key={idx} className={`flex flex-col items-center gap-1 min-w-[3rem] ${day.isActive ? 'text-black font-bold' : ''}`}>
+                  <span>{day.dayName}</span>
+                  {getWeatherIcon(day.icon, `w-6 h-6 ${day.isActive ? 'text-gray-800' : 'text-gray-400'}`)}
+                </div>
+              ))}
+            </div>
+            <ChevronLeft className="w-4 h-4 text-orange-400" />
+          </div>
+
+          {/* Detailed Weather Info */}
+          <div className="flex items-end justify-between px-2">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1">
+                <Thermometer className="w-5 h-5 text-gray-800" />
+                <span className="text-3xl font-bold text-gray-800">30°</span>
+              </div>
+              <span className="text-xs text-gray-500 mt-1">Real Feel</span>
+            </div>
+            <span className="text-lg font-bold text-gray-800 pb-1">شیراز</span>
+          </div>
+        </div>
+
+        {/* New Order Section Title */}
+        <h2 className="text-right text-lg font-bold text-gray-900 mt-6 flex items-center gap-2">
+          <PackagePlus className="w-5 h-5 text-gray-800" /> سفارش جدید
+        </h2>
+
+        {/* Form Fields - Styled to match the desired look */}
+        <form onSubmit={handleCreate} className="space-y-4">
+
+          {/* Invoice Number */}
+          <FormInput
+            label="شماره فاکتور / شماره درخواست"
+            required
+            value={newOrder.invoiceNumber || ""}
+            onChange={(val) => setNewOrder({ ...newOrder, invoiceNumber: val })}
+          />
+
+          {/* Row: Name & Contact */}
+          <div className="flex gap-3">
+            <FormInput
+              label="شماره تماس گیرنده"
+              required
+              className="flex-1"
+              type="tel"
+              value={newOrder.receiverContact || ""}
+              onChange={(val) => setNewOrder({ ...newOrder, receiverContact: val })}
+            />
+            <FormInput
+              label="نام مشتری"
+              required
+              className="flex-1"
+              value={newOrder.receiverName || ""}
+              onChange={(val) => setNewOrder({ ...newOrder, receiverName: val })}
+            />
+          </div>
+
+          {/* Origin Section - Styled as a row */}
+          <div className="flex gap-3">
+            <FormSelect
+              label="شهر مبدا"
+              required
+              className="flex-1"
+              options={CITY_OPTIONS} // Ideally filtered by province
+              value={newOrder.originCity || ""}
+              onChange={(val) => setNewOrder({ ...newOrder, originCity: val })}
+            />
+            <FormSelect
+              label="استان مبدا"
+              required
+              className="flex-1"
+              options={PROVINCE_OPTIONS}
+              value={newOrder.originProvince || PROVINCE_OPTIONS[0]}
+              onChange={(val) => setNewOrder({ ...newOrder, originProvince: val })}
+            />
+          </div>
+
+          {/* Destination Section - Styled as a row */}
+          <div className="flex gap-3">
+            <FormSelect
+              label="شهر مقصد"
+              required
+              className="flex-1"
+              options={CITY_OPTIONS} // Ideally filtered by province
+              value={newOrder.destinationCity || ""}
+              onChange={(val) => setNewOrder({ ...newOrder, destinationCity: val })}
+            />
+            <FormSelect
+              label="استان مقصد"
+              required
+              className="flex-1"
+              options={PROVINCE_OPTIONS}
+              value={newOrder.destinationProvince || PROVINCE_OPTIONS[0]}
+              onChange={(val) => setNewOrder({ ...newOrder, destinationProvince: val })}
+            />
+          </div>
+
+          {/* Row: Count & Package Type */}
+          <div className="flex gap-3">
+            <FormSelect
+              label="نوع بسته بندی"
+              required
+              className="flex-1"
+              options={PACKAGE_OPTIONS}
+              value={newOrder.packageType || PACKAGE_OPTIONS[0]}
+              onChange={(val) => setNewOrder({ ...newOrder, packageType: val })}
+            />
+            <FormSelect
+              label="تعداد بسته"
+              required
+              className="flex-1"
+              options={['1', '2', '3', 'بیشتر']}
+              value={newOrder.packageCount || '1'}
+              onChange={(val) => setNewOrder({ ...newOrder, packageCount: val })}
+            />
+          </div>
+
+          {/* Blue Info Box */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+            <p className="text-xs text-gray-700">
+              حداکثر زمان تقریبی بارگیری از لحظه رسیدن خودرو N دقیقه می باشد
+            </p>
+          </div>
+
+          {/* Red Warning Text */}
+          <div className="flex items-start gap-2 px-1">
+            <div className="min-w-[6px] h-[6px] rounded-full bg-red-500 mt-1.5"></div>
+            <p className="text-[10px] leading-relaxed text-gray-500 text-justify">
+              شرکت محترم ، بارگیری بیش از زمان اعلام شده مشمول هزینه خواهد بود. به ازای هر <span className="font-bold text-gray-700">30 دقیقه</span> تاخیر مبلغ <span className="font-bold text-gray-700">100.000</span> تومان به کرایه راننده اضافه می گردد
+            </p>
+          </div>
+
+          {/* Row: Vehicle Type & Cargo Type */}
+          <div className="flex gap-3">
+            <FormSelect
+              label="نوع کالا"
+              required
+              options={CARGO_TYPE_OPTIONS}
+              className="flex-1"
+              value={newOrder.goodType || CARGO_TYPE_OPTIONS[0]}
+              onChange={(val) => setNewOrder({ ...newOrder, goodType: val })}
+            />
+            <FormSelect
+              label="نوع خودرو درخواستی"
+              required
+              options={VEHICLE_TYPE_OPTIONS}
+              className="flex-1"
+              value={newOrder.requiredVehicleType || VEHICLE_TYPE_OPTIONS[0]}
+              onChange={(val) => setNewOrder({ ...newOrder, requiredVehicleType: val })}
+            />
+          </div>
+
+          {/* Row: Volume & Weight */}
+          <div className="flex gap-3">
+            <FormInput
+              label="وزن"
+              required
+              type="number"
+              suffix="کیلوگرم"
+              className="flex-1"
+              value={newOrder.weight || ""}
+              onChange={(val) => setNewOrder({ ...newOrder, weight: Number(val) })}
+            />
+            <FormInput
+              label="حجم (اختیاری)"
+              className="flex-1"
+              value={newOrder.size || ""}
+              onChange={(val) => setNewOrder({ ...newOrder, size: val })}
+            />
+          </div>
+
+          {/* Row: Value & Payment */}
+          <div className="flex gap-3">
+            <FormSelect
+              label="نحوه پرداخت کرایه"
+              required={false}
+              className="flex-1"
+              options={PAYMENT_OPTIONS}
+              value={newOrder.paymentMethod || PAYMENT_OPTIONS[0]}
+              onChange={(val) => setNewOrder({ ...newOrder, paymentMethod: val })}
+            />
+            <FormInput
+              label="ارزش کالا (اختیاری)"
+              suffix="ریال"
+              type="number"
+              className="flex-1"
+              value={newOrder.goodsValue || ""}
+              onChange={(val) => setNewOrder({ ...newOrder, goodsValue: Number(val) })}
+            />
+          </div>
+
+          {/* Delivery Date */}
+          <FormInput
+            label="تاریخ تحویل مورد انتظار"
+            required
+            type="date"
+            value={newOrder.deliveryDate || ""}
+            onChange={(val) => setNewOrder({ ...newOrder, deliveryDate: val })}
+          />
+
+          {/* Delivery Hours */}
+          <div className="w-full">
+            <InputLabel label="ساعت کار انبار تحویل گیرنده" required />
+
+            <div className="flex gap-3">
+
+              {/* تا ساعت */}
+              <div className="flex-1 bg-gray-100 rounded-lg p-3 flex flex-col">
+                <span className="text-xs text-gray-500 mb-1">تا ساعت</span>
+                <input
+                  type="time"
+                  value={newOrder.unloadingToHour || ""}
+                  onChange={(e) => setNewOrder({ ...newOrder, unloadingToHour: e.target.value })}
+                  className="bg-transparent text-gray-900 text-sm focus:outline-none"
+                />
+              </div>
+
+              {/* از ساعت */}
+              <div className="flex-1 bg-gray-100 rounded-lg p-3 flex flex-col">
+                <span className="text-xs text-gray-500 mb-1">از ساعت</span>
+                <input
+                  type="time"
+                  value={newOrder.unloadingFromHour || ""}
+                  onChange={(e) => setNewOrder({ ...newOrder, unloadingFromHour: e.target.value })}
+                  className="bg-transparent text-gray-900 text-sm focus:outline-none"
+                />
+              </div>
+
+            </div>
+          </div>
+
+
+          {/* Address */}
+          <FormTextArea
+            label="آدرس پستی محل تخلیه بار"
+            required
+            value={newOrder.unloadingAddress || ""}
+            onChange={(val) => setNewOrder({ ...newOrder, unloadingAddress: val })}
+            rows={4}
+          />
+
+          {/* Description */}
+          <FormTextArea
+            label="توضیحات بیشتر"
+            required={false}
+            value={newOrder.loadDescription || ""}
+            onChange={(val) => setNewOrder({ ...newOrder, loadDescription: val })}
+            rows={3}
+          />
+
         </form>
+      </main>
+
+      {/* Footer Button */}
+      <div className="bottom-0 left-0 right-0 w-full max-w-md mx-auto bg-white p-4 border-t border-gray-100">
+        <button
+          type="button"
+          disabled={isSaving}
+          onClick={handleCreate}
+          className="w-full bg-black text-white text-lg font-bold py-3.5 rounded-2xl shadow-lg active:scale-95 transition-transform disabled:opacity-70 flex justify-center items-center gap-2"
+        >
+          {isSaving ? <Loader2 className="animate-spin w-6 h-6" /> : 'تایید'}
+        </button>
       </div>
 
-
-
-      <style jsx>{`
-                .input-base { 
-                    width: 100%; 
-                    padding: 0.65rem 1rem; 
-                    border: 1px solid #d1d5db; /* gray-300 */
-                    border-radius: 0.75rem; 
-                    outline: none; 
-                    transition: border-color 0.2s, box-shadow 0.2s;
-                    font-size: 0.95rem;
-                }
-                .input-base:focus { 
-                    border-color: #3b82f6; /* blue-500 */
-                    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); 
-                }
-                textarea.input-base {
-                    min-height: 80px;
-                }
-            `}</style>
     </div>
   );
 }
-
-

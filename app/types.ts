@@ -154,27 +154,44 @@ export interface CompanyDetail {
   updatedAt: string;
 }
 
+  // فایل: ../../types/index.ts (مثلاً)
+
 export interface Order {
-  id: string;
+  id?: string;
   companyID: string;
-  driverID?: string; // Assigned Driver
-  loadType: string;
+  status: OrderStatus;
+  
+  weightType: string;
+  loadType: string; // cargo type
+  
   originProvince: string;
   originCity: string;
+  
   destinationProvince: string;
   destinationCity: string;
-  receiverName: string;
+  
   goodType: string;
   weight: number;
   size?: string;
-  status: OrderStatus;
-  expectedPriceRange?: string;
+  
   deliveryDate: string;
-  loadDescription?: string;
-  distanceKm?: number;
-  weightType: 'KG' | 'TON';
-  requiredVehicleType?: string;
-  createdAt: string;
+  requiredVehicleType: string;
+  
+  receiverName: string;
+  loadDescription: string; // فقط برای توضیحات "اضافی" و متفرقه
+  
+  // 💥 فیلدهای جدید برای جدا کردن داده‌ها 💥
+  invoiceNumber: string;         // شماره فاکتور
+  receiverContact: string;       // شماره تماس گیرنده
+  packageType: string;           // نوع بسته‌بندی
+  packageCount: string;          // تعداد بسته
+  goodsValue?: number;           // ارزش کالا (به صورت عدد)
+  paymentMethod: string;         // نحوه پرداخت کرایه
+  unloadingAddress: string;      // آدرس پستی محل تخلیه
+  unloadingFromHour: string;     // ساعت شروع کار انبار
+  unloadingToHour: string;       // ساعت پایان کار انبار
+
+  createdAt?: Date;
 }
 
 export interface OrderOffer {
