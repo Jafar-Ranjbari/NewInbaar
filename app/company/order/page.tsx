@@ -1,4 +1,4 @@
- "use client"
+"use client"
 
 import React, { useState, useEffect } from "react";
 import { useAuthStore } from "./../../store/useAuthStore";
@@ -34,7 +34,7 @@ export default function OrderManagementNew() {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [customerType, setCustomerType] = useState<'regular' | 'chain'>('regular');
-  
+
   // 💥 تمامی فیلدهای اضافی به State اصلی newOrder منتقل شدند 💥
 
   // --- State for the Order (شامل فیلدهای جدید) ---
@@ -52,7 +52,7 @@ export default function OrderManagementNew() {
     receiverName: '',
     loadDescription: '',
     size: '',
-    
+
     // فیلدهای جدید (باید در Order interface تعریف شده باشند)
     invoiceNumber: '',
     receiverContact: '',
@@ -60,7 +60,7 @@ export default function OrderManagementNew() {
     packageCount: '1',
     goodsValue: undefined, // یا 0
     paymentMethod: PAYMENT_OPTIONS[0],
-    unloadingAddress: '', 
+    unloadingAddress: '',
     unloadingFromHour: '',
     unloadingToHour: '',
   });
@@ -100,27 +100,27 @@ export default function OrderManagementNew() {
 
     // Enhanced Validation Check (استفاده از فیلدهای جدید در newOrder)
     if (
-        !newOrder.invoiceNumber ||
-        !newOrder.receiverName ||
-        !newOrder.receiverContact ||
-        !newOrder.originCity ||
-        !newOrder.destinationCity ||
-        !newOrder.packageType ||
-        !newOrder.packageCount ||
-        !newOrder.goodType ||
-        !newOrder.requiredVehicleType ||
-        !newOrder.weight || (newOrder.weight <= 0) ||
-        !newOrder.unloadingAddress ||
-        !newOrder.unloadingFromHour ||
-        !newOrder.unloadingToHour ||
-        !newOrder.deliveryDate
+      !newOrder.invoiceNumber ||
+      !newOrder.receiverName ||
+      !newOrder.receiverContact ||
+      !newOrder.originCity ||
+      !newOrder.destinationCity ||
+      !newOrder.packageType ||
+      !newOrder.packageCount ||
+      !newOrder.goodType ||
+      !newOrder.requiredVehicleType ||
+      !newOrder.weight || (newOrder.weight <= 0) ||
+      !newOrder.unloadingAddress ||
+      !newOrder.unloadingFromHour ||
+      !newOrder.unloadingToHour ||
+      !newOrder.deliveryDate
     ) {
-        return alert("لطفاً تمام فیلدهای ستاره‌دار (الزامی) را پر کنید.");
+      return alert("لطفاً تمام فیلدهای ستاره‌دار (الزامی) را پر کنید.");
     }
 
     setIsSaving(true);
     try {
-      
+
       const orderData = {
         ...newOrder,
         companyID,
@@ -128,19 +128,19 @@ export default function OrderManagementNew() {
         weight: Number(newOrder.weight),
         // فیلدهای زیر اکنون جداگانه ارسال می‌شوند و نیازی به ادغام ندارند:
         loadDescription: newOrder.loadDescription || '', // فقط توضیحات اضافی
-        goodsValue: newOrder.goodsValue ? Number(newOrder.goodsValue) : 0, 
+        goodsValue: newOrder.goodsValue ? Number(newOrder.goodsValue) : 0,
       } as Omit<Order, 'id' | 'createdAt'>;
 
       const o = await createOrder(orderData);
 
       alert(`سفارش با موفقیت ثبت شد: ${o.id}`);
-      
+
       // Reset form state (شامل فیلدهای جدید):
       setNewOrder({
-          weightType: "KG", loadType: CARGO_TYPE_OPTIONS[5], originProvince: PROVINCE_OPTIONS[0], destinationProvince: PROVINCE_OPTIONS[0], weight: 0, requiredVehicleType: VEHICLE_TYPE_OPTIONS[0],
-          originCity: '', destinationCity: '', goodType: CARGO_TYPE_OPTIONS[0], receiverName: '', deliveryDate: new Date().toISOString().substring(0, 10), loadDescription: '', size: '',
-          
-          invoiceNumber: '', receiverContact: '', packageType: PACKAGE_OPTIONS[0], packageCount: '1', goodsValue: undefined, paymentMethod: PAYMENT_OPTIONS[0], unloadingAddress: '', unloadingFromHour: '', unloadingToHour: '',
+        weightType: "KG", loadType: CARGO_TYPE_OPTIONS[5], originProvince: PROVINCE_OPTIONS[0], destinationProvince: PROVINCE_OPTIONS[0], weight: 0, requiredVehicleType: VEHICLE_TYPE_OPTIONS[0],
+        originCity: '', destinationCity: '', goodType: CARGO_TYPE_OPTIONS[0], receiverName: '', deliveryDate: new Date().toISOString().substring(0, 10), loadDescription: '', size: '',
+
+        invoiceNumber: '', receiverContact: '', packageType: PACKAGE_OPTIONS[0], packageCount: '1', goodsValue: undefined, paymentMethod: PAYMENT_OPTIONS[0], unloadingAddress: '', unloadingFromHour: '', unloadingToHour: '',
       });
 
     } catch (err) {
@@ -266,6 +266,13 @@ export default function OrderManagementNew() {
           {/* Row: Name & Contact */}
           <div className="flex gap-3">
             <FormInput
+              label="نام مشتری"
+              required
+              className="flex-1"
+              value={newOrder.receiverName || ""}
+              onChange={(val) => setNewOrder({ ...newOrder, receiverName: val })}
+            />
+            <FormInput
               label="شماره تماس گیرنده"
               required
               className="flex-1"
@@ -273,25 +280,11 @@ export default function OrderManagementNew() {
               value={newOrder.receiverContact || ""}
               onChange={(val) => setNewOrder({ ...newOrder, receiverContact: val })}
             />
-            <FormInput
-              label="نام مشتری"
-              required
-              className="flex-1"
-              value={newOrder.receiverName || ""}
-              onChange={(val) => setNewOrder({ ...newOrder, receiverName: val })}
-            />
           </div>
 
           {/* Origin Section - Styled as a row */}
           <div className="flex gap-3">
-            <FormSelect
-              label="شهر مبدا"
-              required
-              className="flex-1"
-              options={CITY_OPTIONS} // Ideally filtered by province
-              value={newOrder.originCity || ""}
-              onChange={(val) => setNewOrder({ ...newOrder, originCity: val })}
-            />
+
             <FormSelect
               label="استان مبدا"
               required
@@ -300,18 +293,18 @@ export default function OrderManagementNew() {
               value={newOrder.originProvince || PROVINCE_OPTIONS[0]}
               onChange={(val) => setNewOrder({ ...newOrder, originProvince: val })}
             />
+            <FormSelect
+              label="شهر مبدا"
+              required
+              className="flex-1"
+              options={CITY_OPTIONS} // Ideally filtered by province
+              value={newOrder.originCity || ""}
+              onChange={(val) => setNewOrder({ ...newOrder, originCity: val })}
+            />
           </div>
 
           {/* Destination Section - Styled as a row */}
           <div className="flex gap-3">
-            <FormSelect
-              label="شهر مقصد"
-              required
-              className="flex-1"
-              options={CITY_OPTIONS} // Ideally filtered by province
-              value={newOrder.destinationCity || ""}
-              onChange={(val) => setNewOrder({ ...newOrder, destinationCity: val })}
-            />
             <FormSelect
               label="استان مقصد"
               required
@@ -319,6 +312,14 @@ export default function OrderManagementNew() {
               options={PROVINCE_OPTIONS}
               value={newOrder.destinationProvince || PROVINCE_OPTIONS[0]}
               onChange={(val) => setNewOrder({ ...newOrder, destinationProvince: val })}
+            />
+            <FormSelect
+              label="شهر مقصد"
+              required
+              className="flex-1"
+              options={CITY_OPTIONS} // Ideally filtered by province
+              value={newOrder.destinationCity || ""}
+              onChange={(val) => setNewOrder({ ...newOrder, destinationCity: val })}
             />
           </div>
 

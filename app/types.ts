@@ -158,26 +158,27 @@ export interface CompanyDetail {
 
 export interface Order {
   id?: string;
-  companyID: string;
-  status: OrderStatus;
+  expectedPriceRange : string ;  //
+  companyID: string;    
+  status: OrderStatus;   
   
-  weightType: string;
+  weightType: string;  //     
   loadType: string; // cargo type
   
-  originProvince: string;
+  originProvince: string; 
   originCity: string;
   
   destinationProvince: string;
   destinationCity: string;
   
-  goodType: string;
-  weight: number;
-  size?: string;
+  goodType: string; // نوع  کالا  
+  weight: number;  //وزن  
+  size?: string;  // سایز  
   
-  deliveryDate: string;
+  deliveryDate: string;   //زمان  
   requiredVehicleType: string;
   
-  receiverName: string;
+  receiverName: string;   // نام  گیرنده 
   loadDescription: string; // فقط برای توضیحات "اضافی" و متفرقه
   
   // 💥 فیلدهای جدید برای جدا کردن داده‌ها 💥
