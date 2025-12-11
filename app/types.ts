@@ -9,25 +9,7 @@ export enum CompanyType {
   LEGAL = 'LEGAL'
 }
 
-export enum OrderStatus {
-  NEW = 'NEW',
-  WAITING_FOR_DRIVER = 'WAITING_FOR_DRIVER', // Not strictly used if we jump to ASSIGNED, but kept for compatibility
-  DRIVER_ASSIGNED = 'DRIVER_ASSIGNED',
-  DELIVERING = 'DELIVERING',
-  FINISHED = 'FINISHED',
-  CANCELLED = 'CANCELLED',
-  ON_ROAD = 'ON_ROAD',
-  DRIVER_EN_ROUTE = 'DRIVER_EN_ROUTE',
-  DELIVERED = 'DELIVERED',
-  CANCELED = 'CANCELED'
 
-}
-
-export enum OfferStatus {
-  PENDING = 'PENDING',
-  ACCEPTED = 'ACCEPTED',
-  REJECTED = 'REJECTED'
-}
 
 export interface User {
   id: string;
@@ -154,7 +136,26 @@ export interface CompanyDetail {
   updatedAt: string;
 }
 
-  // فایل: ../../types/index.ts (مثلاً)
+ export enum OrderStatus {
+  NEW = 'NEW',
+  WAITING_FOR_DRIVER = 'WAITING_FOR_DRIVER', // Not strictly used if we jump to ASSIGNED, but kept for compatibility
+  DRIVER_ASSIGNED = 'DRIVER_ASSIGNED',
+  DELIVERING = 'DELIVERING',
+  FINISHED = 'FINISHED',
+  CANCELLED = 'CANCELLED',
+  ON_ROAD = 'ON_ROAD',
+  DRIVER_EN_ROUTE = 'DRIVER_EN_ROUTE',
+  DELIVERED = 'DELIVERED',
+  CANCELED = 'CANCELED'
+
+}
+
+export enum OfferStatus {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED'
+}
+
 
 export interface Order {
   id?: string;
@@ -193,6 +194,7 @@ export interface Order {
   unloadingToHour: string;       // ساعت پایان کار انبار
 
   createdAt?: Date;
+  driverID? : string;  
 }
 
 export interface OrderOffer {
