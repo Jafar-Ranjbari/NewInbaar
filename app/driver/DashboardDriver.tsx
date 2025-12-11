@@ -186,7 +186,7 @@ export const DashboardDriver: React.FC = () => {
           {/* دکمه وسط */}
           <div className="relative w-16 h-16 z-10">
             <Link
-              href="/driver/driverWallet"
+              href="/driver/roadDriver"
               className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-200 w-16 h-16 rounded-full flex items-center justify-center shadow-md border-4 border-white z-10"
             >
               <FiTruck size={28} className="text-gray-500" />

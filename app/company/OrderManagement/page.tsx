@@ -1,360 +1,14 @@
-// "use client";
-
-// import React, { useState, useEffect, useCallback } from "react";
-// import { useAuthStore } from "../../store/useAuthStore";
-// import {
-//   Order,
-//   OrderOffer,
-//   OrderStatus,
-//   OfferStatus,
-//   PaymentDriver,
-//   DriverReview,
-//   CompanyType
-// } from "../../types";
-// import {
-//   getCompanyOrders,
-//   createOrder,
-//   getOffersByOrderId,
-//   updateOfferStatus,
-//   updateOrder,
-//   createCompanyWalletTransaction,
-//   createDriverWalletTransaction,
-//   createPayment,
-//   createReview,
-//   getCompanyByUserId,
-//   createCompany // برای اطمینان از وجود شرکت
-// } from "../companyService"; // فرض می‌کنیم companyService در این مسیر است
-// import {
-//   PackagePlus,
-//   FileText,
-//   Users,
-//   CheckCircle,
-//   XCircle,
-//   CreditCard,
-//   Star,
-//   Loader2,
-//   Truck,
-//   MapPin,
-//   Calendar
-// } from "lucide-react";
-
-// // Helper Function for Order Status Display
-// const getStatusLabel = (status: OrderStatus): { label: string, color: string } => {
-//   switch (status) {
-//     case OrderStatus.NEW: return { label: "در انتظار پیشنهاد", color: "bg-blue-100 text-blue-800" };
-//     case OrderStatus.DRIVER_ASSIGNED: return { label: "راننده انتخاب شد", color: "bg-gray-100 text-gray-800" };
-//     case OrderStatus.DRIVER_EN_ROUTE: return { label: "در مسیر مبدا", color: "bg-orange-100 text-orange-800" };
-//     case OrderStatus.ON_ROAD: return { label: "در حال حمل", color: "bg-gray-100 text-gray-800" };
-//     case OrderStatus.DELIVERED: return { label: "تحویل شد (در انتظار تسویه)", color: "bg-gray-100 text-gray-800" };
-//     case OrderStatus.FINISHED: return { label: "پایان یافته", color: "bg-gray-100 text-gray-800" };
-//     case OrderStatus.CANCELED: return { label: "لغو شده", color: "bg-red-100 text-red-800" };
-//     default: return { label: "نامشخص", color: "bg-gray-200 text-gray-700" };
-//   }
-// };
-
-// // --- Component ---
-// export default function OrderManagement() {
-//   const { currentUser } = useAuthStore();
-//   const [companyID, setCompanyID] = useState<string | null>(null);
-
-//   const [orders, setOrders] = useState<Order[]>([]);
-//   const [newOrder, setNewOrder] = useState<Partial<Order>>({ weightType: "KG", loadType: "عمومی", receiverName: "" });
-//   const [expanded, setExpanded] = useState<string | null>(null);
-//   const [offers, setOffers] = useState<OrderOffer[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [isSaving, setIsSaving] = useState(false);
-
-//   // Payment & Review Forms
-//   const [payForm, setPayForm] = useState({
-//     amount: "",
-//     type: "BANK" as PaymentDriver['payType'],
-//     code: "",
-//   });
-//   const [reviewForm, setReviewForm] = useState({
-//     stars: 5,
-//     strengths: "",
-//     weaknesses: "",
-//     comment: "",
-//   });
-
-//   // 1. Load CompanyID and Orders
-//   useEffect(() => {
-//     let mounted = true;
-//     const loadCompanyAndOrders = async () => {
-//       if (!currentUser) {
-//         setLoading(false);
-//         return;
-//       }
-//       try {
-//         let comp = await getCompanyByUserId(currentUser.id);
-//         if (!comp) {
-//           // فرض می‌کنیم شرکت در این مرحله برای کاربر ساخته می‌شود
-//           comp = await createCompany(currentUser.id, CompanyType.REAL);
-//         }
-//         const cID = comp.id;
-//         setCompanyID(cID);
-
-//         if (mounted) {
-//           const res = await getCompanyOrders(cID);
-//           setOrders(res || []);
-//         }
-//       } catch (err) {
-//         console.error("Error loading company or orders:", err);
-//         if (mounted) setOrders([]);
-//       } finally {
-//         if (mounted) setLoading(false);
-//       }
-//     };
-
-//     loadCompanyAndOrders();
-
-//     return () => {
-//       mounted = false;
-//     };
-//   }, [currentUser]);
-
-
-//   // 3. Handle Expand and Load Offers
-//   const handleExpand = async (order: Order) => {
-//     const next = expanded === order.id ? null : order.id;
-//     setExpanded(next);
-
-//     if (next === order.id && order.status === OrderStatus.NEW) {
-//       setOffers([]); // Clear old offers
-//       setIsSaving(true); // Using saving state for offers loading
-//       try {
-//         const res = await getOffersByOrderId(order.id);
-//         setOffers(res.filter(offer => offer.state === OfferStatus.PENDING) || []); // Only show PENDING offers
-//       } catch (err) {
-//         console.error(err);
-//         setOffers([]);
-//       } finally {
-//         setIsSaving(false);
-//       }
-//     }
-//   };
-
-//   // 4. Handle Offer Acceptance
-//   const handleAccept = async (offer: OrderOffer) => {
-//     if (!companyID) return alert("اطلاعات شرکت ناقص است.");
-//     if (offer.price <= 0) return alert("قیمت پیشنهاد معتبر نیست.");
-
-//     setIsSaving(true);
-//     try {
-//       // 1. آپدیت وضعیت پیشنهاد به Accepted
-//       await updateOfferStatus(offer.id, OfferStatus.ACCEPTED);
-
-//       // 2. آپدیت وضعیت سفارش و تخصیص راننده
-//       const upd = await updateOrder(offer.orderID, {
-//         status: OrderStatus.DRIVER_ASSIGNED,
-//         driverID: offer.driverID,
-//       });
-
-//       // 3. کسر کارمزد از شرکت (مثلا 50,000 ریال)
-//       await createCompanyWalletTransaction(companyID, -50000, "کارمزد تخصیص راننده");
-
-//       // 4. کسر کارمزد از راننده (اختیاری - اگر راننده هم کارمزد می‌دهد)
-//       // await createDriverWalletTransaction(offer.driverID, -50000, "کارمزد تخصیص بار");
-
-//       // 5. به‌روزرسانی لیست سفارش‌ها
-//       setOrders((prev) => prev.map((o) => (o.id === offer.orderID ? upd : o)));
-//       setExpanded(null);
-//       alert(`پیشنهاد راننده ${offer.driverName || offer.driverID} با موفقیت قبول شد. مبلغ 50,000 ریال بابت کارمزد از کیف پول کسر گردید.`);
-//     } catch (err) {
-//       console.error(err);
-//       alert("خطا در قبول پیشنهاد. لطفاً مجدداً تلاش کنید.");
-//     } finally {
-//       setIsSaving(false);
-//     }
-//   };
-
-//   // --- UI Rendering ---
-
-//   if (loading) {
-//     return (
-//       <div className="flex justify-center items-center h-48 bg-gray-100 p-6">
-//         <Loader2 className="animate-spin text-blue-600 w-8 h-8" />
-//         <p className="mr-2 text-gray-600">در حال بارگذاری سفارشات...</p>
-//       </div>
-//     );
-//   }
-
-//   if (!currentUser) return <div className="p-6 text-center text-red-500">لطفا ابتدا وارد شوید.</div>;
-
-//   return (
-//     <div dir="rtl" className="max-w-xl mx-auto p-4 sm:p-6 bg-gray-100 min-h-screen space-y-8">
-//       <h1 className="text-xl font-bold text-gray-800 border-b pb-2 flex  items-center gap-2">
-//         سفارشات      ({orders.length})
-//       </h1>
-
-
-//       {/* 2. Orders List */}
-//       <div className="space-y-4">
-//         <h2 className="text-xl font-bold text-gray-700 flex items-center gap-2 border-b pb-2">
-//           <span className={`text-xs font-semibold px-3 py-1 rounded-full`}>
-//             جاری
-//           </span>
-//           <span className={`text-xs font-semibold px-3 py-1 rounded-full`}>
-//             ارسال  شده
-//           </span>
-//           <span className={`text-xs font-semibold px-3 py-1 rounded-full`}>
-//             تحویل   شده
-//           </span>
-//           <span className={`text-xs font-semibold px-3 py-1 rounded-full`}>
-//             لغو
-//           </span>
-//         </h2>
-
-//         {orders.length === 0 && !loading ? (
-//           <p className="text-center text-gray-500 p-8 bg-white rounded-xl shadow-sm">هنوز سفارشی ثبت نکرده‌اید.</p>
-//         ) : (
-//           orders.slice().reverse().map((o) => (
-//             <div key={o.id} className="bg-white rounded-xl shadow-md border-t-4 border-gray-300 p-4">
-//               <div className="flex justify-between items-center mb-3">
-//                 <h4 className="font-extrabold text-gray-800 text-lg">
-//                   {o.goodType}
-//                 </h4>
-//                 <span className={`text-xs font-semibold px-3 py-1 rounded-full ${getStatusLabel(o.status).color}`}>
-//                   {getStatusLabel(o.status).label}
-//                 </span>
-//               </div>
-
-//               <div className="text-sm text-gray-600 space-y-1 mb-3">
-//                 <div className="flex items-center gap-2">
-//                   <MapPin className="w-4 h-4 text-red-500" />
-//                   <span className="font-medium">مسیر:</span> {o.originCity} ← {o.destinationCity}
-//                 </div>
-//                 <div className="flex items-center gap-2">
-//                   <Calendar className="w-4 h-4 text-blue-500" />
-//                   <span className="font-medium">تاریخ تحویل:</span> {o.deliveryDate}
-//                 </div>
-//                 <div className="flex items-center gap-2">
-//                   <FileText className="w-4 h-4 text-gray-500" />
-//                   <span className="font-medium">وزن:</span> {o.weight} {o.weightType}
-//                 </div>
-//               </div>
-
-//               <button
-//                 onClick={() => handleExpand(o)}
-//                 className="w-full text-blue-600 font-bold py-2 border-t mt-2 hover:bg-blue-50 transition rounded-b-lg"
-//               >
-//                 {expanded === o.id ? "▲ بستن جزئیات" : "▼ مدیریت سفارش"}
-//               </button>
-
-//               {/* Expanded Content */}
-//               {expanded === o.id && (
-//                 <div className="mt-4 pt-4 border-t border-gray-200">
-
-//                   {o.status === OrderStatus.NEW && (
-//                     <OffersSection
-//                       offers={offers}
-//                       handleAccept={handleAccept}
-//                       isLoading={isSaving}
-//                       orderID={o.id}
-//                     />
-//                   )}
-
-
-//                   {o.status === OrderStatus.FINISHED && (
-//                     <div className="bg-gray-50 text-gray-700 p-3 rounded-lg text-center font-bold">
-//                       ✅ این سفارش با موفقیت پایان یافته است.
-//                     </div>
-//                   )}
-//                 </div>
-//               )}
-//             </div>
-//           ))
-//         )}
-//       </div>
-
-
-//       <style jsx>{`
-//                 .input-base { 
-//                     width: 100%; 
-//                     padding: 0.65rem 1rem; 
-//                     border: 1px solid #d1d5db; /* gray-300 */
-//                     border-radius: 0.75rem; 
-//                     outline: none; 
-//                     transition: border-color 0.2s, box-shadow 0.2s;
-//                     font-size: 0.95rem;
-//                 }
-//                 .input-base:focus { 
-//                     border-color: #3b82f6; /* blue-500 */
-//                     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); 
-//                 }
-//                 textarea.input-base {
-//                     min-height: 80px;
-//                 }
-//             `}</style>
-//     </div>
-//   );
-// }
-
-// // --------------------------- Helper Components ---------------------------
-
-// // 1. Offers Section (For OrderStatus.NEW)
-// interface OffersProps {
-//   offers: OrderOffer[];
-//   handleAccept: (offer: OrderOffer) => Promise<void>;
-//   isLoading: boolean;
-//   orderID: string;
-// }
-
-// const OffersSection: React.FC<OffersProps> = ({ offers, handleAccept, isLoading, orderID }) => (
-//   <div className="space-y-3">
-//     <h5 className="font-bold text-gray-700 flex items-center gap-2 mb-2">
-//       <Users className="w-4 h-4 text-blue-500" /> پیشنهادات فعال
-//     </h5>
-//     {isLoading ? (
-//       <div className="text-center py-4 text-blue-600">
-//         <Loader2 className="animate-spin inline-block w-5 h-5" /> در حال بارگذاری پیشنهادات...
-//       </div>
-//     ) : offers.length > 0 ? (
-//       offers.map((of) => (
-//         <div key={of.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50 p-3 rounded-lg border">
-//           <div className="flex flex-col">
-//             <span className="font-bold text-blue-600 text-lg">
-//               {of.price.toLocaleString('fa-IR')} ریال
-//             </span>
-//             <span className="text-sm text-gray-600">
-//               راننده: {of.driverName || 'ناشناس'}
-//               {of.deliveryEstimateTime && ` | تحویل: ${of.deliveryEstimateTime}`}
-//             </span>
-//           </div>
-//           {of.state === OfferStatus.PENDING && (
-//             <button
-//               onClick={() => handleAccept(of)}
-//               disabled={isLoading}
-//               className="bg-gray-600 text-white px-4 py-2 rounded-xl font-bold mt-2 sm:mt-0 hover:bg-gray-700 transition disabled:opacity-50 flex items-center gap-1"
-//             >
-//               {isLoading ? <Loader2 className="animate-spin w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
-//               قبول
-//             </button>
-//           )}
-//         </div>
-//       ))
-//     ) : (
-//       <div className="bg-gray-50 text-gray-700 p-3 rounded-lg">
-//         <p>در حال حاضر پیشنهادی برای این بار ثبت نشده است.</p>
-//       </div>
-//     )}
-//   </div>
-// );
-
-
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import {
   Order,
   OrderOffer,
-  OrderStatus,
+  OrderStatus, // از این به بعد از وضعیت‌های جدید استفاده می‌کنیم
   OfferStatus,
-  PaymentDriver,
-  DriverReview,
   CompanyType
-} from "../../types"; // مطمئن شوید که مسیر صحیح است
+} from "../../types"; 
 import {
   getCompanyOrders,
   createOrder,
@@ -362,12 +16,9 @@ import {
   updateOfferStatus,
   updateOrder,
   createCompanyWalletTransaction,
-  createDriverWalletTransaction,
-  createPayment,
-  createReview,
   getCompanyByUserId,
   createCompany
-} from "../companyService"; // مطمئن شوید که مسیر صحیح است
+} from "../companyService"; 
 import {
   Search,
   Filter,
@@ -381,27 +32,28 @@ import {
   CheckCircle,
   Loader2,
   Calendar,
-  FileText, // مورد نیاز برای نمایش شماره فاکتور
+  FileText, 
   XCircle,
   DollarSign
 } from 'lucide-react';
 
-// --- Helper Functions ---
-
 const getStatusLabel = (status: OrderStatus): { label: string, color: string, style: string } => {
   switch (status) {
-    case OrderStatus.NEW: return { label: "در انتظار پیشنهاد", color: "text-blue-800", style: "bg-blue-100" };
-    case OrderStatus.DRIVER_ASSIGNED: return { label: "راننده انتخاب شد", color: "text-gray-800", style: "bg-gray-100" };
-    case OrderStatus.DRIVER_EN_ROUTE: return { label: "در مسیر مبدا", color: "text-orange-800", style: "bg-[#f4a261] bg-opacity-90 text-white" };
-    case OrderStatus.ON_ROAD: return { label: "در حال حمل", color: "text-gray-800", style: "bg-gray-100" };
+    case OrderStatus.NEW: return { label: "ثبت اولیه", color: "text-gray-600", style: "bg-gray-200" };
+    case OrderStatus.WAITING_FOR_OFFERS: return { label: "در انتظار پیشنهاد", color: "text-blue-800", style: "bg-blue-100" };
+    case OrderStatus.DRIVER_ASSIGNED: return { label: "راننده انتخاب شد (منتظر تایید راننده)", color: "text-indigo-800", style: "bg-indigo-100" };
+    case OrderStatus.DRIVER_ACCEPTED_CONFIRMATION: return { label: "تایید نهایی راننده", color: "text-purple-800", style: "bg-purple-100" };
+    case OrderStatus.LOADING: return { label: "در حال بارگیری", color: "text-yellow-900", style: "bg-yellow-300 text-black" };
+    case OrderStatus.ON_ROAD: return { label: "در حال حمل (در مسیر)", color: "text-orange-800", style: "bg-[#f4a261] bg-opacity-90 text-white" };
     case OrderStatus.DELIVERED: return { label: "تحویل شد (در انتظار تسویه)", color: "text-green-800", style: "bg-green-100" };
-    case OrderStatus.FINISHED: return { label: "پایان یافته", color: "text-purple-800", style: "bg-purple-100" };
+    case OrderStatus.FINISHED: return { label: "پایان یافته", color: "text-cyan-800", style: "bg-cyan-100" };
     case OrderStatus.CANCELED: return { label: "لغو شده", color: "text-red-800", style: "bg-red-100" };
     default: return { label: "نامشخص", color: "text-gray-700", style: "bg-gray-200" };
   }
 };
 
-// --- New Design Components ---
+
+// --- New Design Components (بدون تغییرات ظاهری) ---
 
 const Header = () => (
   <header className="pt-6 pb-4 px-4 text-center">
@@ -424,11 +76,12 @@ const SearchBar = () => (
   </div>
 );
 
+// FilterTabs (به‌روزرسانی شده برای گروه‌های وضعیت جدید)
 const FilterTabs = ({ activeTab, setActiveTab }: { activeTab: OrderStatus, setActiveTab: (t: OrderStatus) => void }) => {
   const tabs: { id: OrderStatus; label: string }[] = [
-    { id: OrderStatus.NEW, label: 'جدید' },
-    { id: OrderStatus.DRIVER_ASSIGNED, label: 'تخصیص‌یافته' },
-    { id: OrderStatus.DELIVERED, label: 'تحویل شده' },
+    { id: OrderStatus.WAITING_FOR_OFFERS, label: 'جدید' },
+    { id: OrderStatus.DRIVER_ASSIGNED, label: 'تخصیص‌یافته ' },
+    { id: OrderStatus.DELIVERED, label: 'تحویل و تسویه' },
     { id: OrderStatus.CANCELED, label: 'لغو شده' },
   ];
 
@@ -465,12 +118,14 @@ const DataItem = ({ icon: Icon, label, value }: { icon: React.ElementType, label
   </div>
 );
 
+// OrderCard (به‌روزرسانی منطق دکمه‌ها)
 const OrderCard = ({ order, onManageClick }: { order: Order, onManageClick: (order: Order) => void }) => {
   const statusInfo = getStatusLabel(order.status);
   
   const getActionButtons = () => {
     switch(order.status) {
       case OrderStatus.NEW:
+      case OrderStatus.WAITING_FOR_OFFERS:
         return (
           <>
             <button 
@@ -487,20 +142,23 @@ const OrderCard = ({ order, onManageClick }: { order: Order, onManageClick: (ord
             </button>
           </>
         );
+      
       case OrderStatus.DRIVER_ASSIGNED:
-      case OrderStatus.DRIVER_EN_ROUTE:
+      case OrderStatus.DRIVER_ACCEPTED_CONFIRMATION:
+      case OrderStatus.LOADING:
       case OrderStatus.ON_ROAD:
         return (
           <button 
             onClick={() => onManageClick(order)}
             className="flex-1 bg-black text-white py-3 px-4 rounded-full flex items-center justify-between group active:scale-95 transition-transform"
           >
-            <span className="font-medium text-sm">پیگیری سفارش</span>
+            <span className="font-medium text-sm">پیگیری و وضعیت</span>
             <div className="bg-white/20 rounded-full p-0.5">
               <ChevronLeft className="w-4 h-4 text-white" />
             </div>
           </button>
         );
+
       case OrderStatus.DELIVERED:
         return (
           <button 
@@ -550,7 +208,7 @@ const OrderCard = ({ order, onManageClick }: { order: Order, onManageClick: (ord
       {/* Details Grid - شامل 5 ستون */}
       <div className="grid grid-cols-5 gap-2 mb-6 border-b border-gray-100 pb-6 border-dashed">
         
-        {/* شماره فاکتور - منتقل شده به این بخش */}
+        {/* شماره فاکتور */}
         <DataItem 
           icon={FileText} 
           label="ش فاکتور" 
@@ -639,7 +297,7 @@ const OffersSection: React.FC<OffersProps> = ({ offers, handleAccept, isLoading,
 );
 
 
-// OrderDetailsModal
+// OrderDetailsModal (به‌روزرسانی منطق نمایش وضعیت)
 interface ModalProps {
     order: Order | null;
     offers: OrderOffer[];
@@ -692,8 +350,8 @@ const OrderDetailsModal: React.FC<ModalProps> = ({ order, offers, onClose, handl
                         </div>
                     </div>
 
-                    {/* 1. Offers Section (Only for NEW status) */}
-                    {order.status === OrderStatus.NEW && (
+                    {/* 1. Offers Section (فقط برای وضعیت NEW و WAITING_FOR_OFFERS) */}
+                    {(order.status === OrderStatus.NEW || order.status === OrderStatus.WAITING_FOR_OFFERS) && (
                         <OffersSection
                             offers={offers}
                             handleAccept={handleAccept}
@@ -702,7 +360,28 @@ const OrderDetailsModal: React.FC<ModalProps> = ({ order, offers, onClose, handl
                         />
                     )}
 
-                    {/* 2. Status specific messages */}
+                    {/* 2. Status specific messages and Driver/Tracking Info (به‌روزرسانی شده) */}
+                    
+                    {(order.status === OrderStatus.DRIVER_ASSIGNED || order.status === OrderStatus.DRIVER_ACCEPTED_CONFIRMATION || order.status === OrderStatus.LOADING || order.status === OrderStatus.ON_ROAD) && (
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-orange-300">
+                             <h3 className="font-bold text-lg text-gray-800 mb-3 border-b pb-2 flex items-center gap-2">
+                                <Truck className="w-5 h-5 text-orange-600" /> پیگیری و وضعیت فعلی
+                             </h3>
+                            <div className="space-y-2 text-sm text-gray-700">
+                                <p>وضعیت فعلی: <span className="font-bold">{statusInfo.label}</span></p>
+                                <p>راننده تخصیص یافته: **[نام راننده]**</p>
+                                <p>شماره تماس: **[شماره تماس راننده]**</p>
+                            </div>
+                            
+                            {/* نمایش دکمه پیگیری در صورت لزوم */}
+                            {(order.status === OrderStatus.LOADING || order.status === OrderStatus.ON_ROAD) && (
+                                <button className="w-full mt-4 bg-orange-500 text-white py-2 rounded-full font-bold hover:bg-orange-600 transition">
+                                    مشاهده موقعیت لحظه‌ای
+                                </button>
+                            )}
+                        </div>
+                    )}
+
                     {order.status === OrderStatus.DELIVERED && (
                       <div className="bg-green-100 text-green-800 p-4 rounded-xl text-center font-bold border border-green-300">
                           ✅ بار تحویل داده شده. لطفاً تسویه و امتیازدهی را انجام دهید.
@@ -710,7 +389,7 @@ const OrderDetailsModal: React.FC<ModalProps> = ({ order, offers, onClose, handl
                     )}
                     
                     {order.status === OrderStatus.FINISHED && (
-                      <div className="bg-purple-100 text-purple-800 p-4 rounded-xl text-center font-bold border border-purple-300">
+                      <div className="bg-cyan-100 text-cyan-800 p-4 rounded-xl text-center font-bold border border-cyan-300">
                           ✅ این سفارش با موفقیت پایان یافته است.
                       </div>
                     )}
@@ -720,20 +399,6 @@ const OrderDetailsModal: React.FC<ModalProps> = ({ order, offers, onClose, handl
                           ❌ این سفارش لغو شده است.
                       </div>
                     )}
-
-                    {/* Driver/Tracking Info (For assigned/en_route/on_road statuses) */}
-                    {(order.status === OrderStatus.DRIVER_ASSIGNED || order.status === OrderStatus.DRIVER_EN_ROUTE || order.status === OrderStatus.ON_ROAD) && (
-                        <div className="bg-white p-4 rounded-xl shadow-sm border border-orange-300">
-                             <h3 className="font-bold text-lg text-gray-800 mb-3 border-b pb-2 flex items-center gap-2">
-                                <Truck className="w-5 h-5 text-orange-600" /> اطلاعات راننده
-                             </h3>
-                            <p className="text-gray-600">راننده تخصیص یافته: **[نام راننده]**</p>
-                            <p className="text-gray-600">شماره تماس: **[شماره تماس راننده]**</p>
-                            <button className="w-full mt-4 bg-orange-500 text-white py-2 rounded-full font-bold hover:bg-orange-600 transition">
-                                مشاهده موقعیت لحظه‌ای
-                            </button>
-                        </div>
-                    )}
                 </div>
 
             </div>
@@ -741,23 +406,24 @@ const OrderDetailsModal: React.FC<ModalProps> = ({ order, offers, onClose, handl
     );
 };
 
-// --- Main Component ---
+// --- Main Component (به‌روزرسانی منطق فیلتر و پذیرش پیشنهاد) ---
 export default function OrderManagement() {
   const { currentUser } = useAuthStore();
   const [companyID, setCompanyID] = useState<string | null>(null);
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false); // Used for offer loading/acceptance
+  const [isSaving, setIsSaving] = useState(false); 
 
-  const [activeTab, setActiveTab] = useState<OrderStatus>(OrderStatus.NEW);
-  
+  // از WAITING_FOR_OFFERS به عنوان تب پیش‌فرض استفاده می‌کنیم
+  const [activeTab, setActiveTab] = useState<OrderStatus>(OrderStatus.WAITING_FOR_OFFERS); 
+
   // State for Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [offers, setOffers] = useState<OrderOffer[]>([]);
 
-  // 1. Load CompanyID and Orders
+  // 1. Load CompanyID and Orders (بدون تغییر)
   useEffect(() => {
     let mounted = true;
     const loadCompanyAndOrders = async () => {
@@ -793,17 +459,16 @@ export default function OrderManagement() {
   }, [currentUser]);
 
 
-  // 3. Handle Manage Click (Open Modal and Load Offers if needed)
+  // 3. Handle Manage Click (فقط برای NEW و WAITING_FOR_OFFERS لیست پیشنهادات لود شود)
   const handleManageClick = async (order: Order) => {
     setSelectedOrder(order);
     setIsModalOpen(true);
 
-    if (order.status === OrderStatus.NEW) {
-      setOffers([]); // Clear old offers
+    if (order.status === OrderStatus.NEW || order.status === OrderStatus.WAITING_FOR_OFFERS) {
+      setOffers([]); 
       setIsSaving(true); 
       try {
         const res = await getOffersByOrderId(order.id!);
-        // فقط پیشنهادات فعال (PENDING) را نمایش می‌دهیم
         setOffers(res.filter(offer => offer.state === OfferStatus.PENDING) || []); 
       } catch (err) {
         console.error(err);
@@ -812,11 +477,11 @@ export default function OrderManagement() {
         setIsSaving(false);
       }
     } else {
-      setOffers([]); // Clear offers for other statuses
+      setOffers([]); 
     }
   };
 
-  // 4. Handle Offer Acceptance
+  // 4. Handle Offer Acceptance (تغییر وضعیت به DRIVER_ASSIGNED)
   const handleAccept = async (offer: OrderOffer) => {
     if (!companyID) return alert("اطلاعات شرکت ناقص است.");
     if (offer.price <= 0) return alert("قیمت پیشنهاد معتبر نیست.");
@@ -825,25 +490,25 @@ export default function OrderManagement() {
     setIsSaving(true);
     try {
       // 1. آپدیت وضعیت پیشنهاد به Accepted
-      await updateOfferStatus(offer.id, OfferStatus.ACCEPTED);
+      await updateOfferStatus(offer.id, OfferStatus.PENDING);
 
-      // 2. آپدیت وضعیت سفارش و تخصیص راننده
+      // 2. آپدیت وضعیت سفارش و تخصیص راننده به: DRIVER_ASSIGNED
       const upd = await updateOrder(offer.orderID, {
-        status: OrderStatus.DRIVER_ASSIGNED,
+        status: OrderStatus.DRIVER_ASSIGNED, // وضعیت جدید
         driverID: offer.driverID,
       });
 
       // 3. کسر کارمزد از شرکت (مثلا 50,000 ریال)
+      // این بخش باید بر اساس منطق کسب و کار شما بررسی شود.
       await createCompanyWalletTransaction(companyID, -50000, "کارمزد تخصیص راننده");
 
       // 4. به‌روزرسانی لیست سفارش‌ها
       setOrders((prev) => prev.map((o) => (o.id === offer.orderID ? upd : o)));
       
-      // Update the selected order in modal
       setSelectedOrder(upd);
-      setOffers([]); // Clear offers once accepted
+      setOffers([]); 
       
-      alert(`پیشنهاد راننده ${offer.driverName || offer.driverID} با موفقیت قبول شد. مبلغ 50,000 ریال بابت کارمزد از کیف پول کسر گردید.`);
+      alert(`پیشنهاد راننده ${offer.driverName || offer.driverID} با موفقیت قبول شد. راننده باید تخصیص را تایید نهایی کند.`);
     } catch (err) {
       console.error(err);
       alert("خطا در قبول پیشنهاد. لطفاً مجدداً تلاش کنید.");
@@ -865,21 +530,27 @@ export default function OrderManagement() {
 
   if (!currentUser) return <div className="p-6 text-center text-red-500">لطفا ابتدا وارد شوید.</div>;
 
-  // Filter orders based on active tab
+  // Filter orders based on active tab (به‌روزرسانی منطق فیلتر)
   const filteredOrders = orders.filter(o => {
-    if (activeTab === OrderStatus.NEW) {
-      return o.status === OrderStatus.NEW;
+    switch (activeTab) {
+        case OrderStatus.WAITING_FOR_OFFERS:
+            // تب جدید/در انتظار پیشنهاد شامل: NEW و WAITING_FOR_OFFERS است
+            return o.status === OrderStatus.NEW || o.status === OrderStatus.WAITING_FOR_OFFERS;
+        case OrderStatus.DRIVER_ASSIGNED:
+            // تب تخصیص‌یافته شامل: تخصیص، تایید نهایی راننده، بارگیری و در حال حمل است
+            return o.status === OrderStatus.DRIVER_ASSIGNED || 
+                   o.status === OrderStatus.DRIVER_ACCEPTED_CONFIRMATION || 
+                   o.status === OrderStatus.LOADING || 
+                   o.status === OrderStatus.ON_ROAD;
+        case OrderStatus.DELIVERED:
+            // تب تحویل و تسویه شامل: DELIVERED و FINISHED است
+            return o.status === OrderStatus.DELIVERED || o.status === OrderStatus.FINISHED;
+        case OrderStatus.CANCELED:
+            // تب لغو شده
+            return o.status === OrderStatus.CANCELED;
+        default:
+            return true; // اگر تب دیگری انتخاب شد، همه را نمایش بده
     }
-    if (activeTab === OrderStatus.DRIVER_ASSIGNED) {
-      return o.status === OrderStatus.DRIVER_ASSIGNED || o.status === OrderStatus.DRIVER_EN_ROUTE || o.status === OrderStatus.ON_ROAD;
-    }
-    if (activeTab === OrderStatus.DELIVERED) {
-      return o.status === OrderStatus.DELIVERED || o.status === OrderStatus.FINISHED;
-    }
-    if (activeTab === OrderStatus.CANCELED) {
-      return o.status === OrderStatus.CANCELED;
-    }
-    return true; 
   });
 
   return (

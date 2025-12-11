@@ -135,18 +135,17 @@ export interface CompanyDetail {
   createdAt: string;
   updatedAt: string;
 }
-
- export enum OrderStatus {
-  NEW = 'NEW',
-  WAITING_FOR_DRIVER = 'WAITING_FOR_DRIVER', // Not strictly used if we jump to ASSIGNED, but kept for compatibility
-  DRIVER_ASSIGNED = 'DRIVER_ASSIGNED',
-  DELIVERING = 'DELIVERING',
-  FINISHED = 'FINISHED',
-  CANCELLED = 'CANCELLED',
-  ON_ROAD = 'ON_ROAD',
-  DRIVER_EN_ROUTE = 'DRIVER_EN_ROUTE',
-  DELIVERED = 'DELIVERED',
-  CANCELED = 'CANCELED'
+export enum OrderStatus {
+  NEW = 'NEW',                            // ۱. سفارش جدید ثبت شده (معمولاً در انتظار تایید اولیه سیستم یا ادمین)
+  WAITING_FOR_OFFERS = 'WAITING_FOR_OFFERS', // ۲. سفارش فعال شده و در انتظار پیشنهاد قیمت از سوی رانندگان است
+  DRIVER_ASSIGNED = 'DRIVER_ASSIGNED',    // ۳. شرکت (شما) پیشنهاد قیمت یک راننده را پذیرفته (منتظر تایید نهایی راننده منتخب)
+  DRIVER_ACCEPTED_CONFIRMATION = 'DRIVER_ACCEPTED_CONFIRMATION', // ۴. راننده تخصیص بار را رسماً تایید کرده است
+  LOADING = 'LOADING',                    // ۵. بارگیری در مبدا در حال انجام است
+  ON_ROAD = 'ON_ROAD',                    // ۶. بارگیری تمام شده و راننده در حال حمل بار به سمت مقصد است
+  DELIVERED = 'DELIVERED',                // ۷. بار در مقصد تحویل گیرنده شده است (در انتظار تسویه مالی)
+  FINISHED = 'FINISHED',                  // ۸. تسویه حساب کامل شده و سفارش پایان یافته است
+  CANCELED = 'CANCELED',                  // ۹. سفارش لغو شده است (توسط شرکت یا مدیر سیستم)
+  PAY = 'PAY', // پرداخت پول به راننده  
 
 }
 
@@ -159,29 +158,29 @@ export enum OfferStatus {
 
 export interface Order {
   id?: string;
-  expectedPriceRange : string ;  //
-  companyID: string;    
-  status: OrderStatus;   
-  
+  expectedPriceRange: string;  //
+  companyID: string;
+  status: OrderStatus;
+
   weightType: string;  //     
   loadType: string; // cargo type
-  
-  originProvince: string; 
+
+  originProvince: string;
   originCity: string;
-  
+
   destinationProvince: string;
   destinationCity: string;
-  
+
   goodType: string; // نوع  کالا  
   weight: number;  //وزن  
   size?: string;  // سایز  
-  
+
   deliveryDate: string;   //زمان  
   requiredVehicleType: string;
-  
+
   receiverName: string;   // نام  گیرنده 
   loadDescription: string; // فقط برای توضیحات "اضافی" و متفرقه
-  
+
   // 💥 فیلدهای جدید برای جدا کردن داده‌ها 💥
   invoiceNumber: string;         // شماره فاکتور
   receiverContact: string;       // شماره تماس گیرنده
@@ -193,8 +192,11 @@ export interface Order {
   unloadingFromHour: string;     // ساعت شروع کار انبار
   unloadingToHour: string;       // ساعت پایان کار انبار
 
+  // ⭐️ فیلد کلیدی برای نمایش قیمت در پنل راننده
+  offers?: OrderOffer[];      // لیست تمامی پیشنهادهای ثبت شده برای این سفارش
+
   createdAt?: Date;
-  driverID? : string;  
+  driverID?: string;          // راننده نهایی تخصیص داده شده
 }
 
 export interface OrderOffer {
@@ -209,6 +211,8 @@ export interface OrderOffer {
   deliveryEstimateTime?: string;
   date: string;
 }
+
+
 
 export interface DriverReview {
   id: string;

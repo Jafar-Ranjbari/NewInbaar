@@ -96,6 +96,35 @@ export const getOffersByDriverId = async (driverID: string): Promise<OrderOffer[
   return response.data;
 };
 
+ 
+ // driverService.ts - (نمونه منطق، بسته به backend شما)
+
+// ... (سایر ایمپورت‌ها)
+
+export const getOrdersByDriverId = async (driverID: string): Promise<Order[]> => {
+    // 1. دریافت مستقیم سفارشاتی که driverID آن‌ها با شناسه راننده فعلی مطابقت دارد
+    // این شامل ORDERS با وضعیت: DRIVER_ASSIGNED، LOADING، ON_ROAD و ... می‌شود.
+    const ordersResponse = await axios.get(`${API_URL}/orders?driverID=${driverID}`);
+    let orders: Order[] = ordersResponse.data;
+
+    // 2. برای هر سفارش، پیشنهاد ACCEPTED را به آن اضافه کنید تا قیمت نمایش داده شود
+    const ordersWithOffers = await Promise.all(orders.map(async (order) => {
+        // فرض می‌کنیم OrderOffer را بر اساس OrderID و DriverID فیلتر می‌کنیم
+        const offerResponse = await axios.get(`${API_URL}/orderOffers?orderID=${order.id}&driverID=${driverID}&state=${OfferStatus.ACCEPTED}`);
+        const acceptedOffer: OrderOffer = offerResponse.data[0]; // اولین مورد پذیرفته شده
+        
+        if (acceptedOffer) {
+            order.offers = [acceptedOffer]; 
+        }
+        return order;
+    }));
+
+    return ordersWithOffers;
+};
+
+// تابع پیشنهادی قبلی که برای فراخوانی در کامپوننت نیاز بود:
+// export const updateOrder = async (orderId: string, data: Partial<Order>): Promise<Order> => { ... };
+
 export const createOrderOffer = async (offerData: Omit<OrderOffer, 'id' | 'date' | 'state'>): Promise<OrderOffer> => {
   const response = await axios.post(`${API_URL}/orderOffers`, {
     ...offerData,
