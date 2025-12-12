@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { X, Check } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react'; // وارد کردن Type برای آیکون
 
 // --- ۱. تعریف Interfaces ---
 

@@ -62,6 +62,20 @@
       "password": "123",
       "rolename": "COMPANY",
       "mobile": "65555"
+    },
+    {
+      "id": "3be1",
+      "fullName": "جعفر رنجبری",
+      "password": "123",
+      "rolename": "DRIVER",
+      "mobile": "888"
+    },
+    {
+      "id": "380f",
+      "fullName": "راننده  نهم",
+      "password": "123",
+      "rolename": "DRIVER",
+      "mobile": "999"
     }
   ],
   "drivers": [
@@ -103,6 +117,26 @@
       "mobile1": "666",
       "firstName": "امیر",
       "lastName": "امیری"
+    },
+    {
+      "id": "1765549784707",
+      "userID": "3be1",
+      "firstName": "Jafar",
+      "lastName": "Ranjbari",
+      "mobile1": "09011614416",
+      "nationalId": "1602813364",
+      "province": "تهران",
+      "city": "کرج"
+    },
+    {
+      "id": "1765551948846",
+      "userID": "380f",
+      "firstName": "راننده",
+      "lastName": "نهم",
+      "mobile1": "09011614416",
+      "nationalId": "1602813361",
+      "province": "تهران",
+      "city": "تهران"
     }
   ],
   "driverCars": [
@@ -239,6 +273,30 @@
       "orders_change": 0,
       "description": "خرید بسته پیامک",
       "timestamp": "2025-12-12T11:41:02.667Z"
+    },
+    {
+      "id": "w9fwn6qad",
+      "ownerID": "1765549784707",
+      "balance_change": 2500000,
+      "orders_change": 0,
+      "description": "افزایش اعتبار",
+      "timestamp": "2025-12-12T14:43:33.137Z"
+    },
+    {
+      "id": "jdt3pt9ur",
+      "ownerID": "1765551948846",
+      "balance_change": 1000000,
+      "orders_change": 0,
+      "description": "هدیه اولیه (۱۰۰,۰۰۰ تومان)",
+      "timestamp": "2025-12-12T15:13:04.993Z"
+    },
+    {
+      "id": "ogh8ji0hk",
+      "ownerID": "1765551948846",
+      "balance_change": 2500000,
+      "orders_change": 0,
+      "description": "افزایش اعتبار",
+      "timestamp": "2025-12-12T15:13:47.402Z"
     }
   ],
   "companies": [
@@ -295,6 +353,16 @@
     {
       "id": "1765140964732",
       "userID": "1112",
+      "type": "REAL"
+    },
+    {
+      "id": "1765545345576",
+      "userID": "3be1",
+      "type": "REAL"
+    },
+    {
+      "id": "1765551926535",
+      "userID": "380f",
       "type": "REAL"
     }
   ],
@@ -514,6 +582,22 @@
       "orders_change": 0,
       "description": "کارمزد تخصیص راننده",
       "timestamp": "2025-12-12T10:49:05.217Z"
+    },
+    {
+      "id": "pvsrv5elz",
+      "ownerID": "1765545345610",
+      "balance_change": 100000,
+      "orders_change": 0,
+      "description": "هدیه ورود",
+      "timestamp": "2025-12-12T13:15:45.746Z"
+    },
+    {
+      "id": "u8eaatgmr",
+      "ownerID": "1765551926566",
+      "balance_change": 100000,
+      "orders_change": 0,
+      "description": "هدیه ورود",
+      "timestamp": "2025-12-12T15:05:26.706Z"
     }
   ],
   "orders": [

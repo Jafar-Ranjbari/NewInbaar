@@ -38,15 +38,15 @@ export const createOrUpdateCar = async (carData: Partial<DriverCar> & { driverID
   }
 };
 
-// Wallet
+// Wallet.....................................
 export const getDriverWalletTransactions = async (driverID: string): Promise<WalletTransaction[]> => {
   const response = await axios.get(`${API_URL}/walletDrivers?ownerID=${driverID}`);
   return response.data;
 };
 
 export const createDriverWalletTransaction = async (
-  driverID: string, 
-  amount: number, 
+  driverID: string,
+  amount: number,
   desc: string
 ): Promise<WalletTransaction> => {
   const transaction: WalletTransaction = {
@@ -61,15 +61,55 @@ export const createDriverWalletTransaction = async (
   return response.data;
 };
 
+
+
+// --- تابع جدید برای اعمال هدیه اولیه ---
+export const applyInitialGift = async (driverID: string): Promise<WalletTransaction | null> => {
+  const GIFT_AMOUNT_RIALS = 1000000; // 100,000 ریال = 10,000 تومان
+  const GIFT_DESCRIPTION = 'هدیه اولیه (۱۰۰,۰۰۰ تومان)';
+
+  // 1. بررسی سوابق تراکنش برای جلوگیری از اعمال مجدد
+  const transactions = await getDriverWalletTransactions(driverID);
+
+  // بررسی می‌کنیم که آیا قبلاً تراکنش با این توضیحات ثبت شده است یا خیر
+  const isGiftAlreadyApplied = transactions.some(
+    tx => tx.description === GIFT_DESCRIPTION && tx.balance_change === GIFT_AMOUNT_RIALS
+  );
+
+  if (isGiftAlreadyApplied) {
+    // هدیه قبلاً اعمال شده، نیازی به انجام کاری نیست
+    return null;
+  }
+
+  // 2. بررسی موجودی کل (جمع تمامی تراکنش‌ها)
+  const currentBalance = transactions.reduce((acc, curr) => acc + curr.balance_change, 0);
+
+  // شرط: فقط اگر موجودی صفر یا منفی باشد (یا اولین بار باشد که هیچ تراکنشی ندارد)
+  // اما برای سادگی، فقط بررسی می‌کنیم که هدیه قبلاً اعمال نشده باشد و این کار را در منطق کامپوننت کنترل می‌کنیم.
+  // این تابع فقط مسئول ثبت هدیه است.
+
+  if (!isGiftAlreadyApplied) {
+    // اعمال هدیه
+    const giftTx = await createDriverWalletTransaction(
+      driverID,
+      GIFT_AMOUNT_RIALS,
+      GIFT_DESCRIPTION
+    );
+    return giftTx;
+  }
+
+  return null;
+};
+
 // SMS Credits
 export const getSmsCreditTransactions = async (userID: string): Promise<SmsCreditTransaction[]> => {
-    const response = await axios.get(`${API_URL}/smsCreditTransactions?userID=${userID}`);
-    return response.data;
+  const response = await axios.get(`${API_URL}/smsCreditTransactions?userID=${userID}`);
+  return response.data;
 };
 
 export const createSmsCreditTransaction = async (
-  userID: string, 
-  amount: number, 
+  userID: string,
+  amount: number,
   cost: number,
   desc: string
 ): Promise<SmsCreditTransaction> => {
@@ -96,30 +136,30 @@ export const getOffersByDriverId = async (driverID: string): Promise<OrderOffer[
   return response.data;
 };
 
- 
- // driverService.ts - (نمونه منطق، بسته به backend شما)
+
+// driverService.ts - (نمونه منطق، بسته به backend شما)
 
 // ... (سایر ایمپورت‌ها)
 
 export const getOrdersByDriverId = async (driverID: string): Promise<Order[]> => {
-    // 1. دریافت مستقیم سفارشاتی که driverID آن‌ها با شناسه راننده فعلی مطابقت دارد
-    // این شامل ORDERS با وضعیت: DRIVER_ASSIGNED، LOADING، ON_ROAD و ... می‌شود.
-    const ordersResponse = await axios.get(`${API_URL}/orders?driverID=${driverID}`);
-    let orders: Order[] = ordersResponse.data;
+  // 1. دریافت مستقیم سفارشاتی که driverID آن‌ها با شناسه راننده فعلی مطابقت دارد
+  // این شامل ORDERS با وضعیت: DRIVER_ASSIGNED، LOADING، ON_ROAD و ... می‌شود.
+  const ordersResponse = await axios.get(`${API_URL}/orders?driverID=${driverID}`);
+  let orders: Order[] = ordersResponse.data;
 
-    // 2. برای هر سفارش، پیشنهاد ACCEPTED را به آن اضافه کنید تا قیمت نمایش داده شود
-    const ordersWithOffers = await Promise.all(orders.map(async (order) => {
-        // فرض می‌کنیم OrderOffer را بر اساس OrderID و DriverID فیلتر می‌کنیم
-        const offerResponse = await axios.get(`${API_URL}/orderOffers?orderID=${order.id}&driverID=${driverID}&state=${OfferStatus.ACCEPTED}`);
-        const acceptedOffer: OrderOffer = offerResponse.data[0]; // اولین مورد پذیرفته شده
-        
-        if (acceptedOffer) {
-            order.offers = [acceptedOffer]; 
-        }
-        return order;
-    }));
+  // 2. برای هر سفارش، پیشنهاد ACCEPTED را به آن اضافه کنید تا قیمت نمایش داده شود
+  const ordersWithOffers = await Promise.all(orders.map(async (order) => {
+    // فرض می‌کنیم OrderOffer را بر اساس OrderID و DriverID فیلتر می‌کنیم
+    const offerResponse = await axios.get(`${API_URL}/orderOffers?orderID=${order.id}&driverID=${driverID}&state=${OfferStatus.ACCEPTED}`);
+    const acceptedOffer: OrderOffer = offerResponse.data[0]; // اولین مورد پذیرفته شده
 
-    return ordersWithOffers;
+    if (acceptedOffer) {
+      order.offers = [acceptedOffer];
+    }
+    return order;
+  }));
+
+  return ordersWithOffers;
 };
 
 // تابع پیشنهادی قبلی که برای فراخوانی در کامپوننت نیاز بود:
@@ -135,26 +175,12 @@ export const createOrderOffer = async (offerData: Omit<OrderOffer, 'id' | 'date'
   return response.data;
 };
 
-// Reports
-// export const getPaymentsByDriverId = async (driverID: string): Promise<PaymentDriver[]> => {
-//   const response = await axios.get(`${API_URL}/paymentDrivers?driverID=${driverID}`);
-//   return response.data;
-// };
-
-
- 
+// Reports - تابع اصلاح شده
 export const getPaymentsByDriverId = async (driverID: string): Promise<PaymentDriver[]> => {
-    // در محیط واقعی این فراخوانی باید انجام شود:
-    // const response = await axios.get(`${API_URL}/paymentDrivers?driverID=${driverID}`);
-    // return response.data;
-    
-    // **داده‌های نمونه برای تست در اینجا قرار داده می‌شوند:**
-    return [
-        { id: "chw8sjkb8", orderID: "cgvvv73id", driverID: driverID, amount: 1000000, payType: "CASH", transactionCode: "123213", year: 1404, month: 3, day: 25, date: "2025-05-15T10:00:00.000Z", createdAt: "2025-05-15T10:00:00.000Z" },
-        { id: "chw8skb9", orderID: "cgvvv73ie", driverID: driverID, amount: 500000, payType: "ONLINE", transactionCode: "123214", year: 1404, month: 3, day: 24, date: "2025-05-14T10:00:00.000Z", createdAt: "2025-05-14T10:00:00.000Z" },
-        { id: "chw8skc0", orderID: "cgvvv73if", driverID: driverID, amount: 200000, payType: "CASH", transactionCode: "123215", year: 1404, month: 2, day: 15, date: "2025-04-05T10:00:00.000Z", createdAt: "2025-04-05T10:00:00.000Z" },
-        { id: "chw8skc1", orderID: "cgvvv73ig", driverID: driverID, amount: 1250000, payType: "ONLINE", transactionCode: "123216", year: 1404, month: 3, day: 25, date: "2025-05-15T11:00:00.000Z", createdAt: "2025-05-15T11:00:00.000Z" },
-        { id: "chw8skc2", orderID: "cgvvv73ih", driverID: driverID, amount: 800000, payType: "CASH", transactionCode: "123217", year: 1404, month: 3, day: 22, date: "2025-05-12T10:00:00.000Z", createdAt: "2025-05-12T10:00:00.000Z" },
-        { id: "chw8skc3", orderID: "cgvvv73ii", driverID: driverID, amount: 400000, payType: "CASH", transactionCode: "123218", year: 1403, month: 12, day: 10, date: "2025-03-01T10:00:00.000Z", createdAt: "2025-03-01T10:00:00.000Z" },
-    ] as PaymentDriver[];
-};
+  // این خط برای فراخوانی API واقعی و اعمال فیلتر صحیح است:
+  const response = await axios.get(`${API_URL}/paymentDrivers?driverID=${driverID}`);
+
+  return response.data;
+
+  // داده‌های نمونه حذف شدند
+}

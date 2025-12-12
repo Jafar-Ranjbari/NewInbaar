@@ -19,35 +19,36 @@ export interface User {
   mobile: string;
 }
 
-export interface Driver {
-  id: string;
-  userID: string;
-  firstName: string;
-  lastName: string;
-  mobile1: string;
-  province: string;
-  city: string;
-  mobile2?: string;
-  address?: string;
-  bloodType?: string;
-  postalCode?: string;
-  // Bank Info
-  accountOwner?: string;
-  accountHolderName?: string;
-  accountHolderLastName?: string;
-  accountHolderNationalId?: string;
-  cardNumber?: string;
-  shebaNumber?: string;
-  // Images (URLs)
-  nationalIdFront?: string;
-  nationalIdBack?: string;
-  accountHolderIdFront?: string;
-  accountHolderIdBack?: string;
-  driverIdFront?: string;
-  driverIdBack?: string;
-  license?: string;
-  smartCard?: string;
-  livePhoto?: string;
+ export interface Driver {
+  id: string;
+  userID: string;
+  firstName: string;
+  lastName: string;
+  nationalId:string; // اجباری
+  mobile1: string; // اجباری
+  province: string; // اجباری
+  city: string; // اجباری
+  mobile2?: string;
+  address?: string;
+  bloodType?: string;
+  postalCode?: string;
+  // Bank Info
+  accountOwner?: string; // اختیاری
+  accountHolderName?: string;
+  accountHolderLastName?: string;
+  accountHolderNationalId?: string;
+  cardNumber?: string;
+  shebaNumber?: string;
+  // Images (URLs)
+  nationalIdFront?: string;
+  nationalIdBack?: string;
+  accountHolderIdFront?: string;
+  accountHolderIdBack?: string;
+  driverIdFront?: string;
+  driverIdBack?: string;
+  license?: string;
+  smartCard?: string;
+  livePhoto?: string;
 }
 
 export interface DriverCar {

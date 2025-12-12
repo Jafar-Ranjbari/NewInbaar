@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useAuthStore } from '../store/useAuthStore';
 import { UserCircle, PackagePlus, Wallet, FileBarChart, ArrowLeft } from 'lucide-react';
-import { Company, CompanyType } from '../types';
-import { getCompanyByUserId, createCompany, createCompanyWalletTransaction } from '../company/companyService';
 import { IoNotificationsOutline } from "react-icons/io5";
 import {
   FaUserCircle,
@@ -19,37 +17,11 @@ import HeaderPanel from '../components/HeaderPanel';
 
 export const DashboardDriver: React.FC = () => {
   const { currentUser, logout } = useAuthStore();
-  const [company, setCompany] = useState<Partial<Company>>({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (currentUser) {
-      const init = async () => {
-        let c = await getCompanyByUserId(currentUser.id);
-        if (!c) {
-          c = await createCompany(currentUser.id, CompanyType.REAL);
-          await createCompanyWalletTransaction(c.id, 100000, 'هدیه ورود');
-        }
-        setCompany(c);
-        setLoading(false);
-      };
-      init();
-    }
-  }, [currentUser]);
 
   if (!currentUser) return null;
-  
+
   const { walletBalance, totalIncome, myOffers, car } = useDriverDashboardData();
   const myoffereLength = myOffers.filter(c => c.state != "REJECTED").length;
-
-  // -------------------- Top Header --------------------
-  const TopHeader = () => (
-    <header className="bg-white sticky top-0 z-10 shadow-sm">
-      <div className="h-16 flex items-center justify-center">
-        <h1 className="text-xl font-bold text-gray-800">خانه</h1>
-      </div>
-    </header>
-  );
 
   // -------------------- User Info --------------------
   const UserInfo = () => {
@@ -226,7 +198,7 @@ export const DashboardDriver: React.FC = () => {
       <div className="bg-gray-100 min-h-screen">
         <div className="max-w-sm mx-auto bg-gray-100 relative">
           {/* <TopHeader /> */}
-          <HeaderPanel/>
+          <HeaderPanel />
           <main className="p-4 space-y-4 pb-28">
             <UserInfo />
             <BalanceCard />

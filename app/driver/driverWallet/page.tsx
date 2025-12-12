@@ -2,7 +2,7 @@
 "use client"
 import React, { useEffect, useState, useCallback } from 'react';
 import { WalletTransaction, SmsCreditTransaction } from '../../types';
-import { getDriverWalletTransactions, createDriverWalletTransaction, getSmsCreditTransactions, createSmsCreditTransaction } from './../driverService';
+import { getDriverWalletTransactions, createDriverWalletTransaction, getSmsCreditTransactions, createSmsCreditTransaction, applyInitialGift } from './../driverService';
 import { Wallet, MessageSquare, Link } from 'lucide-react';
 import { useDriverDashboardData } from '../useDriverDashboardData';
 import { useAuthStore } from '@/app/store/useAuthStore';
@@ -159,10 +159,42 @@ const DriverWallet: React.FC = () => {
     }
   }, [driverID, userID, walletBalance]);
 
-  const handleNotImplemented = () => {
-    alert('این قابلیت هنوز پیاده سازی نشده است.');
+ //  هدیه  اولین  شارژ پرداختی  
 
+useEffect(() => {
+  const fetchTransactions = async () => {
+    setLoading(true);
+
+    if (driverID) {
+      // --- ۱. اعمال هدیه اولیه در صورت نیاز ---
+      try {
+        const giftTx = await applyInitialGift(driverID);
+        if (giftTx) {
+          console.log('هدیه اولیه با موفقیت اعمال شد:', giftTx);
+          // اگر هدیه‌ای اعمال شد، آن را به لیست تراکنش‌ها اضافه می‌کنیم (برای نمایش فوری)
+        }
+      } catch (error) {
+        console.error('خطا در اعمال هدیه اولیه:', error);
+      }
+    }
+
+    // --- ۲. بارگذاری مجدد تراکنش‌ها (یا ادامه با لیست جدید) ---
+    const walletPromise = driverID ? getDriverWalletTransactions(driverID) : Promise.resolve([]);
+    const smsPromise = userID ? getSmsCreditTransactions(userID) : Promise.resolve([]);
+
+    const [walletTx, smsTx] = await Promise.all([walletPromise, smsPromise]);
+
+    // اگر هدیه اعمال شده باشد، در این خط در لیست walletTx دیده خواهد شد
+    setTransactions(walletTx); 
+    setSmsTransactions(smsTx);
+    setLoading(false);
   };
+
+  if (driverID || userID) {
+    fetchTransactions();
+  }
+}, [driverID, userID]); // دیپندنس‌ها تغییری نکرده‌اند
+ 
 
   if (!driverID) return <div className="p-4 text-center">پروفایل را تکمیل کنید.</div>;
   if (loading && transactions.length === 0) return <div className="p-4 text-center">در حال بارگذاری...</div>;
