@@ -34,6 +34,7 @@ const landingSetp: React.FC = () => {
       {currentStep === AuthStep.LOGIN_PASSWORD && <PasswordStep />}
 
       {currentStep === AuthStep.REGISTER && <RegisterStep />}
+      
 
       {/* 🔥 NEW USERS SMS FLOW */}
       {currentStep === AuthStep.SMS_VERIFICATION && (

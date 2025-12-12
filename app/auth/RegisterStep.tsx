@@ -25,6 +25,10 @@ export const RegisterStep: React.FC = () => {
 
       const token = generateMockJwt({ id: newUser.id, role: newUser.rolename });
       login(newUser, token);
+
+      //  این دوتای بالا  بعد  از  کیف  پول   ست  میشن  
+      // هر فرمی  هم پر بشه   
+
     } catch (error) {
       alert("خطا در ثبت نام");
     } finally {
