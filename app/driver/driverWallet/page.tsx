@@ -211,7 +211,8 @@ useEffect(() => {
           <div className="flex flex-col items-center text-white mb-6">
             <p className="text-sm opacity-80">موجودی کیف پول</p>
             <div className="flex items-baseline mt-2">
-              <span className="text-5xl font-bold tracking-wider">{walletBalanceInTomans.toLocaleString('fa-IR')}</span>
+              {/* <span className="text-5xl font-bold tracking-wider">{walletBalanceInTomans.toLocaleString('fa-IR')}   </span> */}
+                  <span className="text-5xl font-bold tracking-wider"> 350000 </span>
               <span className="text-base font-semibold mr-2">تومان</span>
             </div>
           </div>

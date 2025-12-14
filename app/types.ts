@@ -19,36 +19,36 @@ export interface User {
   mobile: string;
 }
 
- export interface Driver {
-  id: string;
-  userID: string;
-  firstName: string;
-  lastName: string;
-  nationalId:string; // اجباری
-  mobile1: string; // اجباری
-  province: string; // اجباری
-  city: string; // اجباری
-  mobile2?: string;
-  address?: string;
-  bloodType?: string;
-  postalCode?: string;
-  // Bank Info
-  accountOwner?: string; // اختیاری
-  accountHolderName?: string;
-  accountHolderLastName?: string;
-  accountHolderNationalId?: string;
-  cardNumber?: string;
-  shebaNumber?: string;
-  // Images (URLs)
-  nationalIdFront?: string;
-  nationalIdBack?: string;
-  accountHolderIdFront?: string;
-  accountHolderIdBack?: string;
-  driverIdFront?: string;
-  driverIdBack?: string;
-  license?: string;
-  smartCard?: string;
-  livePhoto?: string;
+export interface Driver {
+  id: string;
+  userID: string;
+  firstName: string;
+  lastName: string;
+  nationalId: string; // اجباری
+  mobile1: string; // اجباری
+  province: string; // اجباری
+  city: string; // اجباری
+  mobile2?: string;
+  address?: string;
+  bloodType?: string;
+  postalCode?: string;
+  // Bank Info
+  accountOwner?: string; // اختیاری
+  accountHolderName?: string;
+  accountHolderLastName?: string;
+  accountHolderNationalId?: string;
+  cardNumber?: string;
+  shebaNumber?: string;
+  // Images (URLs)
+  nationalIdFront?: string;
+  nationalIdBack?: string;
+  accountHolderIdFront?: string;
+  accountHolderIdBack?: string;
+  driverIdFront?: string;
+  driverIdBack?: string;
+  license?: string;
+  smartCard?: string;
+  livePhoto?: string;
 }
 
 export interface DriverCar {
@@ -108,6 +108,8 @@ export interface CompanyDetail {
   postalCode: string;
   workHoursFrom: string;
   workHoursTo: string;
+  officePostalAddress: string;
+  companyPostalAddress: string;
 
   // Rep Info
   repFirstName: string;
@@ -132,6 +134,11 @@ export interface CompanyDetail {
   legal_socialSecurityWorkshopCode?: string;
   legal_ceoName?: string;
   legal_ceoLastName?: string;
+
+  officialGazette?: string;
+  latestChangesGazette?: string;
+  nationalCardFront?: string;
+  nationalCardBack?: string;
 
   createdAt: string;
   updatedAt: string;

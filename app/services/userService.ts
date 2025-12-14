@@ -9,6 +9,12 @@ import {
 
 // --- USER & AUTH ---
 
+export const updateCompanyType = async (companyId: string, newType: CompanyType): Promise<Company> => {
+    // به‌روزرسانی نوع شرکت در جدول اصلی
+    const response = await axios.patch(`${API_URL}/companies/${companyId}`, { type: newType });
+    return response.data;
+};
+
 export const getUserByMobile = async (mobile: string): Promise<User | null> => {
   try {
     const response = await axios.get(`${API_URL}/users?mobile=${mobile}`);

@@ -59,7 +59,8 @@ export const DashboardDriver: React.FC = () => {
       <div className="z-10 text-right">
         <p className="font-semibold">موجودی کیف پول</p>
         <p className="text-3xl font-bold mt-2 flex items-center justify-end gap-2">
-          <span>  {walletBalance.toLocaleString()}</span>
+          {/* <span>  {walletBalance.toLocaleString()}</span> */}
+          <span>  350000</span>
           <span className="text-base font-normal">ریال</span>
         </p>
       </div>
