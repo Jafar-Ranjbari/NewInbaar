@@ -2,7 +2,8 @@
 "use client"
 import React, { useEffect, useState, useCallback } from 'react';
 import { WalletTransaction, SmsCreditTransaction } from '../../types';
-import { getDriverWalletTransactions, createDriverWalletTransaction, getSmsCreditTransactions, createSmsCreditTransaction, applyInitialGift } from './../driverService';
+import { getDriverWalletTransactions, createDriverWalletTransaction, getSmsCreditTransactions,
+   createSmsCreditTransaction, applyInitialGift } from './../driverService';
 import { Wallet, MessageSquare, Link } from 'lucide-react';
 import { useDriverDashboardData } from '../useDriverDashboardData';
 import { useAuthStore } from '@/app/store/useAuthStore';

@@ -483,7 +483,7 @@ const cities = useMemo(() => {
                         
                     />
                     <FileUpload
-                        label="آگهی آخرین تغییرات روزنامه رسمی (اختیاری)"
+                        label="آگهی آخرین تغییرات روزنامه رسمی"
                         id="latestChangesGazette"
                         onFileSelect={handleFileSelect}
                         initialFileUrl={formData.latestChangesGazette as string | undefined}
