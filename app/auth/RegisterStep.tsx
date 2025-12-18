@@ -21,6 +21,7 @@ export const RegisterStep: React.FC = () => {
         password,
         rolename: role,
         mobile: tempMobile,
+        isComplete :false,
       });
 
       const token = generateMockJwt({ id: newUser.id, role: newUser.rolename });

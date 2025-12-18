@@ -19,42 +19,79 @@ const INITIAL_STATE = {
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
-    // 1. داده‌های اولیه
-    ...INITIAL_STATE, 
+  ...INITIAL_STATE,
 
-    // 2. توابع (متدها)
+  setHydrated: (state) => set({ isHydrated: state }),
+  setStep: (step) => set({ currentStep: step }),
+  setTempMobile: (mobile) => set({ tempMobile: mobile }),
+  setTempUser: (user) => set({ tempUser: user }),
 
-    setHydrated: (state) => set({ isHydrated: state }),
-    setStep: (step) => set({ currentStep: step }),
-    setTempMobile: (mobile) => set({ tempMobile: mobile }),
-    setTempUser: (user) => set({ tempUser: user }),
-  
-    login: (user, token) => {
-        // ⬅️ ذخیره داده‌ها در LocalStorage
-        setAuthData(user, token); 
-        
-        set({ 
-            isAuthenticated: true, 
-            currentUser: user, 
-            token: token,
-            currentStep: AuthStep.PHONE_INPUT // ریست کردن برای استفاده‌های بعدی
-        });
-    },
-  
-    logout: () => {
-        // ⬅️ پاک کردن LocalStorage
-        clearAuthData(); 
-        
-        set({ 
-            isAuthenticated: false, 
-            currentUser: null, 
-            token: null,
-            currentStep: AuthStep.PHONE_INPUT,
-            tempMobile: '',
-            tempUser: null,
-        });
-    }
+  login: (user, token) => {
+    setAuthData(user, token);
+    set({
+      isAuthenticated: true,
+      currentUser: user,
+      token: token,
+      currentStep: AuthStep.PHONE_INPUT,
+    });
+  },
+
+  logout: () => {
+    clearAuthData();
+    set({
+      isAuthenticated: false,
+      currentUser: null,
+      token: null,
+      currentStep: AuthStep.PHONE_INPUT,
+      tempMobile: '',
+      tempUser: null,
+    });
+  },
+
+  // ✅ متد جدید
+  setCurrentUser: (user) =>
+    set({
+      currentUser: user,
+    }),
 }));
+
+// export const useAuthStore = create<AuthState>((set) => ({
+//     // 1. داده‌های اولیه
+//     ...INITIAL_STATE, 
+
+//     // 2. توابع (متدها)
+
+//     setHydrated: (state) => set({ isHydrated: state }),
+//     setStep: (step) => set({ currentStep: step }),
+//     setTempMobile: (mobile) => set({ tempMobile: mobile }),
+//     setTempUser: (user) => set({ tempUser: user }),
+//   
+//     login: (user, token) => {
+//         // ⬅️ ذخیره داده‌ها در LocalStorage
+//         setAuthData(user, token); 
+        
+//         set({ 
+//             isAuthenticated: true, 
+//             currentUser: user, 
+//             token: token,
+//             currentStep: AuthStep.PHONE_INPUT // ریست کردن برای استفاده‌های بعدی
+//         });
+//     },
+//   
+//     logout: () => {
+//         // ⬅️ پاک کردن LocalStorage
+//         clearAuthData(); 
+        
+//         set({ 
+//             isAuthenticated: false, 
+//             currentUser: null, 
+//             token: null,
+//             currentStep: AuthStep.PHONE_INPUT,
+//             tempMobile: '',
+//             tempUser: null,
+//         });
+//     }
+// }));
 
 // 💡 هوک سفارشی برای بازیابی داده‌ها از LocalStorage در زمان بارگذاری (Hydration)
 // این تضمین می کند که اطلاعات کاربر پس از رفرش از بین نرود.

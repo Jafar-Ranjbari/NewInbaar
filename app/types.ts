@@ -17,6 +17,7 @@ export interface User {
   password?: string;
   rolename: Role;
   mobile: string;
+  isComplete :Boolean ;
 }
 
 export interface Driver {
@@ -271,6 +272,8 @@ export interface AuthState {
   setTempUser: (user: User | null) => void;
   login: (user: User, token: string) => void;
   logout: () => void;
+    // ✅ اینو اضافه کن
+  setCurrentUser: (user: User | null) => void;
 }
 
 // types.ts

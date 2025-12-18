@@ -45,6 +45,16 @@ export const updateUserPassword = async (id: string, newPassword: string): Promi
   return response.data;
 };
 
+ export const updateUserIsComplete = async (
+  id: string,
+  newisComplete: boolean
+): Promise<User> => {
+  const response = await axios.patch(`${API_URL}/users/${id}`, {
+    isComplete: newisComplete,
+  });
+  return response.data;
+};
+
 // --- DRIVER ---
 
 export const getAllDrivers = async (): Promise<Driver[]> => {

@@ -1,7 +1,13 @@
-import React from 'react';
-import Link from 'next/link';
-import { useAuthStore } from '../store/useAuthStore';
-import { UserCircle, PackagePlus, Wallet, FileBarChart, ArrowLeft } from 'lucide-react';
+import React, { useEffect } from "react";
+import Link from "next/link";
+import { useAuthStore } from "../store/useAuthStore";
+import {
+  UserCircle,
+  PackagePlus,
+  Wallet,
+  FileBarChart,
+  ArrowLeft,
+} from "lucide-react";
 import { IoNotificationsOutline } from "react-icons/io5";
 import {
   FaUserCircle,
@@ -11,27 +17,44 @@ import {
   FaWallet,
 } from "react-icons/fa";
 import { FiUser, FiBox, FiTruck, FiCreditCard, FiHome } from "react-icons/fi";
-import { useDriverDashboardData } from './useDriverDashboardData';
-import HeaderPanel from '../components/HeaderPanel';
-
+import { useDriverDashboardData } from "./useDriverDashboardData";
+import HeaderPanel from "../components/HeaderPanel";
+ import { useRouter } from 'next/navigation';
 
 export const DashboardDriver: React.FC = () => {
-  const { currentUser, logout } = useAuthStore();
+    const router = useRouter();
+  const { currentUser, logout, token } = useAuthStore();
 
-  if (!currentUser) return null;
 
-  const { walletBalance, totalIncome, myOffers, car } = useDriverDashboardData();
-  const myoffereLength = myOffers.filter(c => c.state != "REJECTED").length;
+  // ایرادش اینه  خروج میزنیم قاط میزنه  
+  useEffect(() => {
+    if (!token || (currentUser && currentUser.isComplete === false)) {
+      router.replace("/driver/complete-profile");
+    }
+  }, [token, currentUser, router]);
+
+  if (!currentUser || !token) return null; // صبر تا ریدایرکت
+
+  if (currentUser.isComplete === false) {
+    return null; // صبر تا ریدایرکت
+  }
+
+ 
+  const { walletBalance, totalIncome, myOffers, car } =
+    useDriverDashboardData();
+  const myoffereLength = myOffers.filter((c) => c.state != "REJECTED").length;
 
   // -------------------- User Info --------------------
   const UserInfo = () => {
-
     return (
       <div className="bg-white rounded-xl shadow-sm p-4 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <FaUserCircle className="text-5xl text-gray-400" />
           <div>
-            <p className="font-bold text-gray-800">    خوش آمدی  {currentUser.fullName}    </p>
+            <p className="font-bold text-gray-800">
+              {" "}
+              خوش آمدی {currentUser.fullName}{" "}
+            </p>
             <p className="text-sm text-gray-500"> {car.carModel} </p>
           </div>
         </div>
@@ -40,7 +63,7 @@ export const DashboardDriver: React.FC = () => {
         </button>
       </div>
     );
-  }
+  };
 
   // -------------------- Balance Card --------------------
   const BalanceCard = () => (
@@ -60,7 +83,7 @@ export const DashboardDriver: React.FC = () => {
         <p className="font-semibold">موجودی کیف پول</p>
         <p className="text-3xl font-bold mt-2 flex items-center justify-end gap-2">
           {/* <span>  {walletBalance.toLocaleString()}</span> */}
-          <span>  350000</span>
+          <span> 350000</span>
           <span className="text-base font-normal">ریال</span>
         </p>
       </div>
@@ -77,7 +100,9 @@ export const DashboardDriver: React.FC = () => {
             <FaTruck className="text-blue-500" />
           </div>
         </div>
-        <p className="text-2xl font-bold text-right mt-4">{myoffereLength.toLocaleString()}</p>
+        <p className="text-2xl font-bold text-right mt-4">
+          {myoffereLength.toLocaleString()}
+        </p>
       </div>
       <div className="bg-white rounded-xl shadow-sm p-4">
         <div className="flex justify-between items-start">
@@ -125,7 +150,10 @@ export const DashboardDriver: React.FC = () => {
       </div>
       <p className="text-gray-600 text-sm max-w-xs">
         جهت استفاده از خدمات اینبار، ابتدا{" "}
-        <Link href="/driver/driverWallet" className="text-blue-500 font-semibold">
+        <Link
+          href="/driver/driverWallet"
+          className="text-blue-500 font-semibold"
+        >
           کیف پول
         </Link>{" "}
         خود را شارژ نمایید
@@ -192,7 +220,6 @@ export const DashboardDriver: React.FC = () => {
     );
   };
 
-
   // -------------------- Main Page --------------------
   const Homedriverpanel = () => {
     return (
@@ -217,24 +244,35 @@ export const DashboardDriver: React.FC = () => {
 
   // لیست منوها برای تمیزی کد
   const menuItems = [
-    { title: 'مشخصات شرکت', href: '/driver/profile', icon: <UserCircle size={32} />, color: 'text-blue-600 bg-blue-50' },
-    { title: 'مدیریت بار', href: '/dashboard/orders', icon: <PackagePlus size={32} />, color: 'text-gray-600 bg-gray-50' },
-    { title: 'کیف پول', href: '/dashboard/wallet', icon: <Wallet size={32} />, color: 'text-purple-600 bg-purple-50' },
-    { title: 'گزارشات', href: '/dashboard/reports', icon: <FileBarChart size={32} />, color: 'text-orange-600 bg-orange-50' },
+    {
+      title: "مشخصات شرکت",
+      href: "/driver/profile",
+      icon: <UserCircle size={32} />,
+      color: "text-blue-600 bg-blue-50",
+    },
+    {
+      title: "مدیریت بار",
+      href: "/dashboard/orders",
+      icon: <PackagePlus size={32} />,
+      color: "text-gray-600 bg-gray-50",
+    },
+    {
+      title: "کیف پول",
+      href: "/dashboard/wallet",
+      icon: <Wallet size={32} />,
+      color: "text-purple-600 bg-purple-50",
+    },
+    {
+      title: "گزارشات",
+      href: "/dashboard/reports",
+      icon: <FileBarChart size={32} />,
+      color: "text-orange-600 bg-orange-50",
+    },
   ];
 
   return (
     <>
       <Homedriverpanel />
-
     </>
   );
 };
-
-
-
-
-
-
-
-
