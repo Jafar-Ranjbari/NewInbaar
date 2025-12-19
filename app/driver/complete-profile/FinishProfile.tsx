@@ -1,48 +1,44 @@
  "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 import { updateUserIsComplete } from "@/app/services/userService";
 import { useAuthStore } from "@/app/store/useAuthStore";
-import { DashboardDriver } from "../DashboardDriver";
 
 const FinishProfile = () => {
-  const { currentUser, setCurrentUser } = useAuthStore();
+  const router = useRouter();
+
+  const { currentUser, logout } = useAuthStore();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [goToDashboard, setGoToDashboard] = useState(false);
 
-  // ✅ اگر مرحله آخر انجام شد، داشبورد رندر شود
-  if (goToDashboard) {
-    return <DashboardDriver />;
-  }
+  const finish = async () => {
+    if (!currentUser) {
+      setError("کاربر یافت نشد");
+      return;
+    }
 
- const finish = async () => {
-  if (!currentUser) {
-    setError("کاربر یافت نشد");
-    return;
-  }
+    try {
+      setLoading(true);
+      setError(null);
 
-  try {
-    setLoading(true);
-    setError(null);
+      // 1️⃣ تکمیل پروفایل در بک‌اند
+      await updateUserIsComplete(currentUser.id, true);
 
-    // 1️⃣ آپدیت یوزر در بک‌اند
-    const updatedUser = await updateUserIsComplete(currentUser.id, true);
+      // 2️⃣ خروج کامل (پاک شدن توکن + state)
+      logout();
 
-    // 2️⃣ آپدیت Zustand + LocalStorage
-    setCurrentUser(updatedUser);
+      // 3️⃣ انتقال امن به صفحه لاگین
+      router.replace("/auth");
 
-    // 3️⃣ تغییر UI به داشبورد
-    setGoToDashboard(true);
-
-  } catch (err) {
-    setError("خطا در تکمیل اطلاعات، دوباره تلاش کنید");
-  } finally {
-    setLoading(false);
-  }
-};
-
+    } catch (err) {
+      setError("خطا در تکمیل اطلاعات، دوباره تلاش کنید");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="text-center space-y-4">
@@ -52,9 +48,7 @@ const FinishProfile = () => {
         اطلاعات شما با موفقیت ثبت شد و حساب شما فعال گردید
       </p>
 
-      {error && (
-        <p className="text-sm text-red-500">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-500">{error}</p>}
 
       <button
         onClick={finish}
@@ -63,7 +57,7 @@ const FinishProfile = () => {
           loading ? "opacity-60 cursor-not-allowed" : ""
         }`}
       >
-        {loading ? "در حال انتقال..." : "ورود به پنل"}
+        {loading ? "در حال انتقال..." : "ورود مجدد"}
       </button>
     </div>
   );

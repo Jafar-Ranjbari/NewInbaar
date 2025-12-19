@@ -6,7 +6,6 @@ import {
   PackagePlus,
   Wallet,
   FileBarChart,
-  ArrowLeft,
 } from "lucide-react";
 import { IoNotificationsOutline } from "react-icons/io5";
 import {
@@ -23,8 +22,7 @@ import HeaderPanel from "../components/HeaderPanel";
 
 export const DashboardDriver: React.FC = () => {
     const router = useRouter();
-  const { currentUser, logout, token } = useAuthStore();
-
+  const { currentUser, token } = useAuthStore();
 
   // ایرادش اینه  خروج میزنیم قاط میزنه  
   useEffect(() => {
