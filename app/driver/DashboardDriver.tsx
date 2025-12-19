@@ -37,7 +37,7 @@
 //     return null; // صبر تا ریدایرکت
 //   }
 
- 
+
 //   const { walletBalance, totalIncome, myOffers, car } =
 //     useDriverDashboardData();
 //   const myoffereLength = myOffers.filter((c) => c.state != "REJECTED").length;
@@ -291,6 +291,7 @@ import { FaUserCircle, FaPlus, FaTruck, FaRegMoneyBillAlt, FaWallet } from "reac
 import { FiUser, FiBox, FiTruck, FiCreditCard, FiHome } from "react-icons/fi";
 import { FiMail } from 'react-icons/fi';
 import { TbTruckDelivery } from 'react-icons/tb';
+import AuthGuardDriver from "./complete-profile/AuthGuardDriver";
 
 export const DashboardDriver: React.FC = () => {
   const router = useRouter();
@@ -354,7 +355,7 @@ export const DashboardDriver: React.FC = () => {
     <div className="bg-gradient-to-b from-blue-500 to-blue-600 rounded-3xl p-5 shadow-lg relative overflow-hidden text-white">
       <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full"></div>
       <div className="absolute -bottom-16 -right-5 w-48 h-48 bg-white/10 rounded-full"></div>
-      
+
       <div className="relative z-10">
         <div className="flex flex-col items-center mb-6">
           <p className="text-sm opacity-80">موجودی کیف پول</p>
@@ -415,39 +416,41 @@ export const DashboardDriver: React.FC = () => {
 
   // -------------------- Nav & Layout --------------------
   return (
-    <div className="bg-gray-100 min-h-screen">
-      <div className="max-w-sm mx-auto bg-gray-100 relative">
-        <HeaderPanel />
-        <main className="p-4 space-y-4 pb-28">
-          <UserInfo />
-          <BalanceCard />
-          <StatsCards />
-          
-          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-            <div className="bg-gray-800 text-white p-6 text-center relative">
-              <p className="text-sm">دوستتو دعوت کن، جایزه بگیر</p>
-              <p className="text-lg font-bold mt-1">اینبار رفاقت پولسازه!</p>
-            </div>
-            <div className="p-4 flex justify-between items-center">
-              <span className="font-bold text-gray-400">InBaar</span>
-              <Link href="/driver/invite" className="border border-gray-400 text-gray-700 py-1 px-4 rounded-lg text-xs">دعوت از دوستان</Link>
-            </div>
-          </div>
-        </main>
+    <AuthGuardDriver>
+      <div className="bg-gray-100 min-h-screen">
+        <div className="max-w-sm mx-auto bg-gray-100 relative">
+          <HeaderPanel />
+          <main className="p-4 space-y-4 pb-28">
+            <UserInfo />
+            <BalanceCard />
+            <StatsCards />
 
-        <footer className="fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-white border-t border-gray-200 z-50">
-          <div className="flex justify-around items-center h-20">
-            <Link href="/driver/panelDriver" className="flex flex-col items-center gap-1 text-gray-500"><FiUser size={24} /><span className="text-[10px]">پروفایل</span></Link>
-            <Link href="/driver/orders" className="flex flex-col items-center gap-1 text-gray-500"><FiBox size={24} /><span className="text-[10px]">سفارشات</span></Link>
-            <div className="relative w-16 h-16">
-              <Link href="/driver/roadDriver" className="absolute -top-8 left-1/2 -translate-x-1/2 bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center shadow-lg border-4 border-white"><FiTruck size={28} className="text-white" /></Link>
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="bg-gray-800 text-white p-6 text-center relative">
+                <p className="text-sm">دوستتو دعوت کن، جایزه بگیر</p>
+                <p className="text-lg font-bold mt-1">اینبار رفاقت پولسازه!</p>
+              </div>
+              <div className="p-4 flex justify-between items-center">
+                <span className="font-bold text-gray-400">InBaar</span>
+                <Link href="/driver/invite" className="border border-gray-400 text-gray-700 py-1 px-4 rounded-lg text-xs">دعوت از دوستان</Link>
+              </div>
             </div>
-            <Link href="/driver/driverWallet" className="flex flex-col items-center gap-1 text-gray-500"><FiCreditCard size={24} /><span className="text-[10px]">کیف پول</span></Link>
-            <Link href="/driver/orderReport" className="flex flex-col items-center gap-1 text-gray-900 font-bold"><FiHome size={24} /><span className="text-[10px]">خانه</span></Link>
-          </div>
-        </footer>
+          </main>
+
+          <footer className="fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-white border-t border-gray-200 z-50">
+            <div className="flex justify-around items-center h-20">
+              <Link href="/driver/panelDriver" className="flex flex-col items-center gap-1 text-gray-500"><FiUser size={24} /><span className="text-[10px]">پروفایل</span></Link>
+              <Link href="/driver/orders" className="flex flex-col items-center gap-1 text-gray-500"><FiBox size={24} /><span className="text-[10px]">سفارشات</span></Link>
+              <div className="relative w-16 h-16">
+                <Link href="/driver/roadDriver" className="absolute -top-8 left-1/2 -translate-x-1/2 bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center shadow-lg border-4 border-white"><FiTruck size={28} className="text-white" /></Link>
+              </div>
+              <Link href="/driver/driverWallet" className="flex flex-col items-center gap-1 text-gray-500"><FiCreditCard size={24} /><span className="text-[10px]">کیف پول</span></Link>
+              <Link href="/driver/orderReport" className="flex flex-col items-center gap-1 text-gray-900 font-bold"><FiHome size={24} /><span className="text-[10px]">خانه</span></Link>
+            </div>
+          </footer>
+        </div>
       </div>
-    </div>
+    </AuthGuardDriver>
   );
 };
 
