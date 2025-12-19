@@ -14,6 +14,7 @@ import {
   BsChevronLeft,
 } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
+import { useAuthStore } from "@/app/store/useAuthStore";
 
 interface Badge {
   count: number;
@@ -62,6 +63,9 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
 );
 
 const ProfileScreen: React.FC = () => {
+  
+  const { currentUser } = useAuthStore();
+  // const userID = currentUser?.id;
   const settingsItems: SettingsItemProps[] = [
     {
       icon: <BsPerson />,
@@ -132,7 +136,7 @@ const ProfileScreen: React.FC = () => {
           <div className="text-center text-lg font-bold">پروفایل</div>
           <div className="flex items-center gap-4 mt-8">
             <div className="flex-1 text-right">
-              <h1 className="text-xl font-bold">حمید حمیدی</h1>
+              <h1 className="text-xl font-bold"> {currentUser?.fullName}</h1>
               <p className="text-gray-400">پیکان وانت</p>
             </div>
             <div className="w-20 h-20 rounded-full bg-gray-700 flex-shrink-0 flex items-center justify-center">
