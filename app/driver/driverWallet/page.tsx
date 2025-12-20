@@ -30,10 +30,11 @@ const DriverWallet: React.FC = () => {
   const driverID = driver.id;
   const userID = currentUser?.id;
 
-  if (!driverID) {
-  console.error("خطا: شناسه راننده یافت نشد");
-  return;
-}
+  console.log("driver  id" ,  driverID) ;
+//   if (!driverID) {
+//   // console.error("خطا: شناسه راننده یافت نشد");
+//   return;
+// }
   // ۱. واکشی داده‌ها و هدیه اولیه
   const fetchData = useCallback(async () => {
     if (!driverID && !userID) return;
