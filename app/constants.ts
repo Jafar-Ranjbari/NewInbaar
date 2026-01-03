@@ -7,7 +7,7 @@ export const CITY_OPTIONS = ['شیراز', 'تهران', 'مشهد', 'اصفها
 export const CARGO_TYPE_OPTIONS = ['مواد غذایی', 'صنعتی', 'شیمیایی', 'ساختمانی', 'پوشاک', 'عمومی'];
 export const PACKAGE_OPTIONS = ['کارتن', 'پالت', 'بشکه', 'گونی', 'فله'];
 export const VEHICLE_TYPE_OPTIONS = ['وانت (بدون یخچال)', 'کامیون (بدون یخچال)', 'کامیونت (یخچالی)', 'تریلی', 'خاور مسقف'];
-export const PAYMENT_OPTIONS = ['نقدی', 'اعتباری (حساب)', 'کارت به کارت'];
+export const PAYMENT_OPTIONS = ['فرستده ', 'گیرنده'];
 
 export interface WeatherDay {
   dayName: string;

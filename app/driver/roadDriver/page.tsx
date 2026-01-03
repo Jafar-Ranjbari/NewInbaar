@@ -37,15 +37,15 @@ const getDriverStatusLabel = (status: OrderStatus): { label: string, color: stri
   switch (status) {
     case OrderStatus.NEW:
     case OrderStatus.WAITING_FOR_OFFERS:
-      return { label: "منتظر تخصیص شرکت", color: "text-blue-800", style: "bg-blue-100" };
+      return { label: "در انتظار پیشنهاد", color: "text-blue-800", style: "bg-blue-100" };
     case OrderStatus.DRIVER_ASSIGNED:
-      return { label: "منتظر تایید نهایی شما", color: "text-indigo-800", style: "bg-indigo-100" };
+      return { label: "در انتظار تایید نهایی راننده", color: "text-indigo-800", style: "bg-indigo-100" };
     case OrderStatus.DRIVER_ACCEPTED_CONFIRMATION:
-      return { label: "منتظر شروع بارگیری", color: "text-purple-800", style: "bg-purple-100" };
+      return { label: "راننده در مسیر انبار  مبدا", color: "text-purple-800", style: "bg-purple-100" };
     case OrderStatus.LOADING:
-      return { label: "در حال بارگیری...", color: "text-yellow-900", style: "bg-yellow-300 text-black" };
+      return { label: " تایید  دریافت بار ", color: "text-yellow-900", style: "bg-yellow-300 text-black" };
     case OrderStatus.ON_ROAD:
-      return { label: "در حال حمل به مقصد", color: "text-orange-800", style: "bg-[#f4a261] bg-opacity-90 text-white" };
+      return { label: "", color: "text-orange-800", style: "bg-[#f4a261] bg-opacity-90 text-white" };
     case OrderStatus.DELIVERED:
       return { label: "تحویل داده شد", color: "text-green-800", style: "bg-green-100" };
     case OrderStatus.FINISHED:
@@ -303,7 +303,7 @@ const DeliveredContent: React.FC<{ order: Order }> = ({ order }) => {
         </div>
         <div className='flex justify-between'>
           <span className="text-gray-600">وضعیت پرداخت:</span>
-          <span className="font-bold text-orange-600">در انتظار تسویه شرکت</span>
+          <span className="font-bold text-orange-600"> اینجا دوتا  آیتم  داره فرستده یا  گیرنده   </span>
         </div>
       </div>
     </div>
@@ -372,16 +372,21 @@ const DriverOrderCard: React.FC<DriverOrderCardProps> = ({ order, onStatusUpdate
         style = 'bg-orange-600 text-white hover:bg-orange-700';
         break;
       case OrderStatus.LOADING:
-        label = 'پایان بارگیری و حرکت به مقصد';
+        label = "تایید تحویل بار";
         newStatus = OrderStatus.ON_ROAD;
         style = 'bg-blue-600 text-white hover:bg-blue-700';
         break;
       case OrderStatus.ON_ROAD:
-        label = 'تایید تحویل بار در مقصد';
+        label = "راننده در مسیر انبار مقصد";
         newStatus = OrderStatus.DELIVERED;
         style = 'bg-[#d0fcf5] active:bg-[#a6f0e4] text-black hover:bg-green-100';
         break;
       case OrderStatus.DELIVERED:
+        label = 'تایید تحویل بار در مقصد';
+        newStatus = OrderStatus.DELIVERED;
+        style = 'bg-[#d0fcf5] active:bg-[#a6f0e4] text-black hover:bg-green-100';
+        break;
+
       case OrderStatus.FINISHED:
       case OrderStatus.PAY:
         return (

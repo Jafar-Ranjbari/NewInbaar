@@ -9,15 +9,13 @@ export enum CompanyType {
   LEGAL = 'LEGAL'
 }
 
-
-
 export interface User {
   id: string;
   fullName: string;
   password?: string;
   rolename: Role;
   mobile: string;
-  isComplete :Boolean ;
+  isComplete: Boolean;
 }
 
 export interface Driver {
@@ -144,24 +142,53 @@ export interface CompanyDetail {
   createdAt: string;
   updatedAt: string;
 }
+
 export enum OrderStatus {
-  NEW = 'NEW',                            // ۱. سفارش جدید ثبت شده (معمولاً در انتظار تایید اولیه سیستم یا ادمین)
-  WAITING_FOR_OFFERS = 'WAITING_FOR_OFFERS', // ۲. سفارش فعال شده و در انتظار پیشنهاد قیمت از سوی رانندگان است
-  DRIVER_ASSIGNED = 'DRIVER_ASSIGNED',    // ۳. شرکت (شما) پیشنهاد قیمت یک راننده را پذیرفته (منتظر تایید نهایی راننده منتخب)
-  DRIVER_ACCEPTED_CONFIRMATION = 'DRIVER_ACCEPTED_CONFIRMATION', // ۴. راننده تخصیص بار را رسماً تایید کرده است
-  LOADING = 'LOADING',                    // ۵. بارگیری در مبدا در حال انجام است
-  ON_ROAD = 'ON_ROAD',                    // ۶. بارگیری تمام شده و راننده در حال حمل بار به سمت مقصد است
-  DELIVERED = 'DELIVERED',                // ۷. بار در مقصد تحویل گیرنده شده است (در انتظار تسویه مالی)
-  FINISHED = 'FINISHED',                  // ۸. تسویه حساب کامل شده و سفارش پایان یافته است
-  CANCELED = 'CANCELED',                  // ۹. سفارش لغو شده است (توسط شرکت یا مدیر سیستم)
-  PAY = 'PAY', // پرداخت پول به راننده  
+  // 0. سفارش جدید ثبت شده (معمولاً در انتظار تایید اولیه سیستم یا ادمین)
+  NEW = 'NEW',
+  //   // ۱. تعریف بار و در جستجوی راننده
+  WAITING_FOR_OFFERS = 'WAITING_FOR_OFFERS',
+
+  // فکر  کنم  اینجا  باید  جدا بشه 
+
+  // راننده  قیمت داده  -  شرکت منتخب  کرده 2
+  DRIVER_ASSIGNED = 'DRIVER_ASSIGNED',
+
+  // 3 منتطره  تایید راننده 
+  DRIVER_ACCEPTED_CONFIRMATION = 'DRIVER_ACCEPTED_CONFIRMATION',
+
+  //   // ۴. راننده بعداز  تایید  - در حال حرکت به سمت مبدا است
+  DRIVER_TO_ANBAR = 'DRIVER_TO_ORGIN',
+
+  //  در  حال بارگیری  
+  LOADING = 'LOADING',
+
+  // بارگیری  تمام  به  سمت  مقصد 
+  ON_ROAD = 'ON_ROAD',
+
+  // تحویل  کالا   در مقصد  
+  DELIVERED = 'DELIVERED',
+
+  //   // ۸. شرکت تایید کرد که بار سالم تحویل شده است
+  //   DELIVERY_CONFIRMED_BY_COMPANY = 'DELIVERY_CONFIRMED_BY_COMPANY', 
+
+  // تسویه حساب کامل شده و سفارش پایان یافته است   
+  FINISHED = 'FINISHED',
+
+  // ۹. سفارش لغو شده است (توسط شرکت یا مدیر سیستم) 
+  CANCELED = 'CANCELED',
+
+  // پرداخت پول به راننده  
+  PAY = 'PAY',
 
 }
 
+// این بخش برای مدیریت فرآیند "رد کردن" یا "پذیرفتن" قیمت‌های پیشنهادی رانندگان است.
 export enum OfferStatus {
-  PENDING = 'PENDING',
-  ACCEPTED = 'ACCEPTED',
-  REJECTED = 'REJECTED'
+  PENDING = 'PENDING',    // پیشنهاد ثبت شده و منتظر بررسی شرکت
+  ACCEPTED = 'ACCEPTED',  // شرکت این پیشنهاد را انتخاب کرده است
+  REJECTED = 'REJECTED',  // شرکت این پیشنهاد را رد کرده است
+  EXPIRED = 'EXPIRED'     // بار به شخص دیگری داده شد یا منقضی شد
 }
 
 
@@ -272,7 +299,7 @@ export interface AuthState {
   setTempUser: (user: User | null) => void;
   login: (user: User, token: string) => void;
   logout: () => void;
-    // ✅ اینو اضافه کن
+  // ✅ اینو اضافه کن
   setCurrentUser: (user: User | null) => void;
 }
 

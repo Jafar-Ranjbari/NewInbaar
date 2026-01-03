@@ -1,9 +1,9 @@
 "use client"
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { Order, OrderOffer } from '../../types'; 
-import { getAllOpenOrders, createOrderOffer, getOffersByDriverId } from '../driverService';  
+import { Order, OrderOffer } from '../../types';
+import { getAllOpenOrders, createOrderOffer, getOffersByDriverId } from '../driverService';
 import { MapPin, Clock, DollarSign, Send, Loader2, Search, X, ChevronRight, ChevronLeft, Truck, Scale, Box, Info, CalendarCheck, Wallet } from 'lucide-react';
-import { useDriverDashboardData } from '../useDriverDashboardData';  
+import { useDriverDashboardData } from '../useDriverDashboardData';
 
 // --- Types ---
 interface ProvinceItem {
@@ -519,16 +519,8 @@ const CargoHall: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">قیمت پیشنهادی (ریال)</label>
                   <input type="number" className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-gray-500 text-right" value={offerForm.price} onChange={e => setOfferForm({ ...offerForm, price: e.target.value })} required />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">زمان تحویل</label>
-                  <input type="text" className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-gray-500 text-right" placeholder="مثلا: 2 روز" value={offerForm.time} onChange={e => setOfferForm({ ...offerForm, time: e.target.value })} required />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">توضیحات</label>
-                  <textarea className="w-full p-3 border rounded-xl h-24 text-right" value={offerForm.comment} onChange={e => setOfferForm({ ...offerForm, comment: e.target.value })} />
-                </div>
                 <button type="submit" disabled={loading} className="w-full bg-gray-600 text-white py-3 rounded-xl font-bold hover:bg-gray-700 transition-all flex justify-center items-center gap-2">
-                  {loading ? <Loader2 className="animate-spin" /> : <><Send size={18} /> ارسال</>}
+                  {loading ? <Loader2 className="animate-spin" /> : <><Send size={18} />  تایید </>}
                 </button>
               </form>
             </div>

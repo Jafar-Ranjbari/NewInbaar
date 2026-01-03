@@ -487,8 +487,8 @@ export const DashboardCompany: React.FC = () => {
                                   <div>
                                     <p className="font-bold">{offer.driverName}</p>
                                     <p className="text-blue-700 font-mono font-bold text-lg">{offer.price.toLocaleString()} ریال</p>
-                                    <p className="text-sm text-gray-500">{offer.commentDriver}</p>
-                                    <p className="text-xs text-gray-400 mt-1">زمان تحویل: {offer.deliveryEstimateTime}</p>
+                                    {/* <p className="text-sm text-gray-500">{offer.commentDriver}</p> */}
+                                    {/* <p className="text-xs text-gray-400 mt-1">زمان تحویل: {offer.deliveryEstimateTime}</p> */}
                                   </div>
                                   {offer.state === OfferStatus.PENDING && (
                                     <div className="flex gap-2">
