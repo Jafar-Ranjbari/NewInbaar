@@ -57,7 +57,7 @@ const getStatusLabel = (status: OrderStatus): { label: string, color: string, st
 
 const Header = () => (
   <header className="pt-6 pb-4 px-4 text-center">
-    <h1 className="text-xl font-bold text-gray-900">مدیریت سفارشات</h1>
+    <h1 className="text-xl font-bold text-gray-900">مدیریت سفارشات  شرکت </h1>
   </header>
 );
 
@@ -144,9 +144,6 @@ const OrderCard = ({ order, onManageClick }: { order: Order, onManageClick: (ord
             </button>
           </>
         );
-
-
-
       case OrderStatus.ON_ROAD:
         return (
           <button

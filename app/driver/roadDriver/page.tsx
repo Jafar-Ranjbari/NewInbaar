@@ -1,4 +1,576 @@
 
+// "use client"
+// import React, { useEffect, useState, useCallback } from 'react';
+// import {
+//   OrderOffer,
+//   OfferStatus,
+//   Order,
+//   OrderStatus
+// } from '../../types';
+// // ایمپورت توابع سرویس
+// import {
+//   getOrdersByDriverId,
+//   getOffersByDriverId
+// } from './../driverService';
+// import {
+//   updateOrder
+// } from '@/app/company/companyService';
+// import {
+//   ClipboardList,
+//   MapPin,
+//   Truck,
+//   Scale,
+//   DollarSign,
+//   CheckCircle,
+//   XCircle,
+//   Loader2,
+//   // آیکون‌های جدید برای تایم‌لاین
+//   Phone,
+//   CheckCircle2,
+//   Clock
+// } from 'lucide-react';
+// import { useDriverDashboardData } from '../useDriverDashboardData';
+
+// // --- Helper Functions (بدون تغییر منطق اصلی) ---
+
+// const getDriverStatusLabel = (status: OrderStatus): { label: string, color: string, style: string } => {
+//   switch (status) {
+   
+//     case OrderStatus.DRIVER_ASSIGNED:
+//         return { label: "در انتظار پیشنهاد", color: "text-blue-800", style: "bg-blue-100" };
+//     case OrderStatus.DRIVER_ACCEPTED_CONFIRMATION:
+//       return { label: "در انتظار تایید نهایی راننده", color: "text-indigo-800", style: "bg-indigo-100" };
+//     case OrderStatus.LOADING:
+//       return { label: "راننده در مسیر انبار  مبدا", color: "text-purple-800", style: "bg-purple-100" };
+// //  تایید  دریافت  بار   توسط  راننده  
+// //  تایید   دریافت بار  توسط شرکت  
+
+//     case OrderStatus.ON_ROAD:
+//       return { label: "راننده  در مسیر  مقصد ", color: "text-orange-800", style: "bg-[#f4a261] bg-opacity-90 text-white" };
+//     case OrderStatus.DELIVERED:
+//       // تایید  تحویل بار  توسط  راننده  
+//       return { label: "  تایید  تحویل بار  توسط  راننده", color: "text-green-800", style: "bg-green-100" };
+//         // تایید  تحویل بار  توسط  شرکت    
+//     case OrderStatus.FINISHED:
+//       return { label: "تسویه انجام شد", color: "text-cyan-800", style: "bg-cyan-100" };
+//     case OrderStatus.PAY:
+//       return { label: "تسویه و پرداخت کامل", color: "text-lime-800", style: "bg-lime-100" };
+//     case OrderStatus.CANCELED:
+//       return { label: "لغو شده", color: "text-red-800", style: "bg-red-100" };
+//     default: return { label: "نامشخص", color: "text-gray-700", style: "bg-gray-200" };
+//   }
+// };
+
+// const DataItem = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: string | number }) => (
+//   <div className="flex flex-col items-center justify-center text-center gap-1 p-2">
+//     <Icon className="w-5 h-5 text-gray-500 mb-1 stroke-1.5" />
+//     <span className="text-[10px] text-gray-400 font-medium">{label}</span>
+//     <span className="text-sm font-bold text-gray-800 truncate max-w-full">{value}</span>
+//   </div>
+// );
+
+
+// // --- Timeline Types & Components ---
+
+// interface DeliveryStep {
+//   id: string;
+//   type: 'sender' | 'driver' | 'receiver';
+//   title: string;
+//   subtitle: string;
+//   address?: string;
+//   isCompleted: boolean;
+//   isCurrent: boolean;
+//   contactEnabled: boolean;
+//   personName?: string;
+//   contactNumber?: string;
+// }
+
+// interface TimelineItemProps {
+//   step: DeliveryStep;
+//   isLast: boolean;
+// }
+
+// const TimelineItem: React.FC<TimelineItemProps> = ({ step, isLast }) => {
+//   const isFinished = step.isCompleted;
+
+//   const renderIcon = () => {
+//     if (isFinished) {
+//       return <CheckCircle2 className="w-6 h-6 text-green-600 bg-white rounded-full" fill="white" />;
+//     }
+
+//     switch (step.type) {
+//       case 'sender':
+//         return <CheckCircle2 className="w-6 h-6 text-gray-400 bg-white rounded-full" fill="white" />;
+//       case 'driver':
+//         return <Truck className="w-6 h-6 text-gray-800 bg-white" />; // وضعیت فعلی
+//       case 'receiver':
+//         return <div className="w-6 h-6 rounded-full border-[3px] border-black bg-white"></div>;
+//       default: return null;
+//     }
+//   };
+
+//   const subtitleText = step.address || step.subtitle || "";
+
+//   return (
+//     <div className="relative flex items-start gap-4 w-full">
+//       {/* Connector Line */}
+//       {!isLast && (
+//         <div className={`absolute right-[11px] top-8 bottom-[-20px] w-[2px] ${isFinished ? 'bg-green-600' : 'bg-gray-300'}`}></div>
+//       )}
+
+//       {/* Icon/Status Indicator */}
+//       <div className="relative z-10 flex-shrink-0 mt-1">
+//         {renderIcon()}
+//       </div>
+
+//       {/* Content */}
+//       <div className="flex-1 flex justify-between items-start pt-1 pb-6">
+//         <div className="flex flex-col gap-1 text-right">
+//           <h3 className={`font-bold text-sm ${isFinished ? 'text-green-800' : 'text-gray-800'}`}>
+//             {step.title}
+//           </h3>
+//           <p className={`text-xs leading-5 ${isFinished ? 'text-green-600' : 'text-gray-500'}`}>
+//             {subtitleText}
+//           </p>
+//         </div>
+
+//         {/* Action Button (Call) */}
+//         {step.contactEnabled && step.contactNumber && (
+//           <a
+//             href={`tel:${step.contactNumber}`}
+//             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-teal-400 text-teal-500 hover:bg-teal-50 transition-colors flex-shrink-0"
+//           >
+//             <Phone className="w-4 h-4" />
+//             <span className="text-xs font-bold">تماس</span>
+//           </a>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// // --- NEW Placeholder for Map ---
+
+// const MapPlaceholder = ({ origin, destination }: { origin: string, destination: string }) => {
+//   return (
+//     <div className="relative h-40 bg-gray-100 flex items-center justify-center overflow-hidden border-b border-gray-200">
+//       {/* Background image/gradient simulation */}
+//       <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-teal-50 opacity-50"></div>
+
+//       {/* Route path simulation */}
+//       <div className="relative z-10 flex items-center justify-between w-4/5">
+//         <div className="flex flex-col items-center">
+//           <MapPin className="w-6 h-6 text-green-600 fill-green-100 stroke-2" />
+//           <span className="text-xs font-bold mt-1 text-gray-800">{origin}</span>
+//         </div>
+
+//         <div className="flex-1 flex flex-col items-center mx-2">
+//           {/* Simulated Truck Marker */}
+//           <Truck className="w-8 h-8 text-blue-600 fill-blue-100 animate-pulse" />
+//           <div className="h-0.5 w-full bg-blue-300 -mt-1"></div>
+//           <span className="text-xs text-gray-500 mt-1">در مسیر...</span>
+//         </div>
+
+//         <div className="flex flex-col items-center">
+//           <MapPin className="w-6 h-6 text-red-600 fill-red-100 stroke-2" />
+//           <span className="text-xs font-bold mt-1 text-gray-800">{destination}</span>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// // --- Data Generation Helper ---
+
+// const generateDeliverySteps = (order: Order, currentStatus: OrderStatus): DeliveryStep[] => {
+//   const isDelivered = currentStatus === OrderStatus.DELIVERED || currentStatus === OrderStatus.FINISHED || currentStatus === OrderStatus.PAY;
+
+//   // فرض: نام فرستنده در فیلد companyID است
+//   const senderName = "شرکت حمل و نقل"; // Placeholder برای فرستنده
+
+//   return [
+//     {
+//       id: '1',
+//       type: 'sender',
+//       title: 'محل بارگیری',
+//       subtitle: `${order.originProvince}, ${order.originCity}`,
+//       address: `${order.originProvince}, ${order.originCity}`,
+//       isCompleted: true, // اگر به ON_ROAD رسیده، بارگیری تکمیل شده است
+//       isCurrent: false,
+//       contactEnabled: false,
+//     },
+//     {
+//       id: '2',
+//       type: 'driver',
+//       title: 'موقعیت فعلی شما',
+//       subtitle: 'در حال حمل بار',
+//       isCompleted: isDelivered, // اگر تحویل داده شده، این مرحله هم تکمیل شده
+//       isCurrent: !isDelivered,
+//       contactEnabled: false,
+//     },
+//     {
+//       id: '3',
+//       type: 'receiver',
+//       title: 'مقصد (تحویل گیرنده)',
+//       subtitle: order.unloadingAddress,
+//       address: order.unloadingAddress,
+//       personName: order.receiverName,
+//       contactNumber: order.receiverContact,
+//       isCompleted: isDelivered,
+//       isCurrent: false,
+//       contactEnabled: true,
+//     }
+//   ];
+// };
+
+// // 1. محتوای مخصوص وضعیت "در حال حمل به مقصد"
+// const OnRoadContent: React.FC<{ order: Order }> = ({ order }) => {
+//   const steps = generateDeliverySteps(order, OrderStatus.ON_ROAD);
+//   const receiver = steps.find(s => s.type === 'receiver');
+
+//   // ساعت کار انبار
+//   const workHourInfo = order.unloadingFromHour && order.unloadingToHour
+//     ? `${order.unloadingFromHour} تا ${order.unloadingToHour}`
+//     : 'نامشخص';
+
+//   return (
+//     <div className="relative w-full bg-white flex flex-col">
+
+//       {/* Map Placeholder Section (Height reduced) */}
+//       <div className="relative mb-2">
+//         <MapPlaceholder origin={order.originCity} destination={order.destinationCity} />
+//         {/* <FloatingTimeBadge /> // حذف شد */}
+//       </div>
+
+//       {/* Bottom Sheet Card Content */}
+//       <div className="relative z-20 bg-white rounded-t-2xl px-4 pt-4 pb-0">
+
+//         {/* Timeline List */}
+//         <div className="flex flex-col pr-2">
+//           {steps.map((step, index) => (
+//             <TimelineItem
+//               key={step.id}
+//               step={step}
+//               isLast={index === steps.length - 1}
+//             />
+//           ))}
+//         </div>
+
+//         {/* Warning/Info Banner */}
+//         <div className="mt-2 mb-4 bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-center justify-center text-center">
+//           <Clock className="w-4 h-4 text-blue-500 ml-2 flex-shrink-0" />
+//           <span className="text-gray-800 text-xs font-medium">
+//             ساعت کار انبار: <span className="mx-1 font-bold">{workHourInfo}</span>
+//           </span>
+//         </div>
+
+//         {/* Receiver Name */}
+//         <div className="flex justify-between items-center mb-4 px-1 border-t pt-3">
+//           <span className="text-gray-800 font-bold text-sm">تحویل گیرنده بار</span>
+//           <span className="text-gray-500 text-sm">{receiver?.personName || 'نامشخص'}</span>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// // 2. محتوای مخصوص وضعیت "تحویل داده شد"
+// const DeliveredContent: React.FC<{ order: Order }> = ({ order }) => {
+//   const steps = generateDeliverySteps(order, OrderStatus.DELIVERED);
+//   const assignedOffer = order.offers?.find(o => o.state === OfferStatus.ACCEPTED);
+//   const price = assignedOffer?.price || 0;
+
+//   return (
+//     <div className="p-4 bg-green-50 rounded-xl border border-green-200 shadow-inner">
+//       <div className="flex items-center gap-3 border-b pb-3 mb-3">
+//         <CheckCircle2 className="w-6 h-6 text-green-600" />
+//         <h3 className="text-lg font-bold text-green-800">تحویل بار با موفقیت انجام شد</h3>
+//       </div>
+
+//       {/* Timeline Summary for Delivered */}
+//       <div className="flex flex-col pr-2">
+//         {steps.map((step, index) => (
+//           <TimelineItem
+//             key={step.id}
+//             step={step}
+//             isLast={index === steps.length - 1}
+//           />
+//         ))}
+//       </div>
+
+//       {/* Payment Summary */}
+//       <div className="mt-4 pt-3 border-t border-green-200 grid grid-cols-2 gap-3 text-sm">
+//         <div className='flex justify-between'>
+//           <span className="text-gray-600">کرایه توافق شده:</span>
+//           <span className="font-bold text-gray-900">{price.toLocaleString('fa-IR')} ر.ا</span>
+//         </div>
+//         <div className='flex justify-between'>
+//           <span className="text-gray-600">وضعیت پرداخت:</span>
+//           <span className="font-bold text-orange-600"> اینجا دوتا  آیتم  داره فرستده یا  گیرنده   </span>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+
+// // 3. محتوای پیش‌فرض کارت برای سایر وضعیت‌ها
+// const DefaultOrderBodyContent: React.FC<{ order: Order }> = ({ order }) => {
+//   const assignedOffer = order.offers?.find(o => o.state === OfferStatus.ACCEPTED);
+//   const price = assignedOffer?.price || 0;
+
+//   return (
+//     <div className="grid grid-cols-4 gap-2 border-b border-gray-100 pb-4">
+//       <DataItem
+//         icon={DollarSign}
+//         label="مبلغ حمل"
+//         value={price.toLocaleString('fa-IR') + ' ر.ا'}
+//       />
+//       <DataItem
+//         icon={Truck}
+//         label="نوع خودرو"
+//         value={order.requiredVehicleType || "ناشناس"}
+//       />
+//       <DataItem
+//         icon={Scale}
+//         label="وزن (کیلوگرم)"
+//         value={order.weight}
+//       />
+//       <DataItem
+//         icon={ClipboardList}
+//         label="نوع کالا"
+//         value={order.goodType}
+//       />
+//     </div>
+//   );
+// };
+
+
+// // --- Order Card Component (اصلاح برای موبایل و ON_ROAD) ---
+
+// interface DriverOrderCardProps {
+//   order: Order;
+//   onStatusUpdate: (orderId: string, newStatus: OrderStatus) => void;
+//   isLoading: boolean;
+// }
+
+// const DriverOrderCard: React.FC<DriverOrderCardProps> = ({ order, onStatusUpdate, isLoading }) => {
+//   const statusInfo = getDriverStatusLabel(order.status);
+
+//   const getNextStepButton = () => {
+//     let label = '';
+//     let newStatus: OrderStatus | null = null;
+//     let style = 'bg-black text-white hover:bg-gray-800';
+//     let disabled = isLoading;
+
+//     switch (order.status) {
+//       case OrderStatus.DRIVER_ASSIGNED:
+//         label = "تایید  نهایی";
+//         newStatus = OrderStatus.DRIVER_ACCEPTED_CONFIRMATION;
+//         style = 'bg-gray-600 text-white hover:bg-gray-700';
+//         break;
+//       case OrderStatus.DRIVER_ACCEPTED_CONFIRMATION:
+//         label = 'شروع بارگیری';
+//         newStatus = OrderStatus.LOADING;
+//         style = 'bg-orange-600 text-white hover:bg-orange-700';
+//         break;
+//       case OrderStatus.LOADING:
+//         label = "تایید تحویل بار";
+//         newStatus = OrderStatus.ON_ROAD;
+//         style = 'bg-blue-600 text-white hover:bg-blue-700';
+//         break;
+//       case OrderStatus.ON_ROAD:
+//         label = "راننده در مسیر انبار مقصد";
+//         newStatus = OrderStatus.DELIVERED;
+//         style = 'bg-[#d0fcf5] active:bg-[#a6f0e4] text-black hover:bg-green-100';
+//         break;
+//       case OrderStatus.DELIVERED:
+//         label = 'تایید تحویل بار در مقصد';
+//         newStatus = OrderStatus.DELIVERED;
+//         style = 'bg-[#d0fcf5] active:bg-[#a6f0e4] text-black hover:bg-green-100';
+//         break;
+
+//       case OrderStatus.FINISHED:
+//       case OrderStatus.PAY:
+//         return (
+//           <div className="text-center py-2 text-sm font-bold text-green-700 bg-green-50 rounded-full border border-green-300">
+//             {statusInfo.label}
+//           </div>
+//         );
+//       case OrderStatus.CANCELED:
+//         return (
+//           <div className="text-center py-2 text-sm font-bold text-red-700 bg-red-50 rounded-full border border-red-300">
+//             <XCircle className="w-4 h-4 inline-block ml-1" />
+//             سفارش لغو شده است.
+//           </div>
+//         );
+//       default:
+//         return null;
+//     }
+
+//     if (newStatus) {
+//       return (
+//         <button
+//           onClick={() => onStatusUpdate(order.id!, newStatus!)}
+//           disabled={disabled}
+//           // کلاس‌های سفارشی برای دکمه ON_ROAD
+//           className={`w-full py-3 rounded-xl font-bold transition-colors disabled:opacity-50 
+//                                 ${style} ${order.status === OrderStatus.ON_ROAD ? 'text-lg py-4' : 'text-sm'}`}
+//         >
+//           {disabled ? <Loader2 className="animate-spin w-5 h-5 inline-block" /> :
+//             <CheckCircle className="w-5 h-5 inline-block ml-1" />}
+//           {label}
+//         </button>
+//       );
+//     }
+//     return null;
+//   };
+
+//   // تابع کمکی برای رندر محتوای بدنه کارت
+//   const renderCardContent = () => {
+//     switch (order.status) {
+//       case OrderStatus.ON_ROAD:
+//       case OrderStatus.DELIVERED:
+//         return <div className="p-0 sm:p-5">{order.status === OrderStatus.ON_ROAD ? <OnRoadContent order={order} /> : <DeliveredContent order={order} />}</div>;
+//       default:
+//         return <DefaultOrderBodyContent order={order} />;
+//     }
+//   }
+
+//   // ساختار اصلی برای تمامی وضعیت‌ها
+//   return (
+//     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 mb-6 overflow-hidden">
+
+//       {/* Header and Status (خارج از بخش محتوای شرطی) */}
+//       <div className={`flex justify-between items-start border-b pb-4 pt-5 px-5 ${order.status !== OrderStatus.ON_ROAD ? 'mb-4' : 'mb-0'}`}>
+//         <div className={`text-[10px] px-3 py-1.5 rounded-full font-medium shadow-sm ${statusInfo.style} ${statusInfo.color}`}>
+//           {statusInfo.label}
+//         </div>
+//         <div className="flex items-center gap-1 text-gray-800">
+//           <span className="font-bold text-lg">{order.originCity}</span>
+//           <span className="text-gray-400 mx-1">|</span>
+//           <span className="text-sm text-gray-500">{order.destinationCity}</span>
+//           <MapPin className="w-5 h-5 text-gray-900 fill-transparent stroke-2 ml-1" />
+//         </div>
+//       </div>
+
+//       {/* Conditional Content Body - حذف border-b برای OnRoadContent/DeliveredContent */}
+//       <div className={`${order.status !== OrderStatus.ON_ROAD && order.status !== OrderStatus.DELIVERED ? 'px-5 border-b border-gray-100 pb-4' : ''}`}>
+//         {renderCardContent()}
+//       </div>
+
+//       {/* Action Button */}
+//       <div className={`pt-2 ${order.status !== OrderStatus.ON_ROAD && order.status !== OrderStatus.DELIVERED ? 'p-5 pt-2' : 'p-5 pt-0'}`}>
+//         {getNextStepButton()}
+//       </div>
+//     </div>
+//   );
+// };
+
+
+// // --- Main Component (بدون تغییر) ---
+// export const DriverReports: React.FC = () => {
+//   const { driver } = useDriverDashboardData();
+//   const driverID = driver?.id;
+
+//   // لیست سفارشات فعال (Order[]) که راننده به آن تخصیص یافته است
+//   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
+//   // لیست تمامی پیشنهادات (OrderOffer[]) که راننده داده است
+//   const [allOffers, setAllOffers] = useState<OrderOffer[]>([]);
+
+//   const [loading, setLoading] = useState(true);
+//   const [isUpdating, setIsUpdating] = useState(false);
+
+//   const loadData = useCallback(async () => {
+//     if (!driverID) return;
+//     setLoading(true);
+//     try {
+//       const fetchedOrders = await getOrdersByDriverId(driverID);
+//       setActiveOrders(fetchedOrders || []);
+//       const fetchedOffers = await getOffersByDriverId(driverID);
+//       setAllOffers(fetchedOffers || []);
+
+//     } catch (error) {
+//       console.error("Error loading driver data:", error);
+//       setActiveOrders([]);
+//       setAllOffers([]);
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [driverID]);
+
+//   useEffect(() => {
+//     loadData();
+//   }, [loadData]);
+
+
+//   const handleStatusUpdate = async (orderId: string, newStatus: OrderStatus) => {
+//     setIsUpdating(true);
+//     try {
+//       const updatedOrder = await updateOrder(orderId, { status: newStatus });
+
+//       setActiveOrders(prevOrders =>
+//         prevOrders.map(order => order.id === orderId ? { ...order, ...updatedOrder } : order)
+//       );
+
+//       alert(`وضعیت سفارش با موفقیت به "${getDriverStatusLabel(newStatus).label}" تغییر یافت.`);
+//     } catch (error) {
+//       console.error("Error updating order status:", error);
+//       alert("خطا در به‌روزرسانی وضعیت سفارش. لطفاً دوباره تلاش کنید.");
+//     } finally {
+//       setIsUpdating(false);
+//     }
+//   };
+
+//   if (!driverID) return <div className="p-4 text-center text-red-500">پروفایل راننده یافت نشد.</div>;
+
+//   const activeWorkflowOrders = activeOrders.filter(o =>
+//     o.status === OrderStatus.DRIVER_ASSIGNED ||
+//     o.status === OrderStatus.DRIVER_ACCEPTED_CONFIRMATION ||
+//     o.status === OrderStatus.LOADING ||
+//     o.status === OrderStatus.ON_ROAD ||
+//     o.status === OrderStatus.DELIVERED
+//   );
+
+//   const historyOrders = activeOrders.filter(o =>
+//     o.status === OrderStatus.FINISHED ||
+//     o.status === OrderStatus.PAY ||
+//     o.status === OrderStatus.CANCELED
+//   );
+
+//   return (
+//     <div dir="rtl" className="space-y-8 p-4 bg-gray-50 min-h-screen max-w-lg mx-auto">
+
+//       {/* --------------------- A. Active Orders (سفارشات فعال) --------------------- */}
+//       <div className="space-y-4">
+//         {loading ? (
+//           <div className="text-center py-10 text-gray-500">
+//             <Loader2 className="animate-spin w-6 h-6 inline-block mb-2" />
+//             در حال بارگذاری سفارشات فعال...
+//           </div>
+//         ) : activeWorkflowOrders.length > 0 ? (
+//           activeWorkflowOrders.slice().reverse().map(order => (
+//             <DriverOrderCard
+//               key={order.id}
+//               order={order}
+//               onStatusUpdate={handleStatusUpdate}
+//               isLoading={isUpdating}
+//             />
+//           ))
+//         ) : (
+//           <div className="p-6 text-center text-gray-500 bg-white rounded-xl shadow-sm">
+//             در حال حاضر سفارش فعالی برای کاپتان  ثبت نشده است.
+//           </div>
+//         )}
+//       </div>
+
+
+//     </div>
+//   );
+// };
+
+// export default DriverReports;
+
 "use client"
 import React, { useEffect, useState, useCallback } from 'react';
 import {
@@ -7,7 +579,6 @@ import {
   Order,
   OrderStatus
 } from '../../types';
-// ایمپورت توابع سرویس
 import {
   getOrdersByDriverId,
   getOffersByDriverId
@@ -16,59 +587,122 @@ import {
   updateOrder
 } from '@/app/company/companyService';
 import {
-  ClipboardList,
+  Search,
+  Filter,
   MapPin,
   Truck,
+  Package,
   Scale,
-  DollarSign,
+  ClipboardList,
+  ChevronLeft,
+  Users,
   CheckCircle,
-  XCircle,
   Loader2,
-  // آیکون‌های جدید برای تایم‌لاین
+  Calendar,
+  FileText,
+  XCircle,
+  DollarSign,
   Phone,
   CheckCircle2,
-  Clock
+  Clock,
+  Home,
+  Navigation
 } from 'lucide-react';
 import { useDriverDashboardData } from '../useDriverDashboardData';
+import DRIVER_CONFIRMATION from './DRIVER_CONFIRMATION';
 
-// --- Helper Functions (بدون تغییر منطق اصلی) ---
-
+// --- Helper Functions ---
 const getDriverStatusLabel = (status: OrderStatus): { label: string, color: string, style: string } => {
   switch (status) {
-    case OrderStatus.NEW:
-    case OrderStatus.WAITING_FOR_OFFERS:
-      return { label: "در انتظار پیشنهاد", color: "text-blue-800", style: "bg-blue-100" };
     case OrderStatus.DRIVER_ASSIGNED:
-      return { label: "در انتظار تایید نهایی راننده", color: "text-indigo-800", style: "bg-indigo-100" };
+      return { label: "در انتظار تایید راننده", color: "text-blue-800", style: "bg-blue-100" };
     case OrderStatus.DRIVER_ACCEPTED_CONFIRMATION:
-      return { label: "راننده در مسیر انبار  مبدا", color: "text-purple-800", style: "bg-purple-100" };
+      return { label: "تایید شده توسط راننده", color: "text-indigo-800", style: "bg-indigo-100" };
     case OrderStatus.LOADING:
-      return { label: " تایید  دریافت بار ", color: "text-yellow-900", style: "bg-yellow-300 text-black" };
+      return { label: "در مسیر بارگیری", color: "text-purple-800", style: "bg-purple-100" };
     case OrderStatus.ON_ROAD:
-      return { label: "", color: "text-orange-800", style: "bg-[#f4a261] bg-opacity-90 text-white" };
+      return { label: "در مسیر مقصد", color: "text-orange-800", style: "bg-[#f4a261] bg-opacity-90 text-white" };
     case OrderStatus.DELIVERED:
       return { label: "تحویل داده شد", color: "text-green-800", style: "bg-green-100" };
     case OrderStatus.FINISHED:
-      return { label: "تسویه انجام شد", color: "text-cyan-800", style: "bg-cyan-100" };
+      return { label: "تسویه شده", color: "text-cyan-800", style: "bg-cyan-100" };
     case OrderStatus.PAY:
-      return { label: "تسویه و پرداخت کامل", color: "text-lime-800", style: "bg-lime-100" };
+      return { label: "پرداخت کامل", color: "text-lime-800", style: "bg-lime-100" };
     case OrderStatus.CANCELED:
       return { label: "لغو شده", color: "text-red-800", style: "bg-red-100" };
     default: return { label: "نامشخص", color: "text-gray-700", style: "bg-gray-200" };
   }
 };
 
-const DataItem = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: string | number }) => (
-  <div className="flex flex-col items-center justify-center text-center gap-1 p-2">
-    <Icon className="w-5 h-5 text-gray-500 mb-1 stroke-1.5" />
-    <span className="text-[10px] text-gray-400 font-medium">{label}</span>
-    <span className="text-sm font-bold text-gray-800 truncate max-w-full">{value}</span>
+// --- Header Component ---
+const Header = () => (
+  <header className="pt-6 pb-4 px-4 text-center">
+    <h1 className="text-xl font-bold text-gray-900">سفارشات راننده</h1>
+  </header>
+);
+
+// --- SearchBar Component ---
+const SearchBar = () => (
+  <div className="px-4 mb-4">
+    <div className="relative">
+      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+        <Search className="h-5 w-5 text-gray-400" />
+      </div>
+      <input
+        type="text"
+        className="block w-full pr-10 pl-4 py-3 bg-gray-100 border-none rounded-2xl text-gray-700 placeholder-gray-500 focus:ring-2 focus:ring-gray-200 focus:bg-white transition-colors text-right"
+        placeholder="جستجوی کد سفارش"
+      />
+    </div>
   </div>
 );
 
+// --- FilterTabs Component for Driver ---
+const FilterTabs = ({ activeTab, setActiveTab }: { 
+  activeTab: 'active' | 'delivered' | 'canceled', 
+  setActiveTab: (t: 'active' | 'delivered' | 'canceled') => void 
+}) => {
+  const tabs: { id: 'active' | 'delivered' | 'canceled'; label: string }[] = [
+    { id: 'active', label: 'جاری' },
+    { id: 'delivered', label: 'تحویل شده' },
+    { id: 'canceled', label: 'لغو شده' },
+  ];
 
-// --- Timeline Types & Components ---
+  return (
+    <div className="flex items-center px-4 mb-6 gap-2">
+      <button className="p-2 bg-gray-100 rounded-xl text-gray-600 hover:bg-gray-200 transition-colors">
+        <Filter className="w-5 h-5" />
+      </button>
 
+      <div className="flex-1 overflow-x-auto no-scrollbar flex gap-2 pb-1">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+              activeTab === tab.id
+                ? 'bg-black text-white shadow-md'
+                : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// --- DataItem Component ---
+const DataItem = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: string | number }) => (
+  <div className="flex flex-col items-center justify-center text-center gap-1 p-2">
+    <Icon className="w-5 h-5 text-gray-600 mb-1 stroke-1.5" />
+    <span className="text-[10px] text-gray-400 font-medium">{label}</span>
+    <span className="text-sm font-bold text-gray-800 truncate max-w-[90%]">{value}</span>
+  </div>
+);
+
+// --- Timeline Components ---
 interface DeliveryStep {
   id: string;
   type: 'sender' | 'driver' | 'receiver';
@@ -82,12 +716,7 @@ interface DeliveryStep {
   contactNumber?: string;
 }
 
-interface TimelineItemProps {
-  step: DeliveryStep;
-  isLast: boolean;
-}
-
-const TimelineItem: React.FC<TimelineItemProps> = ({ step, isLast }) => {
+const TimelineItem: React.FC<{ step: DeliveryStep; isLast: boolean }> = ({ step, isLast }) => {
   const isFinished = step.isCompleted;
 
   const renderIcon = () => {
@@ -99,7 +728,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ step, isLast }) => {
       case 'sender':
         return <CheckCircle2 className="w-6 h-6 text-gray-400 bg-white rounded-full" fill="white" />;
       case 'driver':
-        return <Truck className="w-6 h-6 text-gray-800 bg-white" />; // وضعیت فعلی
+        return <Truck className="w-6 h-6 text-gray-800 bg-white" />;
       case 'receiver':
         return <div className="w-6 h-6 rounded-full border-[3px] border-black bg-white"></div>;
       default: return null;
@@ -110,17 +739,14 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ step, isLast }) => {
 
   return (
     <div className="relative flex items-start gap-4 w-full">
-      {/* Connector Line */}
       {!isLast && (
         <div className={`absolute right-[11px] top-8 bottom-[-20px] w-[2px] ${isFinished ? 'bg-green-600' : 'bg-gray-300'}`}></div>
       )}
 
-      {/* Icon/Status Indicator */}
       <div className="relative z-10 flex-shrink-0 mt-1">
         {renderIcon()}
       </div>
 
-      {/* Content */}
       <div className="flex-1 flex justify-between items-start pt-1 pb-6">
         <div className="flex flex-col gap-1 text-right">
           <h3 className={`font-bold text-sm ${isFinished ? 'text-green-800' : 'text-gray-800'}`}>
@@ -131,7 +757,6 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ step, isLast }) => {
           </p>
         </div>
 
-        {/* Action Button (Call) */}
         {step.contactEnabled && step.contactNumber && (
           <a
             href={`tel:${step.contactNumber}`}
@@ -146,28 +771,21 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ step, isLast }) => {
   );
 };
 
-// --- NEW Placeholder for Map ---
-
+// --- Map Placeholder ---
 const MapPlaceholder = ({ origin, destination }: { origin: string, destination: string }) => {
   return (
-    <div className="relative h-40 bg-gray-100 flex items-center justify-center overflow-hidden border-b border-gray-200">
-      {/* Background image/gradient simulation */}
+    <div className="relative h-32 bg-gray-100 flex items-center justify-center overflow-hidden border-b border-gray-200">
       <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-teal-50 opacity-50"></div>
-
-      {/* Route path simulation */}
       <div className="relative z-10 flex items-center justify-between w-4/5">
         <div className="flex flex-col items-center">
           <MapPin className="w-6 h-6 text-green-600 fill-green-100 stroke-2" />
           <span className="text-xs font-bold mt-1 text-gray-800">{origin}</span>
         </div>
-
         <div className="flex-1 flex flex-col items-center mx-2">
-          {/* Simulated Truck Marker */}
           <Truck className="w-8 h-8 text-blue-600 fill-blue-100 animate-pulse" />
           <div className="h-0.5 w-full bg-blue-300 -mt-1"></div>
           <span className="text-xs text-gray-500 mt-1">در مسیر...</span>
         </div>
-
         <div className="flex flex-col items-center">
           <MapPin className="w-6 h-6 text-red-600 fill-red-100 stroke-2" />
           <span className="text-xs font-bold mt-1 text-gray-800">{destination}</span>
@@ -177,22 +795,20 @@ const MapPlaceholder = ({ origin, destination }: { origin: string, destination: 
   );
 };
 
-// --- Data Generation Helper ---
+// --- Order Content Components ---
+const OnRoadContent: React.FC<{ order: Order }> = ({ order }) => {
+  const workHourInfo = order.unloadingFromHour && order.unloadingToHour
+    ? `${order.unloadingFromHour} تا ${order.unloadingToHour}`
+    : 'نامشخص';
 
-const generateDeliverySteps = (order: Order, currentStatus: OrderStatus): DeliveryStep[] => {
-  const isDelivered = currentStatus === OrderStatus.DELIVERED || currentStatus === OrderStatus.FINISHED || currentStatus === OrderStatus.PAY;
-
-  // فرض: نام فرستنده در فیلد companyID است
-  const senderName = "شرکت حمل و نقل"; // Placeholder برای فرستنده
-
-  return [
+  const steps: DeliveryStep[] = [
     {
       id: '1',
       type: 'sender',
       title: 'محل بارگیری',
       subtitle: `${order.originProvince}, ${order.originCity}`,
       address: `${order.originProvince}, ${order.originCity}`,
-      isCompleted: true, // اگر به ON_ROAD رسیده، بارگیری تکمیل شده است
+      isCompleted: true,
       isCurrent: false,
       contactEnabled: false,
     },
@@ -201,48 +817,29 @@ const generateDeliverySteps = (order: Order, currentStatus: OrderStatus): Delive
       type: 'driver',
       title: 'موقعیت فعلی شما',
       subtitle: 'در حال حمل بار',
-      isCompleted: isDelivered, // اگر تحویل داده شده، این مرحله هم تکمیل شده
-      isCurrent: !isDelivered,
+      isCompleted: false,
+      isCurrent: true,
       contactEnabled: false,
     },
     {
       id: '3',
       type: 'receiver',
       title: 'مقصد (تحویل گیرنده)',
-      subtitle: order.unloadingAddress,
+      subtitle: order.unloadingAddress || `${order.destinationCity}`,
       address: order.unloadingAddress,
       personName: order.receiverName,
       contactNumber: order.receiverContact,
-      isCompleted: isDelivered,
+      isCompleted: false,
       isCurrent: false,
       contactEnabled: true,
     }
   ];
-};
-
-// 1. محتوای مخصوص وضعیت "در حال حمل به مقصد"
-const OnRoadContent: React.FC<{ order: Order }> = ({ order }) => {
-  const steps = generateDeliverySteps(order, OrderStatus.ON_ROAD);
-  const receiver = steps.find(s => s.type === 'receiver');
-
-  // ساعت کار انبار
-  const workHourInfo = order.unloadingFromHour && order.unloadingToHour
-    ? `${order.unloadingFromHour} تا ${order.unloadingToHour}`
-    : 'نامشخص';
 
   return (
     <div className="relative w-full bg-white flex flex-col">
-
-      {/* Map Placeholder Section (Height reduced) */}
-      <div className="relative mb-2">
-        <MapPlaceholder origin={order.originCity} destination={order.destinationCity} />
-        {/* <FloatingTimeBadge /> // حذف شد */}
-      </div>
-
-      {/* Bottom Sheet Card Content */}
-      <div className="relative z-20 bg-white rounded-t-2xl px-4 pt-4 pb-0">
-
-        {/* Timeline List */}
+      <MapPlaceholder origin={order.originCity} destination={order.destinationCity} />
+      
+      <div className="px-4 pt-4 pb-0">
         <div className="flex flex-col pr-2">
           {steps.map((step, index) => (
             <TimelineItem
@@ -253,7 +850,6 @@ const OnRoadContent: React.FC<{ order: Order }> = ({ order }) => {
           ))}
         </div>
 
-        {/* Warning/Info Banner */}
         <div className="mt-2 mb-4 bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-center justify-center text-center">
           <Clock className="w-4 h-4 text-blue-500 ml-2 flex-shrink-0" />
           <span className="text-gray-800 text-xs font-medium">
@@ -261,19 +857,50 @@ const OnRoadContent: React.FC<{ order: Order }> = ({ order }) => {
           </span>
         </div>
 
-        {/* Receiver Name */}
         <div className="flex justify-between items-center mb-4 px-1 border-t pt-3">
           <span className="text-gray-800 font-bold text-sm">تحویل گیرنده بار</span>
-          <span className="text-gray-500 text-sm">{receiver?.personName || 'نامشخص'}</span>
+          <span className="text-gray-500 text-sm">{order.receiverName || 'نامشخص'}</span>
         </div>
       </div>
     </div>
   );
 };
 
-// 2. محتوای مخصوص وضعیت "تحویل داده شد"
 const DeliveredContent: React.FC<{ order: Order }> = ({ order }) => {
-  const steps = generateDeliverySteps(order, OrderStatus.DELIVERED);
+  const steps: DeliveryStep[] = [
+    {
+      id: '1',
+      type: 'sender',
+      title: 'محل بارگیری',
+      subtitle: `${order.originProvince}, ${order.originCity}`,
+      address: `${order.originProvince}, ${order.originCity}`,
+      isCompleted: true,
+      isCurrent: false,
+      contactEnabled: false,
+    },
+    {
+      id: '2',
+      type: 'driver',
+      title: 'حمل بار',
+      subtitle: 'تکمیل شده',
+      isCompleted: true,
+      isCurrent: false,
+      contactEnabled: false,
+    },
+    {
+      id: '3',
+      type: 'receiver',
+      title: 'مقصد (تحویل گیرنده)',
+      subtitle: order.unloadingAddress || `${order.destinationCity}`,
+      address: order.unloadingAddress,
+      personName: order.receiverName,
+      contactNumber: order.receiverContact,
+      isCompleted: true,
+      isCurrent: false,
+      contactEnabled: true,
+    }
+  ];
+
   const assignedOffer = order.offers?.find(o => o.state === OfferStatus.ACCEPTED);
   const price = assignedOffer?.price || 0;
 
@@ -284,7 +911,6 @@ const DeliveredContent: React.FC<{ order: Order }> = ({ order }) => {
         <h3 className="text-lg font-bold text-green-800">تحویل بار با موفقیت انجام شد</h3>
       </div>
 
-      {/* Timeline Summary for Delivered */}
       <div className="flex flex-col pr-2">
         {steps.map((step, index) => (
           <TimelineItem
@@ -295,56 +921,21 @@ const DeliveredContent: React.FC<{ order: Order }> = ({ order }) => {
         ))}
       </div>
 
-      {/* Payment Summary */}
-      <div className="mt-4 pt-3 border-t border-green-200 grid grid-cols-2 gap-3 text-sm">
-        <div className='flex justify-between'>
+      <div className="mt-4 pt-3 border-t border-green-200">
+        <div className='flex justify-between mb-2'>
           <span className="text-gray-600">کرایه توافق شده:</span>
-          <span className="font-bold text-gray-900">{price.toLocaleString('fa-IR')} ر.ا</span>
+          <span className="font-bold text-gray-900">{price.toLocaleString('fa-IR')} ریال</span>
         </div>
         <div className='flex justify-between'>
           <span className="text-gray-600">وضعیت پرداخت:</span>
-          <span className="font-bold text-orange-600"> اینجا دوتا  آیتم  داره فرستده یا  گیرنده   </span>
+          <span className="font-bold text-orange-600">در انتظار پرداخت</span>
         </div>
       </div>
     </div>
   );
 };
 
-
-// 3. محتوای پیش‌فرض کارت برای سایر وضعیت‌ها
-const DefaultOrderBodyContent: React.FC<{ order: Order }> = ({ order }) => {
-  const assignedOffer = order.offers?.find(o => o.state === OfferStatus.ACCEPTED);
-  const price = assignedOffer?.price || 0;
-
-  return (
-    <div className="grid grid-cols-4 gap-2 border-b border-gray-100 pb-4">
-      <DataItem
-        icon={DollarSign}
-        label="مبلغ حمل"
-        value={price.toLocaleString('fa-IR') + ' ر.ا'}
-      />
-      <DataItem
-        icon={Truck}
-        label="نوع خودرو"
-        value={order.requiredVehicleType || "ناشناس"}
-      />
-      <DataItem
-        icon={Scale}
-        label="وزن (کیلوگرم)"
-        value={order.weight}
-      />
-      <DataItem
-        icon={ClipboardList}
-        label="نوع کالا"
-        value={order.goodType}
-      />
-    </div>
-  );
-};
-
-
-// --- Order Card Component (اصلاح برای موبایل و ON_ROAD) ---
-
+// --- Order Card Component ---
 interface DriverOrderCardProps {
   order: Order;
   onStatusUpdate: (orderId: string, newStatus: OrderStatus) => void;
@@ -353,8 +944,10 @@ interface DriverOrderCardProps {
 
 const DriverOrderCard: React.FC<DriverOrderCardProps> = ({ order, onStatusUpdate, isLoading }) => {
   const statusInfo = getDriverStatusLabel(order.status);
+  const assignedOffer = order.offers?.find(o => o.state === OfferStatus.ACCEPTED);
+  const price = assignedOffer?.price || 0;
 
-  const getNextStepButton = () => {
+  const getActionButton = () => {
     let label = '';
     let newStatus: OrderStatus | null = null;
     let style = 'bg-black text-white hover:bg-gray-800';
@@ -362,43 +955,34 @@ const DriverOrderCard: React.FC<DriverOrderCardProps> = ({ order, onStatusUpdate
 
     switch (order.status) {
       case OrderStatus.DRIVER_ASSIGNED:
-        label = 'تایید نهایی بار (شروع کار)';
+        label = "تایید  پیشنهاد ";
         newStatus = OrderStatus.DRIVER_ACCEPTED_CONFIRMATION;
-        style = 'bg-green-600 text-white hover:bg-green-700';
+        style = 'bg-gray-600 text-white hover:bg-gray-700';
         break;
-      case OrderStatus.DRIVER_ACCEPTED_CONFIRMATION:
-        label = 'شروع بارگیری';
-        newStatus = OrderStatus.LOADING;
-        style = 'bg-orange-600 text-white hover:bg-orange-700';
-        break;
+     
       case OrderStatus.LOADING:
-        label = "تایید تحویل بار";
+        label = "تایید بارگیری";
         newStatus = OrderStatus.ON_ROAD;
         style = 'bg-blue-600 text-white hover:bg-blue-700';
         break;
       case OrderStatus.ON_ROAD:
-        label = "راننده در مسیر انبار مقصد";
+        label = "تایید تحویل بار";
         newStatus = OrderStatus.DELIVERED;
-        style = 'bg-[#d0fcf5] active:bg-[#a6f0e4] text-black hover:bg-green-100';
+        style = 'bg-green-600 text-white hover:bg-green-700';
         break;
       case OrderStatus.DELIVERED:
-        label = 'تایید تحویل بار در مقصد';
-        newStatus = OrderStatus.DELIVERED;
-        style = 'bg-[#d0fcf5] active:bg-[#a6f0e4] text-black hover:bg-green-100';
-        break;
-
       case OrderStatus.FINISHED:
       case OrderStatus.PAY:
         return (
-          <div className="text-center py-2 text-sm font-bold text-green-700 bg-green-50 rounded-full border border-green-300">
-            {statusInfo.label}
-          </div>
+          <button className="flex-1 bg-gray-100 text-gray-600 py-3 px-4 rounded-full flex items-center justify-between group">
+            <span className="font-medium text-sm">مشاهده جزئیات</span>
+            <ChevronLeft className="w-4 h-4 text-gray-400" />
+          </button>
         );
       case OrderStatus.CANCELED:
         return (
-          <div className="text-center py-2 text-sm font-bold text-red-700 bg-red-50 rounded-full border border-red-300">
-            <XCircle className="w-4 h-4 inline-block ml-1" />
-            سفارش لغو شده است.
+          <div className="flex-1 flex justify-center items-center py-3 bg-red-50 rounded-full text-xs text-red-500 font-medium">
+            سفارش لغو شده است
           </div>
         );
       default:
@@ -410,36 +994,86 @@ const DriverOrderCard: React.FC<DriverOrderCardProps> = ({ order, onStatusUpdate
         <button
           onClick={() => onStatusUpdate(order.id!, newStatus!)}
           disabled={disabled}
-          // کلاس‌های سفارشی برای دکمه ON_ROAD
-          className={`w-full py-3 rounded-xl font-bold transition-colors disabled:opacity-50 
-                                ${style} ${order.status === OrderStatus.ON_ROAD ? 'text-lg py-4' : 'text-sm'}`}
+          className={`flex-1 ${style} text-white py-3 px-4 rounded-full flex items-center justify-between group active:scale-95 transition-transform disabled:opacity-50`}
         >
-          {disabled ? <Loader2 className="animate-spin w-5 h-5 inline-block" /> :
-            <CheckCircle className="w-5 h-5 inline-block ml-1" />}
-          {label}
+          <span className="font-medium text-sm">{label}</span>
+          {disabled ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <CheckCircle className="w-4 h-4" />
+          )}
         </button>
       );
     }
     return null;
   };
 
-  // تابع کمکی برای رندر محتوای بدنه کارت
-  const renderCardContent = () => {
-    switch (order.status) {
-      case OrderStatus.ON_ROAD:
-      case OrderStatus.DELIVERED:
-        return <div className="p-0 sm:p-5">{order.status === OrderStatus.ON_ROAD ? <OnRoadContent order={order} /> : <DeliveredContent order={order} />}</div>;
-      default:
-        return <DefaultOrderBodyContent order={order} />;
-    }
+
+  // تایی نهایی 
+
+ 
+  //  آهان فهمیدم  کارتها  از  کوجا میاد  
+ // در بخش رندر محتوا در DriverOrderCard
+const renderCardContent = () => {
+  const assignedOffer = order.offers?.find(o => o.state === OfferStatus.ACCEPTED);
+  const price = assignedOffer?.price || 0;
+
+  switch (order.status) {
+    case OrderStatus.DRIVER_ACCEPTED_CONFIRMATION:
+      return (
+        <DRIVER_CONFIRMATION
+          order={order}
+          onConfirm={async () => {
+            // تغییر وضعیت به LOADING
+            onStatusUpdate(order.id!, OrderStatus.LOADING);
+          }}
+          onTimeout={async () => {
+            // تغییر وضعیت به CANCELED
+            onStatusUpdate(order.id!, OrderStatus.CANCELED);
+          }}
+          isLoading={isLoading}
+        />
+      );
+      
+    case OrderStatus.ON_ROAD:
+      return <OnRoadContent order={order} />;
+      
+    case OrderStatus.DELIVERED:
+    case OrderStatus.FINISHED:
+    case OrderStatus.PAY:
+      return <DeliveredContent order={order} />;
+      
+    default:
+      return (
+        <div className="grid grid-cols-4 gap-2 mb-4 border-b border-gray-100 pb-4 border-dashed">
+          <DataItem
+            icon={DollarSign}
+            label="مبلغ حمل"
+            value={price.toLocaleString('fa-IR') + ' ریال'}
+          />
+          <DataItem
+            icon={Truck}
+            label="نوع خودرو"
+            value={order.requiredVehicleType || "ناشناس"}
+          />
+          <DataItem
+            icon={Scale}
+            label="وزن (کیلوگرم)"
+            value={order.weight}
+          />
+          <DataItem
+            icon={ClipboardList}
+            label="نوع کالا"
+            value={order.goodType}
+          />
+        </div>
+      );
   }
-
-  // ساختار اصلی برای تمامی وضعیت‌ها
+};
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 mb-6 overflow-hidden">
-
-      {/* Header and Status (خارج از بخش محتوای شرطی) */}
-      <div className={`flex justify-between items-start border-b pb-4 pt-5 px-5 ${order.status !== OrderStatus.ON_ROAD ? 'mb-4' : 'mb-0'}`}>
+    <div className="mx-4 bg-white rounded-[2rem] border border-[#d69e66] p-5 shadow-sm relative overflow-hidden mb-6">
+      {/* Header Row */}
+      <div className="flex justify-between items-start mb-4">
         <div className={`text-[10px] px-3 py-1.5 rounded-full font-medium shadow-sm ${statusInfo.style} ${statusInfo.color}`}>
           {statusInfo.label}
         </div>
@@ -451,46 +1085,36 @@ const DriverOrderCard: React.FC<DriverOrderCardProps> = ({ order, onStatusUpdate
         </div>
       </div>
 
-      {/* Conditional Content Body - حذف border-b برای OnRoadContent/DeliveredContent */}
-      <div className={`${order.status !== OrderStatus.ON_ROAD && order.status !== OrderStatus.DELIVERED ? 'px-5 border-b border-gray-100 pb-4' : ''}`}>
-        {renderCardContent()}
-      </div>
+      {/* Content Section */}
+      {renderCardContent()}
 
-      {/* Action Button */}
-      <div className={`pt-2 ${order.status !== OrderStatus.ON_ROAD && order.status !== OrderStatus.DELIVERED ? 'p-5 pt-2' : 'p-5 pt-0'}`}>
-        {getNextStepButton()}
+      {/* Footer Action */}
+      <div className="mt-4">
+        {getActionButton()}
       </div>
     </div>
   );
 };
 
-
-// --- Main Component (بدون تغییر) ---
+// --- Main Component ---
 export const DriverReports: React.FC = () => {
   const { driver } = useDriverDashboardData();
   const driverID = driver?.id;
 
-  // لیست سفارشات فعال (Order[]) که راننده به آن تخصیص یافته است
-  const [activeOrders, setActiveOrders] = useState<Order[]>([]);
-  // لیست تمامی پیشنهادات (OrderOffer[]) که راننده داده است
-  const [allOffers, setAllOffers] = useState<OrderOffer[]>([]);
-
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [activeTab, setActiveTab] = useState<'active' | 'delivered' | 'canceled'>('active');
 
   const loadData = useCallback(async () => {
     if (!driverID) return;
     setLoading(true);
     try {
       const fetchedOrders = await getOrdersByDriverId(driverID);
-      setActiveOrders(fetchedOrders || []);
-      const fetchedOffers = await getOffersByDriverId(driverID);
-      setAllOffers(fetchedOffers || []);
-
+      setOrders(fetchedOrders || []);
     } catch (error) {
       console.error("Error loading driver data:", error);
-      setActiveOrders([]);
-      setAllOffers([]);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -500,16 +1124,13 @@ export const DriverReports: React.FC = () => {
     loadData();
   }, [loadData]);
 
-
   const handleStatusUpdate = async (orderId: string, newStatus: OrderStatus) => {
     setIsUpdating(true);
     try {
       const updatedOrder = await updateOrder(orderId, { status: newStatus });
-
-      setActiveOrders(prevOrders =>
+      setOrders(prevOrders =>
         prevOrders.map(order => order.id === orderId ? { ...order, ...updatedOrder } : order)
       );
-
       alert(`وضعیت سفارش با موفقیت به "${getDriverStatusLabel(newStatus).label}" تغییر یافت.`);
     } catch (error) {
       console.error("Error updating order status:", error);
@@ -519,34 +1140,53 @@ export const DriverReports: React.FC = () => {
     }
   };
 
-  if (!driverID) return <div className="p-4 text-center text-red-500">پروفایل راننده یافت نشد.</div>;
+  // فیلتر سفارش‌ها بر اساس تب فعال
+  const filteredOrders = orders.filter(order => {
+    switch (activeTab) {
+      case 'active':
+        return order.status === OrderStatus.DRIVER_ASSIGNED ||
+               order.status === OrderStatus.DRIVER_ACCEPTED_CONFIRMATION ||
+               order.status === OrderStatus.LOADING ||
+               order.status === OrderStatus.ON_ROAD;
+      case 'delivered':
+        return order.status === OrderStatus.DELIVERED ||
+               order.status === OrderStatus.FINISHED ||
+               order.status === OrderStatus.PAY;
+      case 'canceled':
+        return order.status === OrderStatus.CANCELED;
+      default:
+        return true;
+    }
+  });
 
-  const activeWorkflowOrders = activeOrders.filter(o =>
-    o.status === OrderStatus.DRIVER_ASSIGNED ||
-    o.status === OrderStatus.DRIVER_ACCEPTED_CONFIRMATION ||
-    o.status === OrderStatus.LOADING ||
-    o.status === OrderStatus.ON_ROAD ||
-    o.status === OrderStatus.DELIVERED
-  );
-
-  const historyOrders = activeOrders.filter(o =>
-    o.status === OrderStatus.FINISHED ||
-    o.status === OrderStatus.PAY ||
-    o.status === OrderStatus.CANCELED
-  );
+  if (!driverID) {
+    return (
+      <div dir="rtl" className="min-h-screen bg-gray-50 max-w-xl mx-auto shadow-2xl overflow-hidden font-vazirmatn pb-10">
+        <Header />
+        <div className="p-6 text-center text-red-500">پروفایل راننده یافت نشد.</div>
+      </div>
+    );
+  }
 
   return (
-    <div dir="rtl" className="space-y-8 p-4 bg-gray-50 min-h-screen max-w-lg mx-auto">
+    <div dir="rtl" className="min-h-screen bg-gray-50 max-w-xl mx-auto shadow-2xl overflow-hidden font-vazirmatn pb-10">
+      <Header />
+      <SearchBar />
+      <FilterTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* --------------------- A. Active Orders (سفارشات فعال) --------------------- */}
-      <div className="space-y-4">
+      {/* Orders List */}
+      <div className="mt-2 space-y-4">
         {loading ? (
-          <div className="text-center py-10 text-gray-500">
-            <Loader2 className="animate-spin w-6 h-6 inline-block mb-2" />
-            در حال بارگذاری سفارشات فعال...
+          <div className="flex justify-center items-center h-48 bg-white p-6 mx-4 rounded-2xl">
+            <Loader2 className="animate-spin text-black w-8 h-8" />
+            <p className="mr-2 text-gray-600 font-medium">در حال بارگذاری سفارشات...</p>
           </div>
-        ) : activeWorkflowOrders.length > 0 ? (
-          activeWorkflowOrders.slice().reverse().map(order => (
+        ) : filteredOrders.length === 0 ? (
+          <p className="text-center text-gray-500 p-8 bg-white mx-4 rounded-2xl shadow-sm">
+            هیچ سفارشی در این بخش یافت نشد.
+          </p>
+        ) : (
+          filteredOrders.slice().reverse().map(order => (
             <DriverOrderCard
               key={order.id}
               order={order}
@@ -554,14 +1194,8 @@ export const DriverReports: React.FC = () => {
               isLoading={isUpdating}
             />
           ))
-        ) : (
-          <div className="p-6 text-center text-gray-500 bg-white rounded-xl shadow-sm">
-            در حال حاضر سفارش فعالی برای کاپتان  ثبت نشده است.
-          </div>
         )}
       </div>
-
-
     </div>
   );
 };
