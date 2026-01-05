@@ -40,18 +40,21 @@ import {
 const getStatusLabel = (status: OrderStatus): { label: string, color: string, style: string } => {
   switch (status) {
     case OrderStatus.NEW: return { label: "در جستجوی راننده", color: "text-gray-600", style: "bg-orange-500" };
-    case OrderStatus.WAITING_FOR_OFFERS: return { label: "در انتظار پیشنهاد", color: "text-blue-800", style: "bg-blue-100" };
-    case OrderStatus.DRIVER_ASSIGNED: return { label: "در انتظار تایید نهایی راننده", color: "text-indigo-800", style: "bg-green-300" };
+    case OrderStatus.WAITING_FOR_OFFERS: return { label:  "در انتظار تایید نهایی راننده", color: "text-blue-800", style: "bg-blue-100" };
     case OrderStatus.DRIVER_ACCEPTED_CONFIRMATION: return { label: "تایید نهایی راننده", color: "text-purple-800", style: "bg-purple-100" };
     case OrderStatus.LOADING: return { label: "راننده در مسیر انبار  مبدا", color: "text-yellow-900", style: "bg-yellow-300 text-black" };
+     case OrderStatus.DELIVERED_ANBAR: return { label: "DELIVERED_ANBAR", color: "text-yellow-900", style: "bg-yellow-300 text-black" };
+      case OrderStatus.DELIVERED_ANBAR_CONFIRMATION: return { label: "DELIVERED_ANBAR_CONFIRMATION", color: "text-yellow-900", style: "bg-yellow-300 text-black" };
     case OrderStatus.ON_ROAD: return { label: "راننده در مسیر انبار مقصد", color: "text-orange-800", style: "bg-[#f4a261] bg-opacity-90 text-white" };
     case OrderStatus.DELIVERED: return { label: "تحویل شده", color: "text-green-800", style: "bg-green-100" };
+        case OrderStatus.DELIVERED_CONFIRMATION: return { label: "DELIVERED_CONFIRMATION", color: "text-green-800", style: "bg-green-100" };
     case OrderStatus.FINISHED: return { label: "پایان یافته", color: "text-cyan-800", style: "bg-cyan-100" };
-    case OrderStatus.CANCELED: return { label: "لغو شده", color: "text-red-800", style: "bg-red-100" };
+   case OrderStatus.PAY: return { label: "مرحله  پرداخت  ", color: "text-cyan-800", style: "bg-cyan-100" };
+      case OrderStatus.COMMENT_FOR_DRIVER: return { label: "مرحله نظر سنجی ", color: "text-cyan-800", style: "bg-cyan-100" };
+      
     default: return { label: "نامشخص", color: "text-gray-700", style: "bg-gray-200" };
   }
 };
-
 
 // --- New Design Components (بدون تغییرات ظاهری) ---
 

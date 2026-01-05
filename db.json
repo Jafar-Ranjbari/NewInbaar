@@ -92,16 +92,7 @@
       "province": "تهران",
       "city": "کرج"
     },
-    {
-      "id": "1765551948846",
-      "userID": "380f",
-      "firstName": "راننده",
-      "lastName": "نهم",
-      "mobile1": "09011614416",
-      "nationalId": "1602813361",
-      "province": "تهران",
-      "city": "تهران"
-    },
+
     {
       "id": "1766154411160",
       "userID": "773f",
@@ -111,46 +102,6 @@
       "nationalId": "1602813361",
       "province": "تهران",
       "city": "تهران"
-    },
-    {
-      "id": "1766162273467",
-      "userID": "adf5",
-      "firstName": "aaaaaa",
-      "lastName": "Ranjbari",
-      "mobile1": "09011614416",
-      "city": "هشترود",
-      "nationalId": "1602813361",
-      "province": "استان تهران"
-    },
-    {
-      "id": "1766163279297",
-      "userID": "b6c8",
-      "firstName": "زززززز",
-      "lastName": "Ranjbari",
-      "mobile1": "09011614416",
-      "city": "karaj",
-      "nationalId": "1602813361",
-      "province": "zanjan"
-    },
-    {
-      "id": "1766172911627",
-      "userID": "207d",
-      "firstName": "احمد",
-      "lastName": "مقدم",
-      "mobile1": "02435585146",
-      "province": "zanjan",
-      "city": "zanjan",
-      "nationalId": "1602813361"
-    },
-    {
-      "id": "1767448263329",
-      "userID": "b85e",
-      "firstName": "احمد",
-      "lastName": "مقدم",
-      "mobile1": "02435585146",
-      "province": "zanjan",
-      "city": "zanjan",
-      "nationalId": "1602813361"
     }
   ],
   "driverCars": [
@@ -541,54 +492,6 @@
       "cost": 5000,
       "description": "خرید بسته",
       "timestamp": "2025-12-15T18:39:31.685Z"
-    },
-    {
-      "id": "405tnmnxg",
-      "userID": "64f8",
-      "amount": 50,
-      "cost": 5000,
-      "description": "خرید بسته",
-      "timestamp": "2025-12-15T19:14:18.515Z"
-    },
-    {
-      "id": "loyo4i53w",
-      "userID": "73e6",
-      "amount": 50,
-      "cost": 5000,
-      "description": "خرید بسته",
-      "timestamp": "2025-12-15T20:42:00.267Z"
-    },
-    {
-      "id": "wrvv73fz8",
-      "userID": "73e6",
-      "amount": 50,
-      "cost": 5000,
-      "description": "خرید بسته ۵۰ تایی",
-      "timestamp": "2025-12-15T20:53:52.324Z"
-    },
-    {
-      "id": "nc27urmh2",
-      "userID": "b6c8",
-      "amount": 50,
-      "cost": 300000,
-      "description": "خرید بسته افزایشی",
-      "timestamp": "2025-12-19T17:58:31.686Z"
-    },
-    {
-      "id": "1e259c5l1",
-      "userID": "b6c8",
-      "amount": 50,
-      "cost": 300000,
-      "description": "خرید بسته افزایشی",
-      "timestamp": "2025-12-19T18:14:49.397Z"
-    },
-    {
-      "id": "kvzh5lky6",
-      "userID": "2",
-      "amount": 50,
-      "cost": 50000,
-      "description": "خرید بسته ۵۰ عددی",
-      "timestamp": "2025-12-20T19:14:58.113Z"
     }
   ]
 }

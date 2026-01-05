@@ -1,12 +1,12 @@
 export enum Role {
-  DRIVER = 'DRIVER',
-  COMPANY = 'COMPANY',
-  ADMIN = 'ADMIN'
+  DRIVER = "DRIVER",
+  COMPANY = "COMPANY",
+  ADMIN = "ADMIN",
 }
 
 export enum CompanyType {
-  REAL = 'REAL',
-  LEGAL = 'LEGAL'
+  REAL = "REAL",
+  LEGAL = "LEGAL",
 }
 
 export interface User {
@@ -145,60 +145,73 @@ export interface CompanyDetail {
 
 export enum OrderStatus {
   // 0. سفارش جدید ثبت شده (معمولاً در انتظار تایید اولیه سیستم یا ادمین)
-  NEW = 'NEW',
+  NEW = "NEW",
   //   // ۱. تعریف بار و در جستجوی راننده
-  WAITING_FOR_OFFERS = 'WAITING_FOR_OFFERS',
+  WAITING_FOR_OFFERS = "WAITING_FOR_OFFERS",
 
-  // فکر  کنم  اینجا  باید  جدا بشه 
-
-  // راننده  قیمت داده  -  شرکت منتخب  کرده 2
-  DRIVER_ASSIGNED = 'DRIVER_ASSIGNED',
-
-  // 3 منتطره  تایید راننده 
-  DRIVER_ACCEPTED_CONFIRMATION = 'DRIVER_ACCEPTED_CONFIRMATION',
+  // 3 منتطره  تایید راننده
+  DRIVER_ACCEPTED_CONFIRMATION = "DRIVER_ACCEPTED_CONFIRMATION",
 
   //   // ۴. راننده بعداز  تایید  - در حال حرکت به سمت مبدا است
-  DRIVER_TO_ANBAR = 'DRIVER_TO_ORGIN',
+  DRIVER_TO_ANBAR = "DRIVER_TO_ORGIN",
 
-  //  در  حال بارگیری  
-  LOADING = 'LOADING',
+  //  در  حال بارگیری
+  LOADING = "LOADING",
+  DELIVERED_ANBAR = "DELIVERED_ANBAR",
+  DELIVERED_ANBAR_CONFIRMATION = "DELIVERED_ANBAR_CONFIRMATION",
+  // بارگیری  تمام  به  سمت  مقصد
+  ON_ROAD = "ON_ROAD",
 
-  // بارگیری  تمام  به  سمت  مقصد 
-  ON_ROAD = 'ON_ROAD',
-
-  // تحویل  کالا   در مقصد  
-  DELIVERED = 'DELIVERED',
+  // تحویل  کالا   در مقصد
+  DELIVERED = "DELIVERED",
 
   //   // ۸. شرکت تایید کرد که بار سالم تحویل شده است
-  //   DELIVERY_CONFIRMED_BY_COMPANY = 'DELIVERY_CONFIRMED_BY_COMPANY', 
+  //   DELIVERY_CONFIRMED_BY_COMPANY = 'DELIVERY_CONFIRMED_BY_COMPANY',
 
-  // تسویه حساب کامل شده و سفارش پایان یافته است   
-  FINISHED = 'FINISHED',
+  DELIVERED_CONFIRMATION = "DELIVERED_CONFIRMATION",
+  // تسویه حساب کامل شده و سفارش پایان یافته است
+  FINISHED = "FINISHED",
 
-  // ۹. سفارش لغو شده است (توسط شرکت یا مدیر سیستم) 
-  CANCELED = 'CANCELED',
-
-  // پرداخت پول به راننده  
-  PAY = 'PAY',
-
+  // ۹. سفارش لغو شده است (توسط شرکت یا مدیر سیستم)
+  CANCELED = "CANCELED",
+  COMMENT_FOR_DRIVER = "COMMENT_FOR_DRIVER",
+  // پرداخت پول به راننده
+  PAY = "PAY",
 }
 
+// در  جستجوی  راننده   NEW
+//  تایید پیشنهاد  راننده   WAITING_FOR_OFFERS
+//  تایید  نهایی راننده   DRIVER_ACCEPTED_CONFIRMATION
+//  در  مسیر  انبار   LOADING
+//  تایید  دریافت بار  توسط  راننده  DELIVERED_ANBAR
+//  تایید  دریافت  بار  توسط  شرکت  DELIVERED_ANBAR_CONFIRMATION
+//  در  مسیر مقصد   ON_ROAD
+//  تایید  تحویل بار  توسط راننده  DELIVERED
+//  تایید  تحویل  بار  توسط  شرکت  DELIVERED_CONFIRMATION
+//  وضعیت  تسویه  PAY
+//  وضعیت نظر  سنجی  برای  راننده توسط شرکت
+//  بار  تمام     FINISHED
+
+// اگر  خود  شرکت  کنسل   کنه  یعنی بار  حذف میشه
+//  اگر  راننده تایید شده  پیشنهاد قبول  نکنه .
+//    میشه   در  جستجوی  راننده  -   خود بار
+//  اینجا  orderOffers   میشه  کنسل
 // این بخش برای مدیریت فرآیند "رد کردن" یا "پذیرفتن" قیمت‌های پیشنهادی رانندگان است.
 export enum OfferStatus {
-  PENDING = 'PENDING',    // پیشنهاد ثبت شده و منتظر بررسی شرکت
-  ACCEPTED = 'ACCEPTED',  // شرکت این پیشنهاد را انتخاب کرده است
-  REJECTED = 'REJECTED',  // شرکت این پیشنهاد را رد کرده است
-  EXPIRED = 'EXPIRED'     // بار به شخص دیگری داده شد یا منقضی شد
+  PENDING = "PENDING", // پیشنهاد ثبت شده و منتظر بررسی شرکت
+  ACCEPTED = "ACCEPTED", // شرکت این پیشنهاد را انتخاب کرده است
+  REJECTED = "REJECTED", // شرکت این پیشنهاد را رد کرده است
+  EXPIRED = "EXPIRED", // بار به شخص دیگری داده شد یا منقضی شد
+  CANCELED = "CANCELED", //  این  بار
 }
-
 
 export interface Order {
   id?: string;
-  expectedPriceRange: string;  //
+  expectedPriceRange: string; //
   companyID: string;
   status: OrderStatus;
 
-  weightType: string;  //     
+  weightType: string; //
   loadType: string; // cargo type
 
   originProvince: string;
@@ -207,32 +220,32 @@ export interface Order {
   destinationProvince: string;
   destinationCity: string;
 
-  goodType: string; // نوع  کالا  
-  weight: number;  //وزن  
-  size?: string;  // سایز  
+  goodType: string; // نوع  کالا
+  weight: number; //وزن
+  size?: string; // سایز
 
-  deliveryDate: string;   //زمان  
+  deliveryDate: string; //زمان
   requiredVehicleType: string;
 
-  receiverName: string;   // نام  گیرنده 
+  receiverName: string; // نام  گیرنده
   loadDescription: string; // فقط برای توضیحات "اضافی" و متفرقه
 
   // 💥 فیلدهای جدید برای جدا کردن داده‌ها 💥
-  invoiceNumber: string;         // شماره فاکتور
-  receiverContact: string;       // شماره تماس گیرنده
-  packageType: string;           // نوع بسته‌بندی
-  packageCount: string;          // تعداد بسته
-  goodsValue?: number;           // ارزش کالا (به صورت عدد)
-  paymentMethod: string;         // نحوه پرداخت کرایه
-  unloadingAddress: string;      // آدرس پستی محل تخلیه
-  unloadingFromHour: string;     // ساعت شروع کار انبار
-  unloadingToHour: string;       // ساعت پایان کار انبار
+  invoiceNumber: string; // شماره فاکتور
+  receiverContact: string; // شماره تماس گیرنده
+  packageType: string; // نوع بسته‌بندی
+  packageCount: string; // تعداد بسته
+  goodsValue?: number; // ارزش کالا (به صورت عدد)
+  paymentMethod: string; // نحوه پرداخت کرایه
+  unloadingAddress: string; // آدرس پستی محل تخلیه
+  unloadingFromHour: string; // ساعت شروع کار انبار
+  unloadingToHour: string; // ساعت پایان کار انبار
 
   // ⭐️ فیلد کلیدی برای نمایش قیمت در پنل راننده
-  offers?: OrderOffer[];      // لیست تمامی پیشنهادهای ثبت شده برای این سفارش
+  offers?: OrderOffer[]; // لیست تمامی پیشنهادهای ثبت شده برای این سفارش
 
   createdAt?: Date;
-  driverID?: string;          // راننده نهایی تخصیص داده شده
+  driverID?: string; // راننده نهایی تخصیص داده شده
 }
 
 export interface OrderOffer {
@@ -247,8 +260,6 @@ export interface OrderOffer {
   deliveryEstimateTime?: string;
   date: string;
 }
-
-
 
 export interface DriverReview {
   id: string;
@@ -267,7 +278,7 @@ export interface PaymentDriver {
   driverID: string;
   orderID: string;
   amount: number;
-  payType: 'BANK' | 'CASH' | 'POS' | 'CHARGE';
+  payType: "BANK" | "CASH" | "POS" | "CHARGE";
   image?: string; // Receipt URL
   transactionCode?: string;
   year: number;
@@ -278,12 +289,12 @@ export interface PaymentDriver {
 }
 
 export enum AuthStep {
-  PHONE_INPUT = 'PHONE_INPUT',
-  SMS_VERIFICATION = 'SMS_VERIFICATION',
-  LOGIN_PASSWORD = 'LOGIN_PASSWORD',
-  REGISTER = 'REGISTER',
-  FORGOT_PASSWORD_SMS = 'FORGOT_PASSWORD_SMS',
-  FORGOT_PASSWORD_NEW = 'FORGOT_PASSWORD_NEW',
+  PHONE_INPUT = "PHONE_INPUT",
+  SMS_VERIFICATION = "SMS_VERIFICATION",
+  LOGIN_PASSWORD = "LOGIN_PASSWORD",
+  REGISTER = "REGISTER",
+  FORGOT_PASSWORD_SMS = "FORGOT_PASSWORD_SMS",
+  FORGOT_PASSWORD_NEW = "FORGOT_PASSWORD_NEW",
 }
 
 export interface AuthState {
